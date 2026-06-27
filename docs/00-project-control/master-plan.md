@@ -21,6 +21,7 @@
 | [~] | 11. Открытые вопросы | Критичные решения закрыты; часть вопросов перенесена на публикацию или наполнение | `../11-open-questions/README.md` |
 | [x] | 12. Technical Requirements MVP | Подготовлено понятное ТЗ на будущую разработку MVP без старта кодинга | `../10-mvp-roadmap/technical-requirements-mvp.md` |
 | [x] | 13. User Scenarios MVP | Описаны сценарии гостя, пользователя, админа и партнера через Telegram | `../10-mvp-roadmap/user-scenarios-mvp.md` |
+| [x] | 14. Data Structure MVP | Описаны сущности, поля, Google Sheets, будущий Postgres и привязка к `vibe` | `../09-platforms-and-architecture/data-structure-mvp.md` |
 
 ## Definition of Ready для начала кодинга
 
@@ -58,3 +59,4 @@
 - 2026-06-27: подключен GitHub-репозиторий `danilparkour69-rgb/phuket-go`, объединен шаблон `vibe` с документацией Phuket Go.
 - 2026-06-27: создано техническое задание MVP `docs/10-mvp-roadmap/technical-requirements-mvp.md`; следующий шаг - расписать подробные пользовательские сценарии MVP.
 - 2026-06-27: созданы пользовательские сценарии MVP `docs/10-mvp-roadmap/user-scenarios-mvp.md`; следующий шаг - уточнить структуру данных MVP под `vibe`, Google Sheets и будущий Postgres.
+- 2026-06-27: создана структура данных MVP `docs/09-platforms-and-architecture/data-structure-mvp.md`; следующий шаг - подготовить API-карту MVP.

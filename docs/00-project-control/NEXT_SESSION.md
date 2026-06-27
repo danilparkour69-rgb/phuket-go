@@ -53,7 +53,11 @@
 
 ## Последнее действие
 
-Созданы пользовательские сценарии MVP:
+Создана структура данных MVP:
+
+- `docs/09-platforms-and-architecture/data-structure-mvp.md`
+
+Перед этим созданы пользовательские сценарии MVP:
 
 - `docs/10-mvp-roadmap/user-scenarios-mvp.md`
 
@@ -139,9 +143,9 @@ https://t.me/marusyatravel/2206
 
 Следующий логичный шаг:
 
-1. Открыть пользовательские сценарии: `docs/10-mvp-roadmap/user-scenarios-mvp.md`.
-2. Открыть техническое задание: `docs/10-mvp-roadmap/technical-requirements-mvp.md`.
-3. Следующий шаг - уточнить структуру данных MVP под `vibe`, Google Sheets и будущий Postgres.
+1. Открыть структуру данных: `docs/09-platforms-and-architecture/data-structure-mvp.md`.
+2. Открыть пользовательские сценарии: `docs/10-mvp-roadmap/user-scenarios-mvp.md`.
+3. Следующий шаг - подготовить API-карту MVP.
 4. Потом писать публичные SEO-тексты по оригинальному skill `pishi-sokrashchai`.
 5. Код проекта пока не писать.
 
@@ -164,4 +168,4 @@ https://t.me/marusyatravel/2206
 
 Начать новую сессию с фразы:
 
-`Продолжаем Phuket Go. Открой docs/00-project-control/NEXT_SESSION.md и продолжи со структуры данных MVP. Код не писать.`
+`Продолжаем Phuket Go. Открой docs/00-project-control/NEXT_SESSION.md и продолжи с API-карты MVP. Код не писать.`

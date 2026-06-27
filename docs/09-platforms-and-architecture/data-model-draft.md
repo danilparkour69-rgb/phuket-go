@@ -1,6 +1,10 @@
 # Data Model Draft
 
-Статус: [~] draft
+Статус: [x] replaced by detailed MVP structure
+
+Подробная структура данных MVP находится здесь:
+
+- `data-structure-mvp.md`
 
 ## Хранение данных
 
