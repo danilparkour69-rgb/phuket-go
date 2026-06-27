@@ -6,6 +6,10 @@
 
 - `../09-platforms-and-architecture/telegram-bots-map.md`
 
+Короткие тексты интерфейса, формы заявки, статусов и уведомлений находятся здесь:
+
+- `../10-mvp-roadmap/interface-microcopy-mvp.md`
+
 ## Пользователь
 
 - Подтверждение, что заявка отправлена.

@@ -37,6 +37,7 @@
 - Админка нужна в MVP.
 - Если решения GitHub-шаблона `vibe` конфликтуют с ранними решениями Phuket Go, за основу берем `vibe`, а продуктовые решения адаптируем под него.
 - Сразу проектируем с заделом на масштабирование: Phuket Go -> Bangkok Go -> Pattaya Go -> Thailand Go -> Vietnam Go -> Asia Go -> World Go.
+- Для будущих категорий создан общий шаблон карточек: байки, авто, трансферы, права, документы, визы, недвижимость.
 
 ## Где смотреть документы
 
@@ -44,6 +45,8 @@
 - Решения: `docs/00-project-control/decision-log.md`
 - Product Vision: `docs/01-product-vision/product-vision.md`
 - Каталог: `docs/03-service-catalog/`
+- Карточки будущих услуг: `docs/03-service-catalog/future-service-card-spec.md`
+- Микротексты интерфейса: `docs/10-mvp-roadmap/interface-microcopy-mvp.md`
 - Источник экскурсий: `docs/03-service-catalog/initial-excursions-source-marusya.md`
 - Ссылки на подробные экскурсии: `docs/03-service-catalog/initial-excursions-links-marusya.md`
 - Структура базы экскурсий: `docs/03-service-catalog/excursions-database-structure.md`
@@ -57,6 +60,46 @@
 - Skill для текстов: `docs/12-skills/pishi-sokrashchai/SKILL.md`
 
 ## Последнее действие
+
+Закрыты пункты 39-46 подготовки базы экскурсий перед разработкой:
+
+- `39. Финальная чистка базы экскурсий`
+- `40. Проверка цен и валют`
+- `41. Проверка условий экскурсий`
+- `42. Проверка слонов и этики`
+- `43. Проверка дайвинга`
+- `44. Проверка названий карточек`
+- `45. Проверка эмоционального текста`
+- `46. Индекс готовности экскурсий`
+
+Созданы итоговые документы:
+
+- `docs/03-service-catalog/excursions/final-cleanup-step-39-result.md`
+- `docs/03-service-catalog/excursions/price-and-currency-step-40-result.md`
+- `docs/03-service-catalog/excursions/conditions-step-41-result.md`
+- `docs/03-service-catalog/excursions/elephants-ethics-step-42-result.md`
+- `docs/03-service-catalog/excursions/diving-routing-step-43-result.md`
+- `docs/03-service-catalog/excursions/title-check-step-44-result.md`
+- `docs/03-service-catalog/excursions/emotional-copy-step-45-result.md`
+- `docs/03-service-catalog/excursions/readiness-index-step-46-result.md`
+
+Текущий индекс готовности:
+
+- всего карточек: 54;
+- `copy_draft_ready`: 28;
+- `temporary_media_ready`: 5;
+- `needs_price_check`: 15;
+- `needs_partner`: 4;
+- `needs_upscale_or_replace`: 2;
+- `ready_for_site`: 0.
+
+Следующий пункт: `47. Проверка текущих фото`.
+
+Важно: файл `project-forum/phuket-go-task-map.md` нужен только для отметки выполненных этапов. На него нельзя опираться как на источник требований. Требования брать из основных документов в `docs/`.
+
+---
+
+## История прошлых действий
 
 Создан FAQ для MVP:
 
@@ -218,9 +261,9 @@ https://t.me/marusyatravel/2206
 Следующий логичный шаг:
 
 1. Открыть главный план: `docs/00-project-control/master-plan.md`.
-2. Открыть первые статьи: `docs/07-seo-and-content/articles-copy-mvp.md`.
-3. Следующий шаг - обработать первый пакет ключевых экскурсий в самих карточках.
-4. После этого перейти к фотографиям экскурсий.
+2. Открыть индекс готовности: `docs/03-service-catalog/excursions/publication-readiness-index.md`.
+3. Открыть медиабазу: `docs/03-service-catalog/media/excursions/all-excursions-media-inventory.md`.
+4. Следующий шаг - пункт `47. Проверка текущих фото`.
 5. Код проекта пока не писать.
 
 ## Что важно помнить
@@ -242,4 +285,4 @@ https://t.me/marusyatravel/2206
 
 Начать новую сессию с фразы:
 
-`Продолжаем Phuket Go. Открой docs/00-project-control/NEXT_SESSION.md и продолжи с FAQ. Код не писать.`
+`Продолжаем Phuket Go. Код проекта не писать. Открой docs/00-project-control/NEXT_SESSION.md, docs/00-project-control/master-plan.md и docs/03-service-catalog/excursions/publication-readiness-index.md. Мы закрыли пункты 39-46 подготовки базы экскурсий. Следующий шаг - пункт 47: проверка текущих фото. Файл project-forum/phuket-go-task-map.md использовать только для отметок выполненных этапов, не как источник требований. Работай по основным документам в docs/.`
