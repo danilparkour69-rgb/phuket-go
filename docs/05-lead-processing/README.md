@@ -39,6 +39,7 @@
 - `partner-routing.md`
 - `notifications.md`
 - `google-sheets-structure.md`
+- `google-sheets-final-map.md`
 - `lead-history.md`
 - `lead-analytics.md`
 

@@ -23,6 +23,7 @@
 | [x] | 13. User Scenarios MVP | Описаны сценарии гостя, пользователя, админа и партнера через Telegram | `../10-mvp-roadmap/user-scenarios-mvp.md` |
 | [x] | 14. Data Structure MVP | Описаны сущности, поля, Google Sheets, будущий Postgres и привязка к `vibe` | `../09-platforms-and-architecture/data-structure-mvp.md` |
 | [x] | 15. API Map MVP | Описаны Public, Account, Admin, Bot и Internal API для MVP | `../09-platforms-and-architecture/api-map-mvp.md` |
+| [x] | 16. Google Sheets Final Map | Утверждены колонки, статусы, роли заполнения и перенос в Postgres | `../05-lead-processing/google-sheets-final-map.md` |
 
 ## Definition of Ready для начала кодинга
 
@@ -62,3 +63,4 @@
 - 2026-06-27: созданы пользовательские сценарии MVP `docs/10-mvp-roadmap/user-scenarios-mvp.md`; следующий шаг - уточнить структуру данных MVP под `vibe`, Google Sheets и будущий Postgres.
 - 2026-06-27: создана структура данных MVP `docs/09-platforms-and-architecture/data-structure-mvp.md`; следующий шаг - подготовить API-карту MVP.
 - 2026-06-27: создана API-карта MVP `docs/09-platforms-and-architecture/api-map-mvp.md`; следующий шаг - подготовить финальную карту Google Sheets для запуска.
+- 2026-06-27: создана финальная карта Google Sheets `docs/05-lead-processing/google-sheets-final-map.md`; следующий шаг - подготовить карту экранов админки.

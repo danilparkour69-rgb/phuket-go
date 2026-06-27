@@ -1,6 +1,10 @@
 # Google Sheets Structure
 
-Статус: [~] draft
+Статус: [x] replaced by final map
+
+Финальная карта Google Sheets для MVP находится здесь:
+
+- `google-sheets-final-map.md`
 
 ## Зачем нужна таблица
 

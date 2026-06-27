@@ -55,7 +55,11 @@
 
 ## Последнее действие
 
-Создана API-карта MVP:
+Создана финальная карта Google Sheets:
+
+- `docs/05-lead-processing/google-sheets-final-map.md`
+
+Перед этим создана API-карта MVP:
 
 - `docs/09-platforms-and-architecture/api-map-mvp.md`
 
@@ -149,9 +153,9 @@ https://t.me/marusyatravel/2206
 
 Следующий логичный шаг:
 
-1. Открыть API-карту: `docs/09-platforms-and-architecture/api-map-mvp.md`.
-2. Открыть структуру данных: `docs/09-platforms-and-architecture/data-structure-mvp.md`.
-3. Следующий шаг - подготовить финальную карту Google Sheets для запуска.
+1. Открыть финальную карту Google Sheets: `docs/05-lead-processing/google-sheets-final-map.md`.
+2. Открыть API-карту: `docs/09-platforms-and-architecture/api-map-mvp.md`.
+3. Следующий шаг - подготовить карту экранов админки.
 4. Потом писать публичные SEO-тексты по оригинальному skill `pishi-sokrashchai`.
 5. Код проекта пока не писать.
 
@@ -174,4 +178,4 @@ https://t.me/marusyatravel/2206
 
 Начать новую сессию с фразы:
 
-`Продолжаем Phuket Go. Открой docs/00-project-control/NEXT_SESSION.md и продолжи с финальной карты Google Sheets. Код не писать.`
+`Продолжаем Phuket Go. Открой docs/00-project-control/NEXT_SESSION.md и продолжи с карты экранов админки. Код не писать.`
