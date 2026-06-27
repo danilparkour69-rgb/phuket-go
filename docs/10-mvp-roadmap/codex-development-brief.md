@@ -1,6 +1,6 @@
 # Codex Development Brief
 
-Статус: [~] draft
+Статус: [x] done for planning
 
 Этот документ нужен для будущего старта разработки. Сейчас кодинг проекта не начинается.
 
@@ -50,10 +50,15 @@ Phuket Go.
 
 ## Стек
 
-- сайт и админка: Next.js;
+Используем шаблон `vibe`:
+
+- публичный сайт: `website`, Astro;
+- личный кабинет и админка: `webapp`, React + Vite;
+- backend/API: `backend`, Bun + Hono;
+- общие схемы данных: `packages/contracts`, Zod + TypeScript;
 - язык: TypeScript;
-- UI: Tailwind CSS;
-- авторизация: Firebase Authentication;
+- UI: Tailwind CSS и компоненты шаблона;
+- авторизация: Telegram, Google, email; финально выбрать Firebase Authentication или встроенную авторизацию шаблона после технической проверки;
 - фото: Cloudinary;
 - временное хранение заявок: Google Sheets;
 - целевая база: Postgres;
@@ -141,3 +146,4 @@ Phuket Go.
 - Success Metrics.
 - Tech Stack.
 - Security Requirements.
+- Technical Requirements MVP.

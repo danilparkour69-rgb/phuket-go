@@ -52,7 +52,17 @@
 
 ## Последнее действие
 
-Создана структура MVP-сайта:
+Создано техническое задание MVP:
+
+- `docs/10-mvp-roadmap/technical-requirements-mvp.md`
+
+Перед этим подключен GitHub-репозиторий:
+
+- `https://github.com/danilparkour69-rgb/phuket-go`
+
+Шаблон `vibe` объединен с документацией Phuket Go.
+
+Перед этим создана структура MVP-сайта:
 
 - `docs/10-mvp-roadmap/site-structure.md`
 
@@ -124,9 +134,9 @@ https://t.me/marusyatravel/2206
 
 Следующий логичный шаг:
 
-1. Открыть индекс: `docs/03-service-catalog/excursions/README.md`.
+1. Открыть техническое задание: `docs/10-mvp-roadmap/technical-requirements-mvp.md`.
 2. Открыть структуру сайта: `docs/10-mvp-roadmap/site-structure.md`.
-3. Следующий шаг - подготовить техническое задание на разработку MVP.
+3. Следующий шаг - расписать подробные пользовательские сценарии MVP.
 4. Потом писать публичные SEO-тексты по оригинальному skill `pishi-sokrashchai`.
 5. Код проекта пока не писать.
 
@@ -149,4 +159,4 @@ https://t.me/marusyatravel/2206
 
 Начать новую сессию с фразы:
 
-`Продолжаем Phuket Go. Открой docs/00-project-control/NEXT_SESSION.md и продолжи с шаблона SEO-страницы экскурсии. Код не писать.`
+`Продолжаем Phuket Go. Открой docs/00-project-control/NEXT_SESSION.md и продолжи с пользовательских сценариев MVP. Код не писать.`
