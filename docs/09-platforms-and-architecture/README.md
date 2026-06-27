@@ -23,6 +23,7 @@
 - [x] Описать основные backend-модули.
 - [x] Описать основные сущности базы данных.
 - [x] Описать API на уровне ресурсов.
+- [x] Подготовить API-карту MVP.
 - [x] Описать требования к админ-панели.
 - [x] Описать требования к партнерскому кабинету.
 - [x] Описать требования к мультиязычности.
@@ -37,6 +38,7 @@
 - `architecture-overview.md`
 - `data-model-draft.md`
 - `api-draft.md`
+- `api-map-mvp.md`
 - `admin-panel-requirements.md`
 - `partner-portal-requirements.md`
 - `tech-stack.md`

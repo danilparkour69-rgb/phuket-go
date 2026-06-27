@@ -1,6 +1,10 @@
 # API Draft
 
-Статус: [~] draft
+Статус: [x] replaced by MVP API map
+
+Подробная API-карта MVP находится здесь:
+
+- `api-map-mvp.md`
 
 ## Ресурсы API
 
@@ -18,8 +22,6 @@
 - Analytics
 - Commissions
 
-## Открытые вопросы
+## Главное требование
 
-Точный технический стек будет выбран позже.
-
-Главное требование: один backend для сайта, Telegram Mini App, Android и iPhone.
+Один backend для сайта, личного кабинета, админки, Telegram-ботов, будущего Telegram Mini App, Android и iPhone.
