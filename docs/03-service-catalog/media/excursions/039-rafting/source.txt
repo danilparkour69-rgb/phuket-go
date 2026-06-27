@@ -1,0 +1,32 @@
+Excursion: 039 Рафтинг
+Status: source_complete_needs_review
+Missing: 0
+
+Review note: needs visual/content review before publication.
+Special rule: do not publish elephant riding photos.
+
+Files:
+- cover.jpg
+  source_url: https://telegra.ph/file/a53db009ef7dda53c358b.jpg
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication
+- gallery-01.png
+  source_url: https://telegra.ph/file/1fc185e3bac12638ef84e.png
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication
+- gallery-02.png
+  source_url: https://telegra.ph/file/a4741692fb32975bf36e9.png
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication
+- gallery-03.png
+  source_url: https://telegra.ph/file/4fef36eae07d1af20221a.png
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication

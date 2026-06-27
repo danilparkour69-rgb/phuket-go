@@ -1,0 +1,31 @@
+Excursion: 049 Дельфинарий
+Status: temporary_complete_needs_review
+Missing: 0
+
+Review note: needs visual/content review before publication.
+
+Files:
+- cover.png
+  source_url: https://telegra.ph/file/74ac4a199a6df0a0571ef.png
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication
+- gallery-01.png
+  source_url: https://telegra.ph/file/e8a406e8681dfdeee8ca9.png
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication
+- gallery-02.jpg
+  source_url: https://www.pexels.com/photo/dolphin-show-performance-in-outdoor-pool-30915666/
+  source_owner: Pexels / Marian Florinel Condruz
+  usage_permission: Pexels API/source, final license check needed
+  image_type: real
+  notes: temporary Pexels source; verify location, relevance, and rights before publication
+- gallery-03.jpg
+  source_url: https://www.pexels.com/photo/dolphins-jumping-in-a-water-park-14336618/
+  source_owner: Pexels / Shaheen K Awan
+  usage_permission: Pexels API/source, final license check needed
+  image_type: real
+  notes: temporary Pexels source; verify location, relevance, and rights before publication

@@ -30,6 +30,7 @@
 - [x] Описать требования к аналитике и логированию.
 - [x] Описать требования к безопасности.
 - [x] Уточнить структуру данных MVP под `vibe`, Google Sheets и будущий Postgres.
+- [x] Описать план контейнеризации MVP.
 
 ## Итог этапа
 
@@ -40,12 +41,15 @@
 - `api-draft.md`
 - `api-map-mvp.md`
 - `admin-panel-requirements.md`
+- `admin-screens-map.md`
+- `telegram-bots-map.md`
 - `partner-portal-requirements.md`
 - `tech-stack.md`
 - `security-requirements.md`
 - `analytics-and-logging.md`
 - `data-migration-plan.md`
 - `data-structure-mvp.md`
+- `containerization-plan.md`
 
 ## Критерии done
 
@@ -53,3 +57,4 @@
 - [x] Понятны основные сущности базы данных.
 - [x] Понятны основные API-ресурсы.
 - [x] Понятно, как сайт, Telegram Mini App и мобильные приложения будут использовать общий backend.
+- [x] Понятно, как использовать Docker на этапе MVP.

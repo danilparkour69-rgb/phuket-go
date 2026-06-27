@@ -1,0 +1,29 @@
+Excursion: 024 Рача-Корал
+Status: source_complete_needs_review
+Missing: 0
+
+Files:
+- cover.jpg
+  source_url: https://telegra.ph/file/bef44354abebe7180836f.jpg
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication
+- gallery-01.jpg
+  source_url: https://telegra.ph/file/dbd474af2329f11288328.jpg
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication
+- gallery-02.jpg
+  source_url: https://telegra.ph/file/ca59d8a4f77803c182827.jpg
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication
+- gallery-03.jpg
+  source_url: https://telegra.ph/file/1918b7e50188b03c9651f.jpg
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication

@@ -1,0 +1,877 @@
+{
+  "status": "working",
+  "updated_at": "2026-06-28",
+  "rule": "The app should load excursion media from this manifest, not by manually guessing filenames.",
+  "base_path": "docs/03-service-catalog/media/excursions",
+  "default_required": {
+    "cover": 1,
+    "gallery": 3,
+    "source_file": "source.txt"
+  },
+  "items": [
+    {
+      "id": "001",
+      "slug": "slon-mantra-spa-samet-nangshe",
+      "title": "Слоны / Mantra Spa / Самет Нангше",
+      "folder": "001-slon-mantra-spa-samet-nangshe",
+      "cover": "cover.jpg",
+      "gallery": [
+        "gallery-01.jpg",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "temporary_complete_needs_visual_review",
+      "missing": 0,
+      "notes": "Нужны фото без катания на слонах. Temporary Pexels images used; verify actuality before publication."
+    },
+    {
+      "id": "002",
+      "slug": "avatar-plus",
+      "title": "Avatar Plus",
+      "folder": "002-avatar-plus",
+      "cover": "cover.jpg",
+      "gallery": [
+        "gallery-01.jpg",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "temporary_complete_needs_review",
+      "missing": 0,
+      "notes": "Нужно подобрать cover и 3 фото галереи. Temporary Pexels images used; verify actuality before publication."
+    },
+    {
+      "id": "003",
+      "slug": "avatar-world",
+      "title": "Avatar World",
+      "folder": "003-avatar-world",
+      "cover": "cover.jpg",
+      "gallery": [
+        "gallery-01.jpg",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "temporary_complete_needs_review",
+      "missing": 0,
+      "notes": "Нужно подобрать cover и 3 фото галереи. Temporary Pexels images used; verify actuality before publication."
+    },
+    {
+      "id": "004",
+      "slug": "siyanie-planktona",
+      "title": "Сияние планктона",
+      "folder": "004-siyanie-planktona",
+      "cover": "cover.jpg",
+      "gallery": [
+        "gallery-01.jpg",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "temporary_complete_needs_visual_review",
+      "missing": 0,
+      "notes": "Нужны реальные вечерние фото; AI допустим только как временная иллюстрация. Temporary Pexels images used; verify actuality before publication."
+    },
+    {
+      "id": "005",
+      "slug": "siyanie-planktona-2",
+      "title": "Сияние планктона 2",
+      "folder": "005-siyanie-planktona-2",
+      "cover": "cover.png",
+      "gallery": [
+        "gallery-01.jpg",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "temporary_complete_needs_visual_review",
+      "missing": 0,
+      "notes": "Нужны фото и отличие от экскурсии 004. Temporary Pexels images used; verify actuality before publication."
+    },
+    {
+      "id": "006",
+      "slug": "rassvetnoe-puteshestvie",
+      "title": "Рассветное путешествие",
+      "folder": "006-rassvetnoe-puteshestvie",
+      "cover": "cover.png",
+      "gallery": [
+        "gallery-01.png",
+        "gallery-02.png",
+        "gallery-03.png"
+      ],
+      "source_file": "source.txt",
+      "status": "source_complete_needs_review",
+      "missing": 0,
+      "notes": "Нужны рассветные морские фото. Source images used; verify before publication."
+    },
+    {
+      "id": "007",
+      "slug": "racha-koral-rassvet-privatnyy-plyazh-rybalka",
+      "title": "Рача Корал: рассвет / приватный пляж / рыбалка",
+      "folder": "007-racha-koral-rassvet-privatnyy-plyazh-rybalka",
+      "cover": "cover.jpg",
+      "gallery": [
+        "gallery-01.jpg",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "temporary_complete_needs_review",
+      "missing": 0,
+      "notes": "Нужны Рача, Корал, пляж и рыбалка. Temporary Pexels images used; verify actuality before publication."
+    },
+    {
+      "id": "008",
+      "slug": "cirkovoe-shou",
+      "title": "Цирковое шоу",
+      "folder": "008-cirkovoe-shou",
+      "cover": "cover.jpg",
+      "gallery": [
+        "gallery-01.jpg",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "temporary_complete_needs_visual_review",
+      "missing": 0,
+      "notes": "Нужны официальные фото или промо с правами. Temporary Pexels images used; verify actuality before publication."
+    },
+    {
+      "id": "009",
+      "slug": "rayskie-ostrova",
+      "title": "Райские острова",
+      "folder": "009-rayskie-ostrova",
+      "cover": "cover.jpg",
+      "gallery": [
+        "gallery-01.jpg",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "temporary_complete_needs_review",
+      "missing": 0,
+      "notes": "Нужны острова, пляж, море. Temporary Pexels images used; verify actuality before publication."
+    },
+    {
+      "id": "010",
+      "slug": "parom-na-phi-phi",
+      "title": "Паром на Пхи-Пхи",
+      "folder": "010-parom-na-phi-phi",
+      "cover": "cover.jpg",
+      "gallery": [
+        "gallery-01.jpg",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "source_complete_needs_review",
+      "missing": 0,
+      "notes": "Нужны фото парома и Пхи-Пхи. Source images used; verify before publication."
+    },
+    {
+      "id": "011",
+      "slug": "phangna",
+      "title": "ПхангНа",
+      "folder": "011-phangna",
+      "cover": "cover.png",
+      "gallery": [
+        "gallery-01.png",
+        "gallery-02.png",
+        "gallery-03.png"
+      ],
+      "source_file": "source.txt",
+      "status": "source_complete_needs_review",
+      "missing": 0,
+      "notes": "Нужны фото ПхангНа. Source images used; verify before publication."
+    },
+    {
+      "id": "012",
+      "slug": "similany",
+      "title": "Симиланы",
+      "folder": "012-similany",
+      "cover": "cover.jpg",
+      "gallery": [
+        "gallery-01.jpg",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "source_complete_needs_review",
+      "missing": 0,
+      "notes": "Проверить слабое фото gallery-01.jpg. Source images used; verify before publication."
+    },
+    {
+      "id": "013",
+      "slug": "similany-premium",
+      "title": "Симиланы Премиум",
+      "folder": "013-similany-premium",
+      "cover": "cover.jpg",
+      "gallery": [
+        "gallery-01.jpg",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "source_complete_needs_review",
+      "missing": 0,
+      "notes": "Проверить соответствие локации и права. Source images used; verify before publication."
+    },
+    {
+      "id": "014",
+      "slug": "similany-2-dnya",
+      "title": "Симиланы 2 дня",
+      "folder": "014-similany-2-dnya",
+      "cover": "cover.jpg",
+      "gallery": [
+        "gallery-01.jpg",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "temporary_complete_needs_review",
+      "missing": 0,
+      "notes": "Нужны фото Симилан, лодки и дайвинга. Temporary Pexels images used; verify actuality before publication."
+    },
+    {
+      "id": "015",
+      "slug": "surin",
+      "title": "Сурин",
+      "folder": "015-surin",
+      "cover": "cover.png",
+      "gallery": [
+        "gallery-01.png",
+        "gallery-02.jpg",
+        "gallery-03.png"
+      ],
+      "source_file": "source.txt",
+      "status": "source_complete_needs_review",
+      "missing": 0,
+      "notes": "Нужны фото островов Сурин. Source images used; verify before publication."
+    },
+    {
+      "id": "016",
+      "slug": "11-ostrovov",
+      "title": "11 островов",
+      "folder": "016-11-ostrovov",
+      "cover": "cover.jpg",
+      "gallery": [
+        "gallery-01.jpg",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "source_complete_needs_review",
+      "missing": 0,
+      "notes": "Нужны фото маршрута и островов. Source images used; verify before publication."
+    },
+    {
+      "id": "017",
+      "slug": "ranniy-phi-phi",
+      "title": "Ранний Пхи-Пхи",
+      "folder": "017-ranniy-phi-phi",
+      "cover": "cover.jpg",
+      "gallery": [
+        "gallery-01.jpg",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "source_complete_needs_review",
+      "missing": 0,
+      "notes": "Проверить соответствие локации и права. Source images used; verify before publication."
+    },
+    {
+      "id": "018",
+      "slug": "phi-phi",
+      "title": "Пхи-Пхи",
+      "folder": "018-phi-phi",
+      "cover": "cover.jpg",
+      "gallery": [
+        "gallery-01.png",
+        "gallery-02.png",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "source_complete_needs_review",
+      "missing": 0,
+      "notes": "Проверить соответствие локации и права. Source images used; verify before publication."
+    },
+    {
+      "id": "019",
+      "slug": "phi-phi-premium",
+      "title": "Пхи-Пхи Премиум",
+      "folder": "019-phi-phi-premium",
+      "cover": "cover.jpg",
+      "gallery": [
+        "gallery-01.jpg",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "source_complete_needs_review",
+      "missing": 0,
+      "notes": "Финально проверить качество. Source images used; verify before publication."
+    },
+    {
+      "id": "020",
+      "slug": "phi-phi-2-dnya",
+      "title": "Пхи-Пхи 2 дня",
+      "folder": "020-phi-phi-2-dnya",
+      "cover": "cover.png",
+      "gallery": [
+        "gallery-01.png",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "source_complete_needs_review",
+      "missing": 0,
+      "notes": "Нужны фото Пхи-Пхи и ночевки или лодки. Source images used; verify before publication."
+    },
+    {
+      "id": "021",
+      "slug": "4-zhemchuzhiny",
+      "title": "4 Жемчужины",
+      "folder": "021-4-zhemchuzhiny",
+      "cover": "cover.png",
+      "gallery": [
+        "gallery-01.png",
+        "gallery-02.png",
+        "gallery-03.png"
+      ],
+      "source_file": "source.txt",
+      "status": "source_complete_needs_review",
+      "missing": 0,
+      "notes": "Нужны фото маршрута. Source images used; verify before publication."
+    },
+    {
+      "id": "022",
+      "slug": "5-zhemchuzhin",
+      "title": "5 Жемчужин",
+      "folder": "022-5-zhemchuzhin",
+      "cover": "cover.png",
+      "gallery": [
+        "gallery-01.png",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "temporary_complete_needs_review",
+      "missing": 0,
+      "notes": "Нужны фото маршрута. Temporary Pexels images used; verify actuality before publication."
+    },
+    {
+      "id": "023",
+      "slug": "dzheyms-bond",
+      "title": "Джеймс Бонд",
+      "folder": "023-dzheyms-bond",
+      "cover": "cover.png",
+      "gallery": [
+        "gallery-01.png",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "source_complete_needs_review",
+      "missing": 0,
+      "notes": "Проверить слабое фото gallery-03.jpg. Source images used; verify before publication."
+    },
+    {
+      "id": "024",
+      "slug": "racha-koral",
+      "title": "Рача-Корал",
+      "folder": "024-racha-koral",
+      "cover": "cover.jpg",
+      "gallery": [
+        "gallery-01.jpg",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "source_complete_needs_review",
+      "missing": 0,
+      "notes": "Нужны фото Рача/Корал без слоновьего акцента. Source images used; verify before publication."
+    },
+    {
+      "id": "025",
+      "slug": "rok-ha",
+      "title": "Рок-Ха",
+      "folder": "025-rok-ha",
+      "cover": "cover.png",
+      "gallery": [
+        "gallery-01.png",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "temporary_complete_needs_review",
+      "missing": 0,
+      "notes": "Нужны фото Рок и Ха. Temporary Pexels images used; verify actuality before publication."
+    },
+    {
+      "id": "026",
+      "slug": "racha-koral-mayton",
+      "title": "Рача-Корал Майтон",
+      "folder": "026-racha-koral-mayton",
+      "cover": "cover.png",
+      "gallery": [
+        "gallery-01.png",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "temporary_complete_needs_review",
+      "missing": 0,
+      "notes": "Нужны фото Рача, Корал и Майтон. Temporary Pexels images used; verify actuality before publication."
+    },
+    {
+      "id": "027",
+      "slug": "koral-1-den",
+      "title": "Корал 1 день",
+      "folder": "027-koral-1-den",
+      "cover": "cover.jpg",
+      "gallery": [
+        "gallery-01.jpg",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "source_complete_needs_review",
+      "missing": 0,
+      "notes": "Проверить соответствие локации и права. Source images used; verify before publication."
+    },
+    {
+      "id": "028",
+      "slug": "krabi-ostrova-bez-voln-i-zakat",
+      "title": "Краби: острова без волн и закат",
+      "folder": "028-krabi-ostrova-bez-voln-i-zakat",
+      "cover": "cover.jpg",
+      "gallery": [
+        "gallery-01.jpg",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "temporary_complete_needs_review",
+      "missing": 0,
+      "notes": "Нужны фото Краби и заката. Temporary Pexels images used; verify actuality before publication."
+    },
+    {
+      "id": "029",
+      "slug": "phi-phi-bambu-rang-yay-s-rybalkoy",
+      "title": "Пхи-Пхи / Бамбу / Ранг Яй с рыбалкой",
+      "folder": "029-phi-phi-bambu-rang-yay-s-rybalkoy",
+      "cover": "cover.jpg",
+      "gallery": [
+        "gallery-01.jpg",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "temporary_complete_needs_review",
+      "missing": 0,
+      "notes": "Нужны Пхи-Пхи, Бамбу, Ранг Яй и рыбалка. Temporary Pexels images used; verify actuality before publication."
+    },
+    {
+      "id": "030",
+      "slug": "gidrocikly",
+      "title": "Гидроциклы",
+      "folder": "030-gidrocikly",
+      "cover": "cover.jpg",
+      "gallery": [
+        "gallery-01.jpg",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "temporary_complete_needs_visual_review",
+      "missing": 0,
+      "notes": "Нужны фото активности; желательно от исполнителя. Temporary Pexels images used; verify actuality before publication."
+    },
+    {
+      "id": "031",
+      "slug": "rybalka",
+      "title": "Рыбалка",
+      "folder": "031-rybalka",
+      "cover": "cover.jpg",
+      "gallery": [
+        "gallery-01.jpg",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "temporary_complete_needs_review",
+      "missing": 0,
+      "notes": "Нужны фото морской рыбалки. Temporary Pexels images used; verify actuality before publication."
+    },
+    {
+      "id": "032",
+      "slug": "dayving",
+      "title": "Дайвинг",
+      "folder": "032-dayving",
+      "cover": "cover.jpg",
+      "gallery": [
+        "gallery-01.jpg",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "source_complete_needs_visual_review",
+      "missing": 0,
+      "notes": "Дайвинг идет отдельному исполнителю; фото запрашивать отдельно. Source images used; verify before publication."
+    },
+    {
+      "id": "033",
+      "slug": "premium-katamaran-phi-phi-racha-i-zakatnaya-vecherinka",
+      "title": "Премиум катамаран",
+      "folder": "033-premium-katamaran-phi-phi-racha-i-zakatnaya-vecherinka",
+      "cover": "cover.jpg",
+      "gallery": [
+        "gallery-01.jpg",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "temporary_complete_needs_visual_review",
+      "missing": 0,
+      "notes": "Нужны фото конкретного катамарана и программы. Temporary Pexels images used; verify actuality before publication."
+    },
+    {
+      "id": "034",
+      "slug": "ozernaya-rybalka",
+      "title": "Озерная рыбалка",
+      "folder": "034-ozernaya-rybalka",
+      "cover": "cover.jpg",
+      "gallery": [
+        "gallery-01.jpg",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "temporary_complete_needs_review",
+      "missing": 0,
+      "notes": "Нужны фото озера и рыбалки. Temporary Pexels images used; verify actuality before publication."
+    },
+    {
+      "id": "035",
+      "slug": "park-slonov",
+      "title": "Парк слонов",
+      "folder": "035-park-slonov",
+      "cover": "cover.jpg",
+      "gallery": [
+        "gallery-01.jpg",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "temporary_complete_needs_visual_review",
+      "missing": 0,
+      "notes": "Нужны фото только без катания на слонах. Temporary Pexels images used; verify actuality before publication."
+    },
+    {
+      "id": "036",
+      "slug": "tury-v-drugie-goroda-i-strany",
+      "title": "Туры в другие города и страны",
+      "folder": "036-tury-v-drugie-goroda-i-strany",
+      "cover": "cover.png",
+      "gallery": [
+        "gallery-01.png",
+        "gallery-02.jpg",
+        "gallery-03.png"
+      ],
+      "source_file": "source.txt",
+      "status": "source_complete_needs_review",
+      "missing": 0,
+      "notes": "Лучше использовать нейтральные фото направлений после выбора тура. Source images used; verify before publication."
+    },
+    {
+      "id": "037",
+      "slug": "kaolak",
+      "title": "Каолак",
+      "folder": "037-kaolak",
+      "cover": "cover.png",
+      "gallery": [
+        "gallery-01.png",
+        "gallery-02.png",
+        "gallery-03.png"
+      ],
+      "source_file": "source.txt",
+      "status": "source_complete_needs_review",
+      "missing": 0,
+      "notes": "Нужны фото Каолака. Source images used; verify before publication."
+    },
+    {
+      "id": "038",
+      "slug": "phan-nga-put-avatara",
+      "title": "Пхан-Нга: путь Аватара",
+      "folder": "038-phan-nga-put-avatara",
+      "cover": "cover.png",
+      "gallery": [
+        "gallery-01.png",
+        "gallery-02.png",
+        "gallery-03.png"
+      ],
+      "source_file": "source.txt",
+      "status": "source_complete_needs_review",
+      "missing": 0,
+      "notes": "Нужны фото Пхан-Нга. Source images used; verify before publication."
+    },
+    {
+      "id": "039",
+      "slug": "rafting",
+      "title": "Рафтинг",
+      "folder": "039-rafting",
+      "cover": "cover.jpg",
+      "gallery": [
+        "gallery-01.png",
+        "gallery-02.png",
+        "gallery-03.png"
+      ],
+      "source_file": "source.txt",
+      "status": "source_complete_needs_visual_review",
+      "missing": 0,
+      "notes": "Нужны фото рафтинга без слоновьего катания. Source images used; verify before publication."
+    },
+    {
+      "id": "040",
+      "slug": "cheolan-1-den",
+      "title": "Чеолан 1 день",
+      "folder": "040-cheolan-1-den",
+      "cover": "cover.png",
+      "gallery": [
+        "gallery-01.jpg",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "source_complete_needs_review",
+      "missing": 0,
+      "notes": "Проверить соответствие локации и права. Source images used; verify before publication."
+    },
+    {
+      "id": "041",
+      "slug": "krabi",
+      "title": "Краби",
+      "folder": "041-krabi",
+      "cover": "cover.png",
+      "gallery": [
+        "gallery-01.png",
+        "gallery-02.png",
+        "gallery-03.png"
+      ],
+      "source_file": "source.txt",
+      "status": "source_complete_needs_review",
+      "missing": 0,
+      "notes": "Нужны фото Краби. Source images used; verify before publication."
+    },
+    {
+      "id": "042",
+      "slug": "cheolan-2-dnya-standart",
+      "title": "Чеолан 2 дня Стандарт",
+      "folder": "042-cheolan-2-dnya-standart",
+      "cover": "cover.jpg",
+      "gallery": [
+        "gallery-01.jpg",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "source_complete_needs_review",
+      "missing": 0,
+      "notes": "Нужны фото Чеолана и размещения. Source images used; verify before publication."
+    },
+    {
+      "id": "043",
+      "slug": "cheolan-2-dnya-deluxe",
+      "title": "Чеолан 2 дня Deluxe",
+      "folder": "043-cheolan-2-dnya-deluxe",
+      "cover": "cover.png",
+      "gallery": [
+        "gallery-01.png",
+        "gallery-02.png",
+        "gallery-03.png"
+      ],
+      "source_file": "source.txt",
+      "status": "source_complete_needs_review",
+      "missing": 0,
+      "notes": "Нужны фото размещения Deluxe. Source images used; verify before publication."
+    },
+    {
+      "id": "044",
+      "slug": "vechernie-shou",
+      "title": "Вечерние шоу",
+      "folder": "044-vechernie-shou",
+      "cover": "cover.png",
+      "gallery": [
+        "gallery-01.png",
+        "gallery-02.png",
+        "gallery-03.png"
+      ],
+      "source_file": "source.txt",
+      "status": "source_complete_needs_visual_review",
+      "missing": 0,
+      "notes": "Нужны официальные фото шоу с правами. Source images used; verify before publication."
+    },
+    {
+      "id": "045",
+      "slug": "kvadrocikly",
+      "title": "Квадроциклы",
+      "folder": "045-kvadrocikly",
+      "cover": "cover.png",
+      "gallery": [
+        "gallery-01.png",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "source_complete_needs_visual_review",
+      "missing": 0,
+      "notes": "Нужны фото активности. Source images used; verify before publication."
+    },
+    {
+      "id": "046",
+      "slug": "siti-tur",
+      "title": "Сити Тур",
+      "folder": "046-siti-tur",
+      "cover": "cover.png",
+      "gallery": [
+        "gallery-01.png",
+        "gallery-02.png",
+        "gallery-03.png"
+      ],
+      "source_file": "source.txt",
+      "status": "source_complete_needs_review",
+      "missing": 0,
+      "notes": "Нужны фото Пхукета, храмов и смотровых. Source images used; verify before publication."
+    },
+    {
+      "id": "047",
+      "slug": "polet-hanumana",
+      "title": "Полет Ханумана",
+      "folder": "047-polet-hanumana",
+      "cover": "cover.png",
+      "gallery": [
+        "gallery-01.png",
+        "gallery-02.png",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "temporary_complete_needs_visual_review",
+      "missing": 0,
+      "notes": "Нужны фото зиплайна и парка. Temporary Pexels images used; verify actuality before publication."
+    },
+    {
+      "id": "048",
+      "slug": "akvapark",
+      "title": "Аквапарк",
+      "folder": "048-akvapark",
+      "cover": "cover.png",
+      "gallery": [
+        "gallery-01.png",
+        "gallery-02.png",
+        "gallery-03.png"
+      ],
+      "source_file": "source.txt",
+      "status": "source_complete_needs_visual_review",
+      "missing": 0,
+      "notes": "Нужны официальные фото с правами. Source images used; verify before publication."
+    },
+    {
+      "id": "049",
+      "slug": "delfinariy",
+      "title": "Дельфинарий",
+      "folder": "049-delfinariy",
+      "cover": "cover.png",
+      "gallery": [
+        "gallery-01.png",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "temporary_complete_needs_visual_review",
+      "missing": 0,
+      "notes": "Нужны официальные фото с правами. Temporary Pexels images used; verify actuality before publication."
+    },
+    {
+      "id": "050",
+      "slug": "bangla-boxing",
+      "title": "Bangla Boxing",
+      "folder": "050-bangla-boxing",
+      "cover": "cover.png",
+      "gallery": [
+        "gallery-01.jpg",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "temporary_complete_needs_visual_review",
+      "missing": 0,
+      "notes": "Нужны фото или афиши с правами. Temporary Pexels images used; verify actuality before publication."
+    },
+    {
+      "id": "051",
+      "slug": "katamarany",
+      "title": "Катамараны",
+      "folder": "051-katamarany",
+      "cover": "cover.jpg",
+      "gallery": [
+        "gallery-01.jpg",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "temporary_complete_needs_visual_review",
+      "missing": 0,
+      "notes": "Нужны фото конкретных катамаранов. Temporary Pexels images used; verify actuality before publication."
+    },
+    {
+      "id": "052",
+      "slug": "yahty-lodki-katera",
+      "title": "Яхты, лодки, катера",
+      "folder": "052-yahty-lodki-katera",
+      "cover": "cover.jpg",
+      "gallery": [
+        "gallery-01.jpg",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
+      ],
+      "source_file": "source.txt",
+      "status": "temporary_complete_needs_visual_review",
+      "missing": 0,
+      "notes": "Нужны фото конкретных судов. Temporary Pexels images used; verify actuality before publication."
+    },
+    {
+      "id": "053",
+      "slug": "hype-yacht",
+      "title": "HYPE YACHT",
+      "folder": "053-hype-yacht",
+      "cover": "cover.png",
+      "gallery": [
+        "gallery-01.png",
+        "gallery-02.png",
+        "gallery-03.png"
+      ],
+      "source_file": "source.txt",
+      "status": "source_complete_needs_visual_review",
+      "missing": 0,
+      "notes": "Нужны официальные фото HYPE YACHT с правами. Source images used; verify before publication."
+    },
+    {
+      "id": "054",
+      "slug": "yona-beach-club",
+      "title": "YONA Beach Club",
+      "folder": "054-yona-beach-club",
+      "cover": "cover.jpg",
+      "gallery": [
+        "gallery-01.png",
+        "gallery-02.png",
+        "gallery-03.png"
+      ],
+      "source_file": "source.txt",
+      "status": "source_complete_needs_visual_review",
+      "missing": 0,
+      "notes": "Нужны официальные фото YONA с правами. Source images used; verify before publication."
+    }
+  ]
+}

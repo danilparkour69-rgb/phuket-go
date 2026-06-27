@@ -1,0 +1,29 @@
+Excursion: 006 Рассветное путешествие
+Status: source_complete_needs_review
+Missing: 0
+
+Files:
+- cover.png
+  source_url: https://telegra.ph/file/44126d207030c76774dea.png
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication
+- gallery-01.png
+  source_url: https://telegra.ph/file/455c14259ffd30d7288ed.png
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication
+- gallery-02.png
+  source_url: https://telegra.ph/Rassvetnoe-priklyuchenie-Smotrovaya-ploshchadka-Samet-Nangshe-o-Dzhejmsa-Bonda-plyazh-s-samolyotami-i-kuvshinki-Ma-Doo-Bua-04-03
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication
+- gallery-03.png
+  source_url: https://telegra.ph/Rassvetnoe-priklyuchenie-Smotrovaya-ploshchadka-Samet-Nangshe-o-Dzhejmsa-Bonda-plyazh-s-samolyotami-i-kuvshinki-Ma-Doo-Bua-04-03
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication

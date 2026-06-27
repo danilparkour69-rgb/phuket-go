@@ -1,0 +1,29 @@
+Excursion: 021 4 Жемчужины
+Status: source_complete_needs_review
+Missing: 0
+
+Files:
+- cover.png
+  source_url: https://telegra.ph/file/0601785032703c3823bd7.png
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication
+- gallery-01.png
+  source_url: https://telegra.ph/file/6526f1cf96c4c16253d07.png
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication
+- gallery-02.png
+  source_url: https://telegra.ph/file/87562444705e65914b38d.png
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication
+- gallery-03.png
+  source_url: https://telegra.ph/4-ZHemchuzhiny-Andamanda-03-30
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication

@@ -1,0 +1,31 @@
+Excursion: 005 Сияние планктона 2
+Status: temporary_complete_needs_review
+Missing: 0
+
+Review note: needs visual/content review before publication.
+
+Files:
+- cover.png
+  source_url: https://www.pexels.com/photo/beachfront-buildings-during-night-time-5095593/
+  source_owner: Pexels / thanhhoa tran
+  usage_permission: Pexels API/source, final license check needed
+  image_type: real
+  notes: temporary Pexels source; verify location, relevance, and rights before publication
+- gallery-01.jpg
+  source_url: https://www.pexels.com/photo/sandy-embankment-of-river-with-luminous-streetlights-6510357/
+  source_owner: Pexels / Lachlan  Ross
+  usage_permission: Pexels API/source, final license check needed
+  image_type: real
+  notes: temporary Pexels source; verify location, relevance, and rights before publication
+- gallery-02.jpg
+  source_url: https://www.pexels.com/photo/night-view-of-callao-beach-in-lima-peru-32725770/
+  source_owner: Pexels / Cesar López
+  usage_permission: Pexels API/source, final license check needed
+  image_type: real
+  notes: temporary Pexels source; verify location, relevance, and rights before publication
+- gallery-03.jpg
+  source_url: https://www.pexels.com/photo/mountains-near-body-of-water-9212611/
+  source_owner: Pexels / Limonovich
+  usage_permission: Pexels API/source, final license check needed
+  image_type: real
+  notes: temporary Pexels source; verify location, relevance, and rights before publication

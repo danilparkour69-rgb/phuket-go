@@ -1,6 +1,10 @@
 # Notifications
 
-Статус: [~] draft
+Статус: [x] replaced by Telegram bots map
+
+Подробная карта Telegram-ботов и уведомлений находится здесь:
+
+- `../09-platforms-and-architecture/telegram-bots-map.md`
 
 ## Пользователь
 

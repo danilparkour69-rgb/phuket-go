@@ -1,0 +1,29 @@
+Excursion: 040 Чеолан 1 день
+Status: source_complete_needs_review
+Missing: 0
+
+Files:
+- cover.png
+  source_url: https://telegra.ph/Ozero-CHeolan-01-16
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication
+- gallery-01.jpg
+  source_url: https://telegra.ph/Ozero-CHeolan-01-16
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication
+- gallery-02.jpg
+  source_url: https://telegra.ph/Ozero-CHeolan-01-16
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication
+- gallery-03.jpg
+  source_url: https://telegra.ph/Ozero-CHeolan-01-16
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication

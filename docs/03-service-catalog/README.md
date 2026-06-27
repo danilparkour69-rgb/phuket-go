@@ -42,6 +42,8 @@
 - `excursions/README.md`
 - `excursions/batch-generation-log.md`
 - `partner-questions.md`
+- `excursions-site-data-mvp.json`
+- `excursions-site-data-map.md`
 - `excursions/001-slon-mantra-spa-samet-nangshe.md`
 - `excursions/002-avatar-plus.md`
 - `excursions/003-avatar-world.md`
@@ -51,5 +53,5 @@
 
 - [x] Понятно, какие услуги входят в MVP.
 - [x] Понятно, какие поля есть у карточки услуги.
-- [ ] Понятно, кто создает и редактирует услуги.
+- [x] Понятно, кто создает и редактирует услуги.
 - [x] Понятно, какие страницы нужны для SEO.

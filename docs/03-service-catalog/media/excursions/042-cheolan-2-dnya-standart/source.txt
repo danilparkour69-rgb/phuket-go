@@ -1,0 +1,29 @@
+Excursion: 042 Чеолан 2 дня Стандарт
+Status: source_complete_needs_review
+Missing: 0
+
+Files:
+- cover.jpg
+  source_url: https://telegra.ph/file/2ef18561b22adca40e5ef.jpg
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication
+- gallery-01.jpg
+  source_url: https://telegra.ph/file/c39f2be0f357f740383e3.jpg
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication
+- gallery-02.jpg
+  source_url: https://telegra.ph/file/ba8a144264620c8bf9125.jpg
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication
+- gallery-03.jpg
+  source_url: https://telegra.ph/file/cc487cce7762cf55c0716.jpg
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication

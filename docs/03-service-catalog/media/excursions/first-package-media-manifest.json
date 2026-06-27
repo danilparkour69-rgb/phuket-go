@@ -1,0 +1,80 @@
+{
+  "status": "working",
+  "updated_at": "2026-06-28",
+  "rule": "The app should load excursion media from this manifest, not by manually guessing filenames.",
+  "base_path": "docs/03-service-catalog/media/excursions",
+  "items": [
+    {
+      "id": "018",
+      "slug": "phi-phi",
+      "folder": "018-phi-phi",
+      "cover": "cover.jpg",
+      "gallery": ["gallery-01.png", "gallery-02.png", "gallery-03.jpg"],
+      "status": "temporary_complete_needs_review",
+      "missing": 0
+    },
+    {
+      "id": "017",
+      "slug": "ranniy-phi-phi",
+      "folder": "017-ranniy-phi-phi",
+      "cover": "cover.jpg",
+      "gallery": ["gallery-01.jpg", "gallery-02.jpg", "gallery-03.jpg"],
+      "status": "temporary_complete_needs_review",
+      "missing": 0
+    },
+    {
+      "id": "019",
+      "slug": "phi-phi-premium",
+      "folder": "019-phi-phi-premium",
+      "cover": "cover.jpg",
+      "gallery": ["gallery-01.jpg", "gallery-02.jpg", "gallery-03.jpg"],
+      "status": "ready_for_review",
+      "missing": 0
+    },
+    {
+      "id": "023",
+      "slug": "dzheyms-bond",
+      "folder": "023-dzheyms-bond",
+      "cover": "cover.png",
+      "gallery": ["gallery-01.png", "gallery-02.jpg", "gallery-03.jpg"],
+      "status": "ready_for_review",
+      "missing": 0
+    },
+    {
+      "id": "012",
+      "slug": "similany",
+      "folder": "012-similany",
+      "cover": "cover.jpg",
+      "gallery": ["gallery-01.jpg", "gallery-02.jpg", "gallery-03.jpg"],
+      "status": "ready_for_review",
+      "missing": 0
+    },
+    {
+      "id": "013",
+      "slug": "similany-premium",
+      "folder": "013-similany-premium",
+      "cover": "cover.jpg",
+      "gallery": ["gallery-01.jpg", "gallery-02.jpg", "gallery-03.jpg"],
+      "status": "temporary_complete_needs_review",
+      "missing": 0
+    },
+    {
+      "id": "027",
+      "slug": "koral-1-den",
+      "folder": "027-koral-1-den",
+      "cover": "cover.jpg",
+      "gallery": ["gallery-01.jpg", "gallery-02.jpg", "gallery-03.jpg"],
+      "status": "temporary_complete_needs_review",
+      "missing": 0
+    },
+    {
+      "id": "040",
+      "slug": "cheolan-1-den",
+      "folder": "040-cheolan-1-den",
+      "cover": "cover.png",
+      "gallery": ["gallery-01.jpg", "gallery-02.jpg", "gallery-03.jpg"],
+      "status": "temporary_complete_needs_review",
+      "missing": 0
+    }
+  ]
+}

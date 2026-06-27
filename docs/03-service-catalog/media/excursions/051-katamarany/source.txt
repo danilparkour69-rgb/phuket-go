@@ -1,0 +1,31 @@
+Excursion: 051 Катамараны
+Status: temporary_complete_needs_review
+Missing: 0
+
+Review note: needs visual/content review before publication.
+
+Files:
+- cover.jpg
+  source_url: https://www.pexels.com/photo/aerial-view-of-sailboat-in-phuket-s-blue-waters-28435703/
+  source_owner: Pexels / Sanat Anghan
+  usage_permission: Pexels API/source, final license check needed
+  image_type: real
+  notes: temporary Pexels source; verify location, relevance, and rights before publication
+- gallery-01.jpg
+  source_url: https://www.pexels.com/photo/sailboats-anchored-at-the-bay-10692473/
+  source_owner: Pexels / Timur Kozmenko
+  usage_permission: Pexels API/source, final license check needed
+  image_type: real
+  notes: temporary Pexels source; verify location, relevance, and rights before publication
+- gallery-02.jpg
+  source_url: https://www.pexels.com/photo/a-boat-docked-at-a-wooden-pier-with-a-house-24334864/
+  source_owner: Pexels / Markus Winkler
+  usage_permission: Pexels API/source, final license check needed
+  image_type: real
+  notes: temporary Pexels source; verify location, relevance, and rights before publication
+- gallery-03.jpg
+  source_url: https://www.pexels.com/photo/parasailing-boats-at-phuket-beach-during-daytime-35126805/
+  source_owner: Pexels / Siarhei Nester
+  usage_permission: Pexels API/source, final license check needed
+  image_type: real
+  notes: temporary Pexels source; verify location, relevance, and rights before publication

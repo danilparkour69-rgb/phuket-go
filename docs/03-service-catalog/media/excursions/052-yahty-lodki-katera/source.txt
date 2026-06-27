@@ -1,0 +1,31 @@
+Excursion: 052 Яхты, лодки, катера
+Status: temporary_complete_needs_review
+Missing: 0
+
+Review note: needs visual/content review before publication.
+
+Files:
+- cover.jpg
+  source_url: https://www.pexels.com/photo/sailboats-anchored-at-the-bay-10692473/
+  source_owner: Pexels / Timur Kozmenko
+  usage_permission: Pexels API/source, final license check needed
+  image_type: real
+  notes: temporary Pexels source; verify location, relevance, and rights before publication
+- gallery-01.jpg
+  source_url: https://www.pexels.com/photo/serene-yacht-view-in-phuket-thailand-35126803/
+  source_owner: Pexels / Siarhei Nester
+  usage_permission: Pexels API/source, final license check needed
+  image_type: real
+  notes: temporary Pexels source; verify location, relevance, and rights before publication
+- gallery-02.jpg
+  source_url: https://www.pexels.com/photo/aerial-photo-of-boats-docked-on-a-harbor-12585608/
+  source_owner: Pexels / เรวัตร คงชาติ
+  usage_permission: Pexels API/source, final license check needed
+  image_type: real
+  notes: temporary Pexels source; verify location, relevance, and rights before publication
+- gallery-03.jpg
+  source_url: https://www.pexels.com/photo/white-boats-on-harbor-during-daytime-8299835/
+  source_owner: Pexels / Mikhail Nilov
+  usage_permission: Pexels API/source, final license check needed
+  image_type: real
+  notes: temporary Pexels source; verify location, relevance, and rights before publication

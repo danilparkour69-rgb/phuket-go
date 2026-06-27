@@ -1,0 +1,29 @@
+Excursion: 015 Сурин
+Status: source_complete_needs_review
+Missing: 0
+
+Files:
+- cover.png
+  source_url: https://telegra.ph/file/f4c62f55bda110ba35dda.png
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication
+- gallery-01.png
+  source_url: https://telegra.ph/file/46a4c7efbb38d1275acc9.png
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication
+- gallery-02.jpg
+  source_url: https://telegra.ph/file/4edd51f095b73cbb5c3f0.jpg
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication
+- gallery-03.png
+  source_url: https://telegra.ph/Surinskie-ostrova-11-18
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication

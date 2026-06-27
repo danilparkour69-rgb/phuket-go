@@ -1,6 +1,6 @@
 # Next Session
 
-Дата обновления: 2026-06-27
+Дата обновления: 2026-06-28
 
 ## Текущее состояние
 
@@ -25,10 +25,13 @@
 - Целевая база: Postgres.
 - Первый запуск: локально на компьютере.
 - Публикация позже: Yandex Cloud.
-- Фото MVP: Cloudinary.
+- Фото на этапе подготовки: локально в проектной папке. Постоянное хранилище выберем позже.
+- Фото позже можно перенести в Cloudinary.
+- Нейросетевые изображения можно использовать для улучшения или генерации визуалов, но их нужно отличать от реальных фото: `real`, `ai_enhanced`, `ai_generated`.
 - Авторизация MVP: Telegram, Google, email. Телефон через SMS не используем.
 - Партнерский кабинет в MVP не нужен.
 - Партнер работает через Telegram-бот.
+- Маршрутизация заявок: все обычные экскурсии идут основному исполнителю, дайвинг идет отдельному исполнителю; владелец проекта получает копию всех заявок.
 - Будущий партнерский доступ нужно заложить в архитектуру: партнер сможет дополнять свои экскурсии в своем разделе, но только через модерацию админа.
 - В будущем партнерском кабинете партнер не может удалить карточку экскурсии, только скрыть или отправить запрос админу.
 - Админка нужна в MVP.
@@ -55,7 +58,68 @@
 
 ## Последнее действие
 
-Создана финальная карта Google Sheets:
+Создан FAQ для MVP:
+
+- `docs/07-seo-and-content/faq-mvp.md`
+
+Созданы условия бронирования:
+
+- `docs/07-seo-and-content/booking-terms-mvp.md`
+
+Создана страница контактов:
+
+- `docs/07-seo-and-content/contacts-mvp.md`
+
+Начата финальная чистка базы экскурсий:
+
+- `docs/03-service-catalog/excursions/final-cleanup-audit.md`
+- `docs/03-service-catalog/excursions/publication-readiness-index.md`
+
+Перед этим добавлены отдельные SEO-статьи:
+
+- `docs/07-seo-and-content/article-deportation-phuket.md`
+- `docs/07-seo-and-content/article-what-not-to-do-thailand.md`
+- `docs/07-seo-and-content/article-what-not-to-do-phuket-airport.md`
+- `docs/07-seo-and-content/article-hotel-tour-guides-scams.md`
+- `docs/07-seo-and-content/article-tourist-scams-thailand.md`
+
+Создана первая партия SEO-статей:
+
+- `docs/07-seo-and-content/articles-copy-mvp.md`
+
+Перед этим создан шаблон и первые тексты страниц экскурсий:
+
+- `docs/07-seo-and-content/excursion-pages-copy-mvp.md`
+
+Перед этим создан первый текст каталога:
+
+- `docs/07-seo-and-content/catalog-copy-mvp.md`
+
+Перед этим создан первый текст главной страницы:
+
+- `docs/07-seo-and-content/homepage-copy-mvp.md`
+
+Перед этим создана контентная стратегия MVP:
+
+- `docs/07-seo-and-content/content-strategy-mvp.md`
+
+Перед этим создан финальный список требований перед кодингом:
+
+- `docs/10-mvp-roadmap/final-pre-coding-checklist.md`
+
+Перед этим создана карта личного кабинета:
+
+- `docs/04-users-and-roles/account-screens-map.md`
+
+Перед этим создана карта Telegram-ботов:
+
+- `docs/09-platforms-and-architecture/telegram-bots-map.md`
+
+Перед этим создана карта экранов админки:
+
+- `docs/09-platforms-and-architecture/admin-screens-map.md`
+
+Перед этим создана финальная карта Google Sheets:
 
 - `docs/05-lead-processing/google-sheets-final-map.md`
 
@@ -153,10 +217,10 @@ https://t.me/marusyatravel/2206
 
 Следующий логичный шаг:
 
-1. Открыть финальную карту Google Sheets: `docs/05-lead-processing/google-sheets-final-map.md`.
-2. Открыть API-карту: `docs/09-platforms-and-architecture/api-map-mvp.md`.
-3. Следующий шаг - подготовить карту экранов админки.
-4. Потом писать публичные SEO-тексты по оригинальному skill `pishi-sokrashchai`.
+1. Открыть главный план: `docs/00-project-control/master-plan.md`.
+2. Открыть первые статьи: `docs/07-seo-and-content/articles-copy-mvp.md`.
+3. Следующий шаг - обработать первый пакет ключевых экскурсий в самих карточках.
+4. После этого перейти к фотографиям экскурсий.
 5. Код проекта пока не писать.
 
 ## Что важно помнить
@@ -178,4 +242,4 @@ https://t.me/marusyatravel/2206
 
 Начать новую сессию с фразы:
 
-`Продолжаем Phuket Go. Открой docs/00-project-control/NEXT_SESSION.md и продолжи с карты экранов админки. Код не писать.`
+`Продолжаем Phuket Go. Открой docs/00-project-control/NEXT_SESSION.md и продолжи с FAQ. Код не писать.`

@@ -1,6 +1,10 @@
 # Admin Panel Requirements
 
-Статус: [~] draft
+Статус: [x] replaced by admin screens map
+
+Подробная карта экранов админки находится здесь:
+
+- `admin-screens-map.md`
 
 ## MVP
 

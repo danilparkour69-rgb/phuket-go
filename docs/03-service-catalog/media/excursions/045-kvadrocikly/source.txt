@@ -1,0 +1,31 @@
+Excursion: 045 Квадроциклы
+Status: source_complete_needs_review
+Missing: 0
+
+Review note: needs visual/content review before publication.
+
+Files:
+- cover.png
+  source_url: https://telegra.ph/file/f011aba63510e2d26b606.png
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication
+- gallery-01.png
+  source_url: https://telegra.ph/file/027026965a93d6892b6f7.jpg
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication
+- gallery-02.jpg
+  source_url: https://telegra.ph/file/1ec2d8886142af2065f4d.jpg
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication
+- gallery-03.jpg
+  source_url: https://telegra.ph/file/52e1e3ecc14be07f30276.jpg
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication

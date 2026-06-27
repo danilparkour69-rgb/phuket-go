@@ -1,6 +1,10 @@
 # Launch Content Plan
 
-Статус: [~] draft
+Статус: [x] done
+
+Подробная стратегия сохранена здесь:
+
+- `content-strategy-mvp.md`
 
 ## Первые страницы для запуска
 

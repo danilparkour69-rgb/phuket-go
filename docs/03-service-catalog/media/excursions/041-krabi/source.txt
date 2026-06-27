@@ -1,0 +1,29 @@
+Excursion: 041 Краби
+Status: source_complete_needs_review
+Missing: 0
+
+Files:
+- cover.png
+  source_url: https://telegra.ph/file/3613a8f7f89cef0978328.png
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication
+- gallery-01.png
+  source_url: https://telegra.ph/file/36f3b4ccf9b1cc92421bd.png
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication
+- gallery-02.png
+  source_url: https://telegra.ph/file/4d7cff1e3d5ba63c9fb67.png
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication
+- gallery-03.png
+  source_url: https://telegra.ph/file/44b3327b6f81a03e03673.png
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication

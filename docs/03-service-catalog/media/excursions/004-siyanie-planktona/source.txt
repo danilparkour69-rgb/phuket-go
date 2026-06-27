@@ -1,0 +1,31 @@
+Excursion: 004 Сияние планктона
+Status: temporary_complete_needs_review
+Missing: 0
+
+Review note: needs visual/content review before publication.
+
+Files:
+- cover.jpg
+  source_url: https://www.pexels.com/photo/crashing-waves-on-the-ocean-10938943/
+  source_owner: Pexels / Noah Munivez
+  usage_permission: Pexels API/source, final license check needed
+  image_type: real
+  notes: temporary Pexels source; verify location, relevance, and rights before publication
+- gallery-01.jpg
+  source_url: https://www.pexels.com/photo/jellyfish-in-deep-ocean-17528254/
+  source_owner: Pexels / Benni Fish
+  usage_permission: Pexels API/source, final license check needed
+  image_type: real
+  notes: temporary Pexels source; verify location, relevance, and rights before publication
+- gallery-02.jpg
+  source_url: https://www.pexels.com/photo/jellyfish-underwater-13002745/
+  source_owner: Pexels / Nina Simková
+  usage_permission: Pexels API/source, final license check needed
+  image_type: real
+  notes: temporary Pexels source; verify location, relevance, and rights before publication
+- gallery-03.jpg
+  source_url: https://www.pexels.com/photo/beautiful-jellyfish-floating-in-bioluminescent-ocean-30159989/
+  source_owner: Pexels / Leon Aschemann
+  usage_permission: Pexels API/source, final license check needed
+  image_type: real
+  notes: temporary Pexels source; verify location, relevance, and rights before publication

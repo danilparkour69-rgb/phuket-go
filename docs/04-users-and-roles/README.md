@@ -30,6 +30,7 @@
 - `user-flows.md`
 - `permissions-matrix.md`
 - `account-requirements.md`
+- `account-screens-map.md`
 
 ## Критерии done
 

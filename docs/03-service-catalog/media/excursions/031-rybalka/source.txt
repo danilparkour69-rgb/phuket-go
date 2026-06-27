@@ -1,0 +1,29 @@
+Excursion: 031 Рыбалка
+Status: temporary_complete_needs_review
+Missing: 0
+
+Files:
+- cover.jpg
+  source_url: https://telegra.ph/file/0af7330af344b9e76ed3d.jpg
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication
+- gallery-01.jpg
+  source_url: https://telegra.ph/Morskaya-rybalka-04-03
+  source_owner: partner/telegra.ph source
+  usage_permission: allowed by partner, final rights check needed
+  image_type: real
+  notes: source photo; verify relevance and quality before publication
+- gallery-02.jpg
+  source_url: https://www.pexels.com/photo/traditional-longtail-boat-on-thai-seascape-28544989/
+  source_owner: Pexels / Julito Elizalde
+  usage_permission: Pexels API/source, final license check needed
+  image_type: real
+  notes: temporary Pexels source; verify location, relevance, and rights before publication
+- gallery-03.jpg
+  source_url: https://www.pexels.com/photo/close-up-shot-of-a-fishing-boat-sailing-on-the-sea-8793774/
+  source_owner: Pexels / Franklin Ruffin
+  usage_permission: Pexels API/source, final license check needed
+  image_type: real
+  notes: temporary Pexels source; verify location, relevance, and rights before publication

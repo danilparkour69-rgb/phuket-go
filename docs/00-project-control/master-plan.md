@@ -24,6 +24,23 @@
 | [x] | 14. Data Structure MVP | Описаны сущности, поля, Google Sheets, будущий Postgres и привязка к `vibe` | `../09-platforms-and-architecture/data-structure-mvp.md` |
 | [x] | 15. API Map MVP | Описаны Public, Account, Admin, Bot и Internal API для MVP | `../09-platforms-and-architecture/api-map-mvp.md` |
 | [x] | 16. Google Sheets Final Map | Утверждены колонки, статусы, роли заполнения и перенос в Postgres | `../05-lead-processing/google-sheets-final-map.md` |
+| [x] | 17. Admin Screens Map | Описаны разделы админки, действия, поля и опасные операции | `../09-platforms-and-architecture/admin-screens-map.md` |
+| [x] | 18. Telegram Bots Map | Описаны боты партнера и пользователя, кнопки, сообщения, ошибки и уведомления | `../09-platforms-and-architecture/telegram-bots-map.md` |
+| [x] | 19. Account Screens Map | Описаны экраны личного кабинета, история заявок, баллы, уровень и Telegram-связь | `../04-users-and-roles/account-screens-map.md` |
+| [x] | 20. Final Pre-Coding Checklist | Проверено, что входит в MVP, что отложено, какие риски и что делать дальше | `../10-mvp-roadmap/final-pre-coding-checklist.md` |
+| [x] | 21. Content Strategy MVP | Определены типы текстов, порядок подготовки, SEO-приоритеты и связка статей с экскурсиями | `../07-seo-and-content/content-strategy-mvp.md` |
+| [x] | 22. Homepage Copy MVP | Подготовлен первый текст главной страницы: hero, категории, доверие, заявка, статьи и FAQ | `../07-seo-and-content/homepage-copy-mvp.md` |
+| [x] | 23. Catalog Copy MVP | Подготовлены тексты каталога, категорий, фильтров, карточек и пустого состояния | `../07-seo-and-content/catalog-copy-mvp.md` |
+| [x] | 24. Excursion Pages Copy MVP | Подготовлен шаблон страницы экскурсии и первые тексты популярных экскурсий | `../07-seo-and-content/excursion-pages-copy-mvp.md` |
+| [x] | 25. Articles Copy MVP | Подготовлена первая партия SEO-статей со связкой на экскурсии и заявки | `../07-seo-and-content/articles-copy-mvp.md` |
+| [x] | 26. FAQ MVP | Подготовлены ответы на частые вопросы по заявкам, оплате, цене, страховке, гидам, детям, погоде и личному кабинету | `../07-seo-and-content/faq-mvp.md` |
+| [x] | 27. Booking Terms MVP | Подготовлены условия бронирования: заявка, подтверждение, оплата у партнера, курс рубля, отмена, перенос и погода | `../07-seo-and-content/booking-terms-mvp.md` |
+| [x] | 28. Contacts MVP | Подготовлена страница контактов: пользователь, заявка, срочная ситуация, партнерство и данные перед запуском | `../07-seo-and-content/contacts-mvp.md` |
+| [x] | 29. Excursions Site Data MVP | Собрана рабочая база 54 экскурсий для будущего сайта: тексты, SEO, цены, фото и правила карточек | `../03-service-catalog/excursions-site-data-map.md` |
+| [x] | 30. Page Blocks Map MVP | Описаны блоки главной, каталога, страницы экскурсии, личного кабинета и админки для будущей разработки | `../10-mvp-roadmap/page-blocks-map-mvp.md` |
+| [x] | 31. Homepage Catalog Data Map MVP | Выбраны популярные экскурсии, категории каталога и связки статей с экскурсиями | `../10-mvp-roadmap/homepage-catalog-data-map-mvp.md` |
+| [x] | 32. Photo Scenario Rules | Зафиксировано правило фотосценария: фото подбираются по смыслу текста, а не случайной галереей | `../03-service-catalog/media/excursions/photo-scenario-rules.md` |
+| [x] | 33. Homepage Catalog Card Copy MVP | Подготовлены короткие эмоциональные тексты карточек для главной и каталога | `../10-mvp-roadmap/homepage-catalog-card-copy-mvp.md` |
 
 ## Definition of Ready для начала кодинга
 
@@ -64,3 +81,23 @@
 - 2026-06-27: создана структура данных MVP `docs/09-platforms-and-architecture/data-structure-mvp.md`; следующий шаг - подготовить API-карту MVP.
 - 2026-06-27: создана API-карта MVP `docs/09-platforms-and-architecture/api-map-mvp.md`; следующий шаг - подготовить финальную карту Google Sheets для запуска.
 - 2026-06-27: создана финальная карта Google Sheets `docs/05-lead-processing/google-sheets-final-map.md`; следующий шаг - подготовить карту экранов админки.
+- 2026-06-27: создана карта экранов админки `docs/09-platforms-and-architecture/admin-screens-map.md`; следующий шаг - подготовить карту Telegram-ботов.
+- 2026-06-27: создана карта Telegram-ботов `docs/09-platforms-and-architecture/telegram-bots-map.md`; следующий шаг - подготовить карту личного кабинета.
+- 2026-06-28: создана карта личного кабинета `docs/04-users-and-roles/account-screens-map.md`; следующий шаг - финальная проверка требований перед кодингом.
+- 2026-06-28: создан финальный список требований перед кодингом `docs/10-mvp-roadmap/final-pre-coding-checklist.md`; следующий шаг - контентная стратегия.
+- 2026-06-28: создана контентная стратегия MVP `docs/07-seo-and-content/content-strategy-mvp.md`; следующий шаг - тексты главной страницы.
+- 2026-06-28: создан первый текст главной страницы `docs/07-seo-and-content/homepage-copy-mvp.md`; следующий шаг - тексты каталога.
+- 2026-06-28: создан первый текст каталога `docs/07-seo-and-content/catalog-copy-mvp.md`; следующий шаг - тексты страниц экскурсий.
+- 2026-06-28: создан шаблон и первые тексты страниц экскурсий `docs/07-seo-and-content/excursion-pages-copy-mvp.md`; следующий шаг - первые статьи.
+- 2026-06-28: создана первая партия SEO-статей `docs/07-seo-and-content/articles-copy-mvp.md`; следующий шаг - FAQ.
+- 2026-06-28: создан FAQ для MVP `docs/07-seo-and-content/faq-mvp.md`; следующий шаг - условия бронирования.
+- 2026-06-28: созданы условия бронирования `docs/07-seo-and-content/booking-terms-mvp.md`; следующий шаг - контакты.
+- 2026-06-28: создана страница контактов `docs/07-seo-and-content/contacts-mvp.md`; следующий шаг - финальная чистка базы экскурсий.
+- 2026-06-28: собрана рабочая база 54 экскурсий для будущего сайта `docs/03-service-catalog/excursions-site-data-mvp.json`; следующий шаг - визуальная проверка фото и подготовка структуры главной/каталога под будущую верстку.
+- 2026-06-28: создана карта блоков страниц MVP `docs/10-mvp-roadmap/page-blocks-map-mvp.md`; следующий шаг - карта данных для главной и каталога: популярные экскурсии, категории и связка статей.
+- 2026-06-28: создана карта данных для главной и каталога `docs/10-mvp-roadmap/homepage-catalog-data-map-mvp.md`; следующий шаг - короткие эмоциональные тексты карточек для приоритетных экскурсий.
+- 2026-06-28: создан фотосценарий экскурсий `docs/03-service-catalog/media/excursions/photo-scenario-rules.md` и шаблон `photo-brief-template.md`; сам подбор и замена фото будут позже.
+- 2026-06-28: подготовлены короткие эмоциональные тексты карточек `docs/10-mvp-roadmap/homepage-catalog-card-copy-mvp.md`; следующий шаг - микротексты интерфейса, кнопки, статусы и сообщения заявки.
+- 2026-06-28: усилены карточки экскурсий: добавлены продающие названия, правило сильной первой фразы и будущие тесты названий.
+- 2026-06-28: зафиксировано, что техническое название показывается пользователю для понимания направления, а авторизованный пользователь видит баллы за посещение экскурсии.
+- 2026-06-28: зафиксировано будущее правило: к каждой экскурсии делаем статью, которая продает эмоцию места, а карточка экскурсии появляется в конце как естественный следующий шаг.

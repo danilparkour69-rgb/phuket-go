@@ -1,0 +1,29 @@
+Excursion: 034 Озерная рыбалка
+Status: temporary_complete_needs_review
+Missing: 0
+
+Files:
+- cover.jpg
+  source_url: https://www.pexels.com/photo/body-of-water-under-cloudy-sky-in-grayscale-photography-9499550/
+  source_owner: Pexels / Chanawat Lohachala
+  usage_permission: Pexels API/source, final license check needed
+  image_type: real
+  notes: temporary Pexels source; verify location, relevance, and rights before publication
+- gallery-01.jpg
+  source_url: https://www.pexels.com/photo/a-fisherman-during-the-golden-hour-14784761/
+  source_owner: Pexels / Tweesak C.
+  usage_permission: Pexels API/source, final license check needed
+  image_type: real
+  notes: temporary Pexels source; verify location, relevance, and rights before publication
+- gallery-02.jpg
+  source_url: https://www.pexels.com/photo/sun-setting-over-a-fisherman-pulling-out-a-fishing-net-14784270/
+  source_owner: Pexels / Tweesak C.
+  usage_permission: Pexels API/source, final license check needed
+  image_type: real
+  notes: temporary Pexels source; verify location, relevance, and rights before publication
+- gallery-03.jpg
+  source_url: https://www.pexels.com/photo/punting-boats-on-lake-20663266/
+  source_owner: Pexels / Optical Chemist
+  usage_permission: Pexels API/source, final license check needed
+  image_type: real
+  notes: temporary Pexels source; verify location, relevance, and rights before publication
