@@ -53,7 +53,11 @@
 
 ## Последнее действие
 
-Создано техническое задание MVP:
+Созданы пользовательские сценарии MVP:
+
+- `docs/10-mvp-roadmap/user-scenarios-mvp.md`
+
+Перед этим создано техническое задание MVP:
 
 - `docs/10-mvp-roadmap/technical-requirements-mvp.md`
 
@@ -135,9 +139,9 @@ https://t.me/marusyatravel/2206
 
 Следующий логичный шаг:
 
-1. Открыть техническое задание: `docs/10-mvp-roadmap/technical-requirements-mvp.md`.
-2. Открыть структуру сайта: `docs/10-mvp-roadmap/site-structure.md`.
-3. Следующий шаг - расписать подробные пользовательские сценарии MVP.
+1. Открыть пользовательские сценарии: `docs/10-mvp-roadmap/user-scenarios-mvp.md`.
+2. Открыть техническое задание: `docs/10-mvp-roadmap/technical-requirements-mvp.md`.
+3. Следующий шаг - уточнить структуру данных MVP под `vibe`, Google Sheets и будущий Postgres.
 4. Потом писать публичные SEO-тексты по оригинальному skill `pishi-sokrashchai`.
 5. Код проекта пока не писать.
 
@@ -160,4 +164,4 @@ https://t.me/marusyatravel/2206
 
 Начать новую сессию с фразы:
 
-`Продолжаем Phuket Go. Открой docs/00-project-control/NEXT_SESSION.md и продолжи с пользовательских сценариев MVP. Код не писать.`
+`Продолжаем Phuket Go. Открой docs/00-project-control/NEXT_SESSION.md и продолжи со структуры данных MVP. Код не писать.`
