@@ -8,17 +8,14 @@
 
 Рабочие документы:
 
-- `all-excursions-media-inventory.md` - общий инвентарь фото по всем 54 экскурсиям.
-- `all-excursions-media-manifest.json` - общий технический манифест для автоматической подгрузки фото.
-- `first-package-media-checklist.md` - фото для первого пакета экскурсий.
-- `first-package-media-manifest.json` - технический список для автоматической подгрузки фото.
-- `media-quality-audit.md` - проверка качества и нехватки фото.
-- `media-fill-report-2026-06-28.md` - отчет о закрытии MVP-минимума фото по всем 54 экскурсиям.
-- `media-review-gallery.html` - локальная HTML-галерея для ручной проверки всех фото.
+- `temporary-final-carousel-build-report.md` - отчет по текущей сборке `final/carousel`.
+- `media-manifest-site-loading-rules.md` - правило, как будущий сайт берет фото из `media-manifest.json`.
+- `media-developer-handoff-map.md` - карта передачи фото в будущую разработку.
+- `carousel-candidates-review.html` - локальная HTML-страница для просмотра текущих фото.
 - `media-visual-review-checklist.md` - чеклист решений по спорным фото.
 - `partner-media-request.md` - текст запроса недостающих фото у партнера.
 - `media-requests-by-executor.md` - тексты запросов фото по группам исполнителей.
-- `missing-media-plan.md` - план добора фото, апскейла и будущих AI-вариантов.
+- `directions-with-replacement-media.md` - направления, где фото позже нужно заменить.
 - `photo-scenario-rules.md` - правило фотосценария: какие роли фото нужны и как подбирать их по смыслу текста.
 - `photo-brief-template.md` - шаблон будущего `photo-brief.md` для каждой экскурсии.
 - `final-media-folder-structure-step-51-result.md` - финальная структура папок фото, карусели, контентных фото и манифеста.
@@ -32,17 +29,15 @@
 
 1. Найти экскурсию по `id` или `slug`.
 2. Взять `folder`.
-3. Взять `cover`.
-4. Взять список `gallery`.
+3. Открыть `media-manifest.json`.
+4. Взять список `carousel`.
 5. Собрать локальные пути от `base_path`.
 
 Так мы сможем позже заменить локальные пути на Cloudinary/Yandex/S3 без ручной переделки карточек.
 
 ## Финальная структура
 
-Текущие `cover.jpg` и `gallery-01.jpg` остаются рабочим минимумом.
-
-Финальный набор должен храниться так:
+Старый минимальный слой фото больше не используется как рабочая база. Текущий и будущий набор хранится так:
 
 ```text
 {id}-{slug}/
@@ -53,7 +48,6 @@
     social/
   photo-brief.md
   media-manifest.json
-  source.txt
 ```
 
 Подробно: `final-media-folder-structure-step-51-result.md`.

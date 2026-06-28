@@ -1,9 +1,0 @@
-Excursion: 035 Парк слонов
-Status: temporary_complete_needs_review
-Missing: 0
-
-Review note: needs visual/content review before publication.
-Special rule: do not publish elephant riding photos.
-
-Files:
-- нет локальных фото после удаления временных стоковых фото; нужны изображения из базы фото или новые изображения

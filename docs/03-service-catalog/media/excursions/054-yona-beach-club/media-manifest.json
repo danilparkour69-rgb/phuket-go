@@ -1,0 +1,63 @@
+{
+  "direction": "054-yona-beach-club",
+  "updated_at": "2026-06-28",
+  "rule": "Для карусели берем все доступные фото направления. В приоритете горизонтальные фото хорошего качества; если их нет, временно берем то, что есть.",
+  "publication_status": "temporary_media_ready_pending_manual_review",
+  "carousel_count": 4,
+  "fallback_count": 0,
+  "content_photos": [],
+  "assets": [
+    {
+      "asset_id": "054-yona-beach-club__original-source-telegra-ph-gallery-01",
+      "role": "carousel",
+      "status": "ready_for_manual_review",
+      "file": "final/carousel/original-source-telegra-ph-gallery-01.jpg",
+      "source_file": "carousel-candidates/original-source-telegra-ph-gallery-01.jpg",
+      "width": 5272,
+      "height": 3948,
+      "is_horizontal": true,
+      "quality_note": "подходит для ручной проверки карусели",
+      "manual_review": "pending"
+    },
+    {
+      "asset_id": "054-yona-beach-club__original-source-telegra-ph-gallery-02",
+      "role": "carousel",
+      "status": "ready_for_manual_review",
+      "file": "final/carousel/original-source-telegra-ph-gallery-02.png",
+      "source_file": "carousel-candidates/original-source-telegra-ph-gallery-02.png",
+      "width": 1295,
+      "height": 863,
+      "is_horizontal": true,
+      "quality_note": "подходит для ручной проверки карусели",
+      "manual_review": "pending"
+    },
+    {
+      "asset_id": "054-yona-beach-club__original-source-telegra-ph-gallery-03",
+      "role": "carousel",
+      "status": "ready_for_manual_review",
+      "file": "final/carousel/original-source-telegra-ph-gallery-03.png",
+      "source_file": "carousel-candidates/original-source-telegra-ph-gallery-03.png",
+      "width": 1295,
+      "height": 863,
+      "is_horizontal": true,
+      "quality_note": "подходит для ручной проверки карусели",
+      "manual_review": "pending"
+    },
+    {
+      "asset_id": "054-yona-beach-club__original-source-telegra-ph-gallery-04",
+      "role": "carousel",
+      "status": "ready_for_manual_review",
+      "file": "final/carousel/original-source-telegra-ph-gallery-04.png",
+      "source_file": "carousel-candidates/original-source-telegra-ph-gallery-04.png",
+      "width": 1295,
+      "height": 728,
+      "is_horizontal": true,
+      "quality_note": "подходит для ручной проверки карусели",
+      "manual_review": "pending"
+    }
+  ],
+  "notes": [
+    "Неподходящие фото пока не отмечаем автоматически: ручную чистку пользователь сделает позже.",
+    "Перед публикацией проверить лица людей, соответствие направлению и необходимость AI-замены."
+  ]
+}

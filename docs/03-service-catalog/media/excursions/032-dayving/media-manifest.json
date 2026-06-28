@@ -1,0 +1,87 @@
+{
+  "direction": "032-dayving",
+  "updated_at": "2026-06-28",
+  "rule": "Для карусели берем все доступные фото направления. В приоритете горизонтальные фото хорошего качества; если их нет, временно берем то, что есть.",
+  "publication_status": "temporary_media_ready_pending_manual_review",
+  "carousel_count": 6,
+  "fallback_count": 6,
+  "content_photos": [],
+  "assets": [
+    {
+      "asset_id": "032-dayving__thaibuytrip-дайвинг-на-пхукете-gallery-02",
+      "role": "carousel",
+      "status": "needs_replacement_later",
+      "file": "final/carousel/thaibuytrip-дайвинг-на-пхукете-gallery-02.jpg",
+      "source_file": "carousel-candidates/thaibuytrip-дайвинг-на-пхукете-gallery-02.jpg",
+      "width": 940,
+      "height": 627,
+      "is_horizontal": true,
+      "quality_note": "fallback: используем временно, если нет лучшего фото",
+      "manual_review": "pending"
+    },
+    {
+      "asset_id": "032-dayving__thaibuytrip-дайвинг-на-пхукете-gallery-03",
+      "role": "carousel",
+      "status": "needs_replacement_later",
+      "file": "final/carousel/thaibuytrip-дайвинг-на-пхукете-gallery-03.jpg",
+      "source_file": "carousel-candidates/thaibuytrip-дайвинг-на-пхукете-gallery-03.jpg",
+      "width": 940,
+      "height": 627,
+      "is_horizontal": true,
+      "quality_note": "fallback: используем временно, если нет лучшего фото",
+      "manual_review": "pending"
+    },
+    {
+      "asset_id": "032-dayving__thaibuytrip-дайвинг-на-пхукете-gallery-04",
+      "role": "carousel",
+      "status": "needs_replacement_later",
+      "file": "final/carousel/thaibuytrip-дайвинг-на-пхукете-gallery-04.jpg",
+      "source_file": "carousel-candidates/thaibuytrip-дайвинг-на-пхукете-gallery-04.jpg",
+      "width": 940,
+      "height": 627,
+      "is_horizontal": true,
+      "quality_note": "fallback: используем временно, если нет лучшего фото",
+      "manual_review": "pending"
+    },
+    {
+      "asset_id": "032-dayving__thaibuytrip-дайвинг-на-пхукете-gallery-07",
+      "role": "carousel",
+      "status": "needs_replacement_later",
+      "file": "final/carousel/thaibuytrip-дайвинг-на-пхукете-gallery-07.jpg",
+      "source_file": "carousel-candidates/thaibuytrip-дайвинг-на-пхукете-gallery-07.jpg",
+      "width": 940,
+      "height": 627,
+      "is_horizontal": true,
+      "quality_note": "fallback: используем временно, если нет лучшего фото",
+      "manual_review": "pending"
+    },
+    {
+      "asset_id": "032-dayving__thaibuytrip-дайвинг-на-пхукете-gallery-08",
+      "role": "carousel",
+      "status": "needs_replacement_later",
+      "file": "final/carousel/thaibuytrip-дайвинг-на-пхукете-gallery-08.jpg",
+      "source_file": "carousel-candidates/thaibuytrip-дайвинг-на-пхукете-gallery-08.jpg",
+      "width": 940,
+      "height": 627,
+      "is_horizontal": true,
+      "quality_note": "fallback: используем временно, если нет лучшего фото",
+      "manual_review": "pending"
+    },
+    {
+      "asset_id": "032-dayving__thaibuytrip-дайвинг-на-пхукете-gallery-09",
+      "role": "carousel",
+      "status": "needs_replacement_later",
+      "file": "final/carousel/thaibuytrip-дайвинг-на-пхукете-gallery-09.jpg",
+      "source_file": "carousel-candidates/thaibuytrip-дайвинг-на-пхукете-gallery-09.jpg",
+      "width": 940,
+      "height": 627,
+      "is_horizontal": true,
+      "quality_note": "fallback: используем временно, если нет лучшего фото",
+      "manual_review": "pending"
+    }
+  ],
+  "notes": [
+    "Неподходящие фото пока не отмечаем автоматически: ручную чистку пользователь сделает позже.",
+    "Перед публикацией проверить лица людей, соответствие направлению и необходимость AI-замены."
+  ]
+}

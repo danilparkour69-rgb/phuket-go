@@ -1,0 +1,27 @@
+{
+  "direction": "035-park-slonov",
+  "updated_at": "2026-06-28",
+  "rule": "Для карусели берем все доступные фото направления. В приоритете горизонтальные фото хорошего качества; если их нет, временно берем то, что есть.",
+  "publication_status": "temporary_media_ready_pending_manual_review",
+  "carousel_count": 1,
+  "fallback_count": 0,
+  "content_photos": [],
+  "assets": [
+    {
+      "asset_id": "035-park-slonov__sputnik8-мантра-спа-белоснежный-храм-пляж-слонов-и-самет-нангше-gallery-04",
+      "role": "carousel",
+      "status": "ready_for_manual_review",
+      "file": "final/carousel/sputnik8-мантра-спа-белоснежный-храм-пляж-слонов-и-самет-нангше-gallery-04.webp",
+      "source_file": "carousel-candidates/sputnik8-мантра-спа-белоснежный-храм-пляж-слонов-и-самет-нангше-gallery-04.webp",
+      "width": 1900,
+      "height": 1267,
+      "is_horizontal": true,
+      "quality_note": "подходит для ручной проверки карусели",
+      "manual_review": "pending"
+    }
+  ],
+  "notes": [
+    "Неподходящие фото пока не отмечаем автоматически: ручную чистку пользователь сделает позже.",
+    "Перед публикацией проверить лица людей, соответствие направлению и необходимость AI-замены."
+  ]
+}

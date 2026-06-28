@@ -134,6 +134,7 @@ Phuket Go.
 
 ## Что нужно будет передать Codex перед разработкой
 
+- Development Handoff Map.
 - Product Vision.
 - MVP Scope.
 - User Roles.
@@ -147,3 +148,21 @@ Phuket Go.
 - Tech Stack.
 - Security Requirements.
 - Technical Requirements MVP.
+- Media Developer Handoff Map.
+
+## Свежие правила по фото
+
+По фото больше не зависаем.
+
+Для MVP берем доступные фото, которые уже лежат в папке конкретного направления и соответствуют карточке экскурсии.
+
+Сайт должен брать фото через:
+
+- `docs/03-service-catalog/media/excursions/{direction}/media-manifest.json`
+- `docs/03-service-catalog/media/excursions/{direction}/final/carousel/`
+
+Финальная чистка, замена слабых фото, проверка лиц и улучшение через ИИ переносятся на этап перед публикацией.
+
+Главный документ:
+
+- `docs/03-service-catalog/media/excursions/media-developer-handoff-map.md`

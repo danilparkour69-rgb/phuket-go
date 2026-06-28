@@ -1,0 +1,183 @@
+{
+  "direction": "029-phi-phi-bambu-rang-yay-s-rybalkoy",
+  "updated_at": "2026-06-28",
+  "rule": "Для карусели берем все доступные фото направления. В приоритете горизонтальные фото хорошего качества; если их нет, временно берем то, что есть.",
+  "publication_status": "temporary_media_ready_pending_manual_review",
+  "carousel_count": 14,
+  "fallback_count": 0,
+  "content_photos": [],
+  "assets": [
+    {
+      "asset_id": "029-phi-phi-bambu-rang-yay-s-rybalkoy__sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-01",
+      "role": "carousel",
+      "status": "ready_for_manual_review",
+      "file": "final/carousel/sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-01.webp",
+      "source_file": "carousel-candidates/sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-01.webp",
+      "width": 1900,
+      "height": 1265,
+      "is_horizontal": true,
+      "quality_note": "подходит для ручной проверки карусели",
+      "manual_review": "pending"
+    },
+    {
+      "asset_id": "029-phi-phi-bambu-rang-yay-s-rybalkoy__sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-02",
+      "role": "carousel",
+      "status": "ready_for_manual_review",
+      "file": "final/carousel/sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-02.webp",
+      "source_file": "carousel-candidates/sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-02.webp",
+      "width": 1900,
+      "height": 1267,
+      "is_horizontal": true,
+      "quality_note": "подходит для ручной проверки карусели",
+      "manual_review": "pending"
+    },
+    {
+      "asset_id": "029-phi-phi-bambu-rang-yay-s-rybalkoy__sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-03",
+      "role": "carousel",
+      "status": "ready_for_manual_review",
+      "file": "final/carousel/sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-03.webp",
+      "source_file": "carousel-candidates/sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-03.webp",
+      "width": 1900,
+      "height": 1267,
+      "is_horizontal": true,
+      "quality_note": "подходит для ручной проверки карусели",
+      "manual_review": "pending"
+    },
+    {
+      "asset_id": "029-phi-phi-bambu-rang-yay-s-rybalkoy__sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-04",
+      "role": "carousel",
+      "status": "ready_for_manual_review",
+      "file": "final/carousel/sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-04.webp",
+      "source_file": "carousel-candidates/sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-04.webp",
+      "width": 1900,
+      "height": 1266,
+      "is_horizontal": true,
+      "quality_note": "подходит для ручной проверки карусели",
+      "manual_review": "pending"
+    },
+    {
+      "asset_id": "029-phi-phi-bambu-rang-yay-s-rybalkoy__sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-05",
+      "role": "carousel",
+      "status": "ready_for_manual_review",
+      "file": "final/carousel/sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-05.webp",
+      "source_file": "carousel-candidates/sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-05.webp",
+      "width": 1900,
+      "height": 1267,
+      "is_horizontal": true,
+      "quality_note": "подходит для ручной проверки карусели",
+      "manual_review": "pending"
+    },
+    {
+      "asset_id": "029-phi-phi-bambu-rang-yay-s-rybalkoy__sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-06",
+      "role": "carousel",
+      "status": "ready_for_manual_review",
+      "file": "final/carousel/sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-06.webp",
+      "source_file": "carousel-candidates/sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-06.webp",
+      "width": 1900,
+      "height": 1351,
+      "is_horizontal": true,
+      "quality_note": "подходит для ручной проверки карусели",
+      "manual_review": "pending"
+    },
+    {
+      "asset_id": "029-phi-phi-bambu-rang-yay-s-rybalkoy__sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-07",
+      "role": "carousel",
+      "status": "ready_for_manual_review",
+      "file": "final/carousel/sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-07.webp",
+      "source_file": "carousel-candidates/sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-07.webp",
+      "width": 1280,
+      "height": 720,
+      "is_horizontal": true,
+      "quality_note": "подходит для ручной проверки карусели",
+      "manual_review": "pending"
+    },
+    {
+      "asset_id": "029-phi-phi-bambu-rang-yay-s-rybalkoy__sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-09",
+      "role": "carousel",
+      "status": "ready_for_manual_review",
+      "file": "final/carousel/sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-09.webp",
+      "source_file": "carousel-candidates/sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-09.webp",
+      "width": 1900,
+      "height": 1267,
+      "is_horizontal": true,
+      "quality_note": "подходит для ручной проверки карусели",
+      "manual_review": "pending"
+    },
+    {
+      "asset_id": "029-phi-phi-bambu-rang-yay-s-rybalkoy__sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-10",
+      "role": "carousel",
+      "status": "ready_for_manual_review",
+      "file": "final/carousel/sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-10.webp",
+      "source_file": "carousel-candidates/sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-10.webp",
+      "width": 1900,
+      "height": 1268,
+      "is_horizontal": true,
+      "quality_note": "подходит для ручной проверки карусели",
+      "manual_review": "pending"
+    },
+    {
+      "asset_id": "029-phi-phi-bambu-rang-yay-s-rybalkoy__sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-11",
+      "role": "carousel",
+      "status": "ready_for_manual_review",
+      "file": "final/carousel/sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-11.webp",
+      "source_file": "carousel-candidates/sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-11.webp",
+      "width": 1900,
+      "height": 1264,
+      "is_horizontal": true,
+      "quality_note": "подходит для ручной проверки карусели",
+      "manual_review": "pending"
+    },
+    {
+      "asset_id": "029-phi-phi-bambu-rang-yay-s-rybalkoy__sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-12",
+      "role": "carousel",
+      "status": "ready_for_manual_review",
+      "file": "final/carousel/sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-12.webp",
+      "source_file": "carousel-candidates/sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-12.webp",
+      "width": 1900,
+      "height": 1267,
+      "is_horizontal": true,
+      "quality_note": "подходит для ручной проверки карусели",
+      "manual_review": "pending"
+    },
+    {
+      "asset_id": "029-phi-phi-bambu-rang-yay-s-rybalkoy__sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-13",
+      "role": "carousel",
+      "status": "ready_for_manual_review",
+      "file": "final/carousel/sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-13.webp",
+      "source_file": "carousel-candidates/sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-13.webp",
+      "width": 1200,
+      "height": 749,
+      "is_horizontal": true,
+      "quality_note": "подходит для ручной проверки карусели",
+      "manual_review": "pending"
+    },
+    {
+      "asset_id": "029-phi-phi-bambu-rang-yay-s-rybalkoy__sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-14",
+      "role": "carousel",
+      "status": "ready_for_manual_review",
+      "file": "final/carousel/sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-14.webp",
+      "source_file": "carousel-candidates/sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-14.webp",
+      "width": 1200,
+      "height": 960,
+      "is_horizontal": true,
+      "quality_note": "подходит для ручной проверки карусели",
+      "manual_review": "pending"
+    },
+    {
+      "asset_id": "029-phi-phi-bambu-rang-yay-s-rybalkoy__sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-15",
+      "role": "carousel",
+      "status": "ready_for_manual_review",
+      "file": "final/carousel/sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-15.webp",
+      "source_file": "carousel-candidates/sputnik8-незабываемый-рассвет-на-пхи-пхи-gallery-15.webp",
+      "width": 1200,
+      "height": 800,
+      "is_horizontal": true,
+      "quality_note": "подходит для ручной проверки карусели",
+      "manual_review": "pending"
+    }
+  ],
+  "notes": [
+    "Неподходящие фото пока не отмечаем автоматически: ручную чистку пользователь сделает позже.",
+    "Перед публикацией проверить лица людей, соответствие направлению и необходимость AI-замены."
+  ]
+}

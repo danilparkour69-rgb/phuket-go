@@ -5,7 +5,7 @@
   "source_docs": {
     "excursion_cards": "docs/03-service-catalog/excursions",
     "public_texts": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
-    "media_manifest": "docs/03-service-catalog/media/excursions/all-excursions-media-manifest.json"
+    "media_manifest": "per-excursion media-manifest.json inside docs/03-service-catalog/media/excursions/{folder}/media-manifest.json"
   },
   "defaults": {
     "country": "Thailand",
@@ -40,16 +40,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "001-slon-mantra-spa-samet-nangshe",
-        "cover": "cover.jpg",
-        "gallery": [
-          "gallery-01.jpg",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "temporary_complete_needs_visual_review",
-        "source_file": "source.txt",
+        "manifest": "docs/03-service-catalog/media/excursions/001-slon-mantra-spa-samet-nangshe/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/001-slon-mantra-spa-samet-nangshe/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
         "needs_visual_review": true,
-        "notes": "Нужны фото без катания на слонах. Исходник подтверждает формат без катания; перед публикацией нужна визуальная проверка фото."
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -83,16 +78,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "002-avatar-plus",
-        "cover": "cover.jpg",
-        "gallery": [
-          "gallery-01.jpg",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "temporary_complete_needs_review",
-        "source_file": "source.txt",
+        "manifest": "docs/03-service-catalog/media/excursions/002-avatar-plus/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/002-avatar-plus/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
         "needs_visual_review": true,
-        "notes": "Нужно подобрать cover и 3 фото галереи. Временные фото удалены из публикационного слоя; перед публикацией нужны изображения из базы фото или новые изображения."
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -126,16 +116,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "003-avatar-world",
-        "cover": "cover.jpg",
-        "gallery": [
-          "gallery-01.jpg",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "temporary_complete_needs_review",
-        "source_file": "source.txt",
+        "manifest": "docs/03-service-catalog/media/excursions/003-avatar-world/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/003-avatar-world/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
         "needs_visual_review": true,
-        "notes": "Нужно подобрать cover и 3 фото галереи. Временные фото удалены из публикационного слоя; перед публикацией нужны изображения из базы фото или новые изображения."
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -169,16 +154,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "004-siyanie-planktona",
-        "cover": "cover.jpg",
-        "gallery": [
-          "gallery-01.jpg",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "temporary_complete_needs_visual_review",
-        "source_file": "source.txt",
+        "manifest": "docs/03-service-catalog/media/excursions/004-siyanie-planktona/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/004-siyanie-planktona/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
         "needs_visual_review": true,
-        "notes": "Нужны реальные вечерние фото; AI допустим только как временная иллюстрация. Временные фото удалены из публикационного слоя; перед публикацией нужны изображения из базы фото или новые изображения."
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -212,16 +192,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "005-siyanie-planktona-2",
-        "cover": "cover.png",
-        "gallery": [
-          "gallery-01.jpg",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "temporary_complete_needs_visual_review",
-        "source_file": "source.txt",
+        "manifest": "docs/03-service-catalog/media/excursions/005-siyanie-planktona-2/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/005-siyanie-planktona-2/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
         "needs_visual_review": true,
-        "notes": "Нужны фото и отличие от экскурсии 004. Временные фото удалены из публикационного слоя; перед публикацией нужны изображения из базы фото или новые изображения."
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -255,16 +230,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "006-rassvetnoe-puteshestvie",
-        "cover": "cover.png",
-        "gallery": [
-          "gallery-01.png",
-          "gallery-02.png",
-          "gallery-03.png"
-        ],
-        "status": "source_complete_needs_review",
-        "source_file": "source.txt",
-        "needs_visual_review": false,
-        "notes": "Нужны рассветные морские фото. Source images used; verify before publication."
+        "manifest": "docs/03-service-catalog/media/excursions/006-rassvetnoe-puteshestvie/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/006-rassvetnoe-puteshestvie/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
+        "needs_visual_review": true,
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -298,16 +268,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "007-racha-koral-rassvet-privatnyy-plyazh-rybalka",
-        "cover": "cover.jpg",
-        "gallery": [
-          "gallery-01.jpg",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "temporary_complete_needs_review",
-        "source_file": "source.txt",
+        "manifest": "docs/03-service-catalog/media/excursions/007-racha-koral-rassvet-privatnyy-plyazh-rybalka/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/007-racha-koral-rassvet-privatnyy-plyazh-rybalka/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
         "needs_visual_review": true,
-        "notes": "Нужны Рача, Корал, пляж и рыбалка. Временные фото удалены из публикационного слоя; перед публикацией нужны изображения из базы фото или новые изображения."
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -341,16 +306,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "008-cirkovoe-shou",
-        "cover": "cover.jpg",
-        "gallery": [
-          "gallery-01.jpg",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "temporary_complete_needs_visual_review",
-        "source_file": "source.txt",
+        "manifest": "docs/03-service-catalog/media/excursions/008-cirkovoe-shou/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/008-cirkovoe-shou/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
         "needs_visual_review": true,
-        "notes": "Нужны официальные фото или промо с правами. Временные фото удалены из публикационного слоя; перед публикацией нужны изображения из базы фото или новые изображения."
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -384,16 +344,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "009-rayskie-ostrova",
-        "cover": "cover.jpg",
-        "gallery": [
-          "gallery-01.jpg",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "temporary_complete_needs_review",
-        "source_file": "source.txt",
+        "manifest": "docs/03-service-catalog/media/excursions/009-rayskie-ostrova/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/009-rayskie-ostrova/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
         "needs_visual_review": true,
-        "notes": "Нужны острова, пляж, море. Временные фото удалены из публикационного слоя; перед публикацией нужны изображения из базы фото или новые изображения."
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -427,16 +382,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "010-parom-na-phi-phi",
-        "cover": "cover.jpg",
-        "gallery": [
-          "gallery-01.jpg",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "source_complete_needs_review",
-        "source_file": "source.txt",
-        "needs_visual_review": false,
-        "notes": "Нужны фото парома и Пхи-Пхи. Source images used; verify before publication."
+        "manifest": "docs/03-service-catalog/media/excursions/010-parom-na-phi-phi/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/010-parom-na-phi-phi/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
+        "needs_visual_review": true,
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -470,16 +420,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "011-phangna",
-        "cover": "cover.png",
-        "gallery": [
-          "gallery-01.png",
-          "gallery-02.png",
-          "gallery-03.png"
-        ],
-        "status": "source_complete_needs_review",
-        "source_file": "source.txt",
-        "needs_visual_review": false,
-        "notes": "Нужны фото ПхангНа. Source images used; verify before publication."
+        "manifest": "docs/03-service-catalog/media/excursions/011-phangna/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/011-phangna/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
+        "needs_visual_review": true,
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -513,16 +458,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "012-similany",
-        "cover": "cover.jpg",
-        "gallery": [
-          "gallery-01.jpg",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "source_complete_needs_review",
-        "source_file": "source.txt",
-        "needs_visual_review": false,
-        "notes": "Проверить слабое фото gallery-01.jpg. Source images used; verify before publication."
+        "manifest": "docs/03-service-catalog/media/excursions/012-similany/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/012-similany/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
+        "needs_visual_review": true,
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -556,16 +496,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "013-similany-premium",
-        "cover": "cover.jpg",
-        "gallery": [
-          "gallery-01.jpg",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "source_complete_needs_review",
-        "source_file": "source.txt",
-        "needs_visual_review": false,
-        "notes": "Проверить соответствие локации и права. Source images used; verify before publication."
+        "manifest": "docs/03-service-catalog/media/excursions/013-similany-premium/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/013-similany-premium/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
+        "needs_visual_review": true,
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -599,16 +534,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "014-similany-2-dnya",
-        "cover": "cover.jpg",
-        "gallery": [
-          "gallery-01.jpg",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "temporary_complete_needs_review",
-        "source_file": "source.txt",
+        "manifest": "docs/03-service-catalog/media/excursions/014-similany-2-dnya/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/014-similany-2-dnya/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
         "needs_visual_review": true,
-        "notes": "Нужны фото Симилан, лодки и дайвинга. Временные фото удалены из публикационного слоя; перед публикацией нужны изображения из базы фото или новые изображения."
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -642,16 +572,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "015-surin",
-        "cover": "cover.png",
-        "gallery": [
-          "gallery-01.png",
-          "gallery-02.jpg",
-          "gallery-03.png"
-        ],
-        "status": "source_complete_needs_review",
-        "source_file": "source.txt",
-        "needs_visual_review": false,
-        "notes": "Нужны фото островов Сурин. Source images used; verify before publication."
+        "manifest": "docs/03-service-catalog/media/excursions/015-surin/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/015-surin/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
+        "needs_visual_review": true,
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -685,16 +610,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "016-11-ostrovov",
-        "cover": "cover.jpg",
-        "gallery": [
-          "gallery-01.jpg",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "source_complete_needs_review",
-        "source_file": "source.txt",
-        "needs_visual_review": false,
-        "notes": "Нужны фото маршрута и островов. Source images used; verify before publication."
+        "manifest": "docs/03-service-catalog/media/excursions/016-11-ostrovov/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/016-11-ostrovov/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
+        "needs_visual_review": true,
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -728,16 +648,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "017-ranniy-phi-phi",
-        "cover": "cover.jpg",
-        "gallery": [
-          "gallery-01.jpg",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "source_complete_needs_review",
-        "source_file": "source.txt",
-        "needs_visual_review": false,
-        "notes": "Проверить соответствие локации и права. Source images used; verify before publication."
+        "manifest": "docs/03-service-catalog/media/excursions/017-ranniy-phi-phi/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/017-ranniy-phi-phi/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
+        "needs_visual_review": true,
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -771,16 +686,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "018-phi-phi",
-        "cover": "cover.jpg",
-        "gallery": [
-          "gallery-01.png",
-          "gallery-02.png",
-          "gallery-03.jpg"
-        ],
-        "status": "source_complete_needs_review",
-        "source_file": "source.txt",
-        "needs_visual_review": false,
-        "notes": "Проверить соответствие локации и права. Source images used; verify before publication."
+        "manifest": "docs/03-service-catalog/media/excursions/018-phi-phi/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/018-phi-phi/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
+        "needs_visual_review": true,
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -814,16 +724,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "019-phi-phi-premium",
-        "cover": "cover.jpg",
-        "gallery": [
-          "gallery-01.jpg",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "source_complete_needs_review",
-        "source_file": "source.txt",
-        "needs_visual_review": false,
-        "notes": "Финально проверить качество. Source images used; verify before publication."
+        "manifest": "docs/03-service-catalog/media/excursions/019-phi-phi-premium/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/019-phi-phi-premium/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
+        "needs_visual_review": true,
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -857,16 +762,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "020-phi-phi-2-dnya",
-        "cover": "cover.png",
-        "gallery": [
-          "gallery-01.png",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "source_complete_needs_review",
-        "source_file": "source.txt",
-        "needs_visual_review": false,
-        "notes": "Нужны фото Пхи-Пхи и ночевки или лодки. Source images used; verify before publication."
+        "manifest": "docs/03-service-catalog/media/excursions/020-phi-phi-2-dnya/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/020-phi-phi-2-dnya/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
+        "needs_visual_review": true,
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -900,16 +800,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "021-4-zhemchuzhiny",
-        "cover": "cover.png",
-        "gallery": [
-          "gallery-01.png",
-          "gallery-02.png",
-          "gallery-03.png"
-        ],
-        "status": "source_complete_needs_review",
-        "source_file": "source.txt",
-        "needs_visual_review": false,
-        "notes": "Нужны фото маршрута. Source images used; verify before publication."
+        "manifest": "docs/03-service-catalog/media/excursions/021-4-zhemchuzhiny/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/021-4-zhemchuzhiny/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
+        "needs_visual_review": true,
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -943,16 +838,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "022-5-zhemchuzhin",
-        "cover": "cover.png",
-        "gallery": [
-          "gallery-01.png",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "temporary_complete_needs_review",
-        "source_file": "source.txt",
+        "manifest": "docs/03-service-catalog/media/excursions/022-5-zhemchuzhin/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/022-5-zhemchuzhin/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
         "needs_visual_review": true,
-        "notes": "Нужны фото маршрута. Временные фото удалены из публикационного слоя; перед публикацией нужны изображения из базы фото или новые изображения."
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -986,16 +876,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "023-dzheyms-bond",
-        "cover": "cover.png",
-        "gallery": [
-          "gallery-01.png",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "source_complete_needs_review",
-        "source_file": "source.txt",
-        "needs_visual_review": false,
-        "notes": "Проверить слабое фото gallery-03.jpg. Source images used; verify before publication."
+        "manifest": "docs/03-service-catalog/media/excursions/023-dzheyms-bond/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/023-dzheyms-bond/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
+        "needs_visual_review": true,
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -1029,16 +914,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "024-racha-koral",
-        "cover": "cover.jpg",
-        "gallery": [
-          "gallery-01.jpg",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "source_complete_needs_review",
-        "source_file": "source.txt",
-        "needs_visual_review": false,
-        "notes": "Нужны фото Рача/Корал, пляжей, моря и активностей. Source images used; verify before publication."
+        "manifest": "docs/03-service-catalog/media/excursions/024-racha-koral/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/024-racha-koral/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
+        "needs_visual_review": true,
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -1072,16 +952,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "025-rok-ha",
-        "cover": "cover.png",
-        "gallery": [
-          "gallery-01.png",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "temporary_complete_needs_review",
-        "source_file": "source.txt",
+        "manifest": "docs/03-service-catalog/media/excursions/025-rok-ha/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/025-rok-ha/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
         "needs_visual_review": true,
-        "notes": "Нужны фото Рок и Ха. Временные фото удалены из публикационного слоя; перед публикацией нужны изображения из базы фото или новые изображения."
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -1115,16 +990,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "026-racha-koral-mayton",
-        "cover": "cover.png",
-        "gallery": [
-          "gallery-01.png",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "temporary_complete_needs_review",
-        "source_file": "source.txt",
+        "manifest": "docs/03-service-catalog/media/excursions/026-racha-koral-mayton/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/026-racha-koral-mayton/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
         "needs_visual_review": true,
-        "notes": "Нужны фото Рача, Корал и Майтон. Временные фото удалены из публикационного слоя; перед публикацией нужны изображения из базы фото или новые изображения."
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -1158,16 +1028,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "027-koral-1-den",
-        "cover": "cover.jpg",
-        "gallery": [
-          "gallery-01.jpg",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "source_complete_needs_review",
-        "source_file": "source.txt",
-        "needs_visual_review": false,
-        "notes": "Проверить соответствие локации и права. Source images used; verify before publication."
+        "manifest": "docs/03-service-catalog/media/excursions/027-koral-1-den/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/027-koral-1-den/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
+        "needs_visual_review": true,
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -1201,16 +1066,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "028-krabi-ostrova-bez-voln-i-zakat",
-        "cover": "cover.jpg",
-        "gallery": [
-          "gallery-01.jpg",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "temporary_complete_needs_review",
-        "source_file": "source.txt",
+        "manifest": "docs/03-service-catalog/media/excursions/028-krabi-ostrova-bez-voln-i-zakat/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/028-krabi-ostrova-bez-voln-i-zakat/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
         "needs_visual_review": true,
-        "notes": "Нужны фото Краби и заката. Временные фото удалены из публикационного слоя; перед публикацией нужны изображения из базы фото или новые изображения."
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -1244,16 +1104,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "029-phi-phi-bambu-rang-yay-s-rybalkoy",
-        "cover": "cover.jpg",
-        "gallery": [
-          "gallery-01.jpg",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "temporary_complete_needs_review",
-        "source_file": "source.txt",
+        "manifest": "docs/03-service-catalog/media/excursions/029-phi-phi-bambu-rang-yay-s-rybalkoy/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/029-phi-phi-bambu-rang-yay-s-rybalkoy/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
         "needs_visual_review": true,
-        "notes": "Нужны Пхи-Пхи, Бамбу, Ранг Яй и рыбалка. Временные фото удалены из публикационного слоя; перед публикацией нужны изображения из базы фото или новые изображения."
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -1287,16 +1142,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "030-gidrocikly",
-        "cover": "cover.jpg",
-        "gallery": [
-          "gallery-01.jpg",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "temporary_complete_needs_visual_review",
-        "source_file": "source.txt",
+        "manifest": "docs/03-service-catalog/media/excursions/030-gidrocikly/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/030-gidrocikly/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
         "needs_visual_review": true,
-        "notes": "Нужны фото активности; желательно от исполнителя. Временные фото удалены из публикационного слоя; перед публикацией нужны изображения из базы фото или новые изображения."
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -1330,16 +1180,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "031-rybalka",
-        "cover": "cover.jpg",
-        "gallery": [
-          "gallery-01.jpg",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "temporary_complete_needs_review",
-        "source_file": "source.txt",
+        "manifest": "docs/03-service-catalog/media/excursions/031-rybalka/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/031-rybalka/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
         "needs_visual_review": true,
-        "notes": "Нужны фото морской рыбалки. Временные фото удалены из публикационного слоя; перед публикацией нужны изображения из базы фото или новые изображения."
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -1373,16 +1218,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "032-dayving",
-        "cover": "cover.jpg",
-        "gallery": [
-          "gallery-01.jpg",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "source_complete_needs_visual_review",
-        "source_file": "source.txt",
+        "manifest": "docs/03-service-catalog/media/excursions/032-dayving/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/032-dayving/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
         "needs_visual_review": true,
-        "notes": "Дайвинг идет отдельному исполнителю; фото запрашивать отдельно. Source images used; verify before publication."
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -1416,16 +1256,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "033-premium-katamaran-phi-phi-racha-i-zakatnaya-vecherinka",
-        "cover": "cover.jpg",
-        "gallery": [
-          "gallery-01.jpg",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "temporary_complete_needs_visual_review",
-        "source_file": "source.txt",
+        "manifest": "docs/03-service-catalog/media/excursions/033-premium-katamaran-phi-phi-racha-i-zakatnaya-vecherinka/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/033-premium-katamaran-phi-phi-racha-i-zakatnaya-vecherinka/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
         "needs_visual_review": true,
-        "notes": "Нужны фото конкретного катамарана и программы. Временные фото удалены из публикационного слоя; перед публикацией нужны изображения из базы фото или новые изображения."
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -1459,16 +1294,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "034-ozernaya-rybalka",
-        "cover": "cover.jpg",
-        "gallery": [
-          "gallery-01.jpg",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "temporary_complete_needs_review",
-        "source_file": "source.txt",
+        "manifest": "docs/03-service-catalog/media/excursions/034-ozernaya-rybalka/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/034-ozernaya-rybalka/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
         "needs_visual_review": true,
-        "notes": "Нужны фото озера и рыбалки. Временные фото удалены из публикационного слоя; перед публикацией нужны изображения из базы фото или новые изображения."
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -1502,16 +1332,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "035-park-slonov",
-        "cover": "cover.jpg",
-        "gallery": [
-          "gallery-01.jpg",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "temporary_complete_needs_visual_review",
-        "source_file": "source.txt",
+        "manifest": "docs/03-service-catalog/media/excursions/035-park-slonov/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/035-park-slonov/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
         "needs_visual_review": true,
-        "notes": "Нужны фото только без катания на слонах. Исходник подтверждает формат без катания; перед публикацией нужна визуальная проверка фото."
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -1545,16 +1370,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "036-tury-v-drugie-goroda-i-strany",
-        "cover": "cover.png",
-        "gallery": [
-          "gallery-01.png",
-          "gallery-02.jpg",
-          "gallery-03.png"
-        ],
-        "status": "source_complete_needs_review",
-        "source_file": "source.txt",
-        "needs_visual_review": false,
-        "notes": "Лучше использовать нейтральные фото направлений после выбора тура. Source images used; verify before publication."
+        "manifest": "docs/03-service-catalog/media/excursions/036-tury-v-drugie-goroda-i-strany/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/036-tury-v-drugie-goroda-i-strany/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
+        "needs_visual_review": true,
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -1588,16 +1408,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "037-kaolak",
-        "cover": "cover.png",
-        "gallery": [
-          "gallery-01.png",
-          "gallery-02.png",
-          "gallery-03.png"
-        ],
-        "status": "source_complete_needs_review",
-        "source_file": "source.txt",
-        "needs_visual_review": false,
-        "notes": "Нужны фото Каолака. Source images used; verify before publication."
+        "manifest": "docs/03-service-catalog/media/excursions/037-kaolak/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/037-kaolak/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
+        "needs_visual_review": true,
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -1631,16 +1446,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "038-phan-nga-put-avatara",
-        "cover": "cover.png",
-        "gallery": [
-          "gallery-01.png",
-          "gallery-02.png",
-          "gallery-03.png"
-        ],
-        "status": "source_complete_needs_review",
-        "source_file": "source.txt",
-        "needs_visual_review": false,
-        "notes": "Нужны фото Пхан-Нга. Source images used; verify before publication."
+        "manifest": "docs/03-service-catalog/media/excursions/038-phan-nga-put-avatara/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/038-phan-nga-put-avatara/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
+        "needs_visual_review": true,
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -1674,16 +1484,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "039-rafting",
-        "cover": "cover.jpg",
-        "gallery": [
-          "gallery-01.png",
-          "gallery-02.png",
-          "gallery-03.png"
-        ],
-        "status": "source_complete_needs_visual_review",
-        "source_file": "source.txt",
+        "manifest": "docs/03-service-catalog/media/excursions/039-rafting/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/039-rafting/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
         "needs_visual_review": true,
-        "notes": "Нужны фото рафтинга без слоновьего катания. Source images used; verify before publication."
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -1717,16 +1522,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "040-cheolan-1-den",
-        "cover": "cover.png",
-        "gallery": [
-          "gallery-01.jpg",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "source_complete_needs_review",
-        "source_file": "source.txt",
-        "needs_visual_review": false,
-        "notes": "Проверить соответствие локации и права. Source images used; verify before publication."
+        "manifest": "docs/03-service-catalog/media/excursions/040-cheolan-1-den/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/040-cheolan-1-den/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
+        "needs_visual_review": true,
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -1760,16 +1560,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "041-krabi",
-        "cover": "cover.png",
-        "gallery": [
-          "gallery-01.png",
-          "gallery-02.png",
-          "gallery-03.png"
-        ],
-        "status": "source_complete_needs_review",
-        "source_file": "source.txt",
-        "needs_visual_review": false,
-        "notes": "Нужны фото Краби. Source images used; verify before publication."
+        "manifest": "docs/03-service-catalog/media/excursions/041-krabi/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/041-krabi/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
+        "needs_visual_review": true,
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -1803,16 +1598,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "042-cheolan-2-dnya-standart",
-        "cover": "cover.jpg",
-        "gallery": [
-          "gallery-01.jpg",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "source_complete_needs_review",
-        "source_file": "source.txt",
-        "needs_visual_review": false,
-        "notes": "Нужны фото Чеолана и размещения. Source images used; verify before publication."
+        "manifest": "docs/03-service-catalog/media/excursions/042-cheolan-2-dnya-standart/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/042-cheolan-2-dnya-standart/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
+        "needs_visual_review": true,
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -1846,16 +1636,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "043-cheolan-2-dnya-deluxe",
-        "cover": "cover.png",
-        "gallery": [
-          "gallery-01.png",
-          "gallery-02.png",
-          "gallery-03.png"
-        ],
-        "status": "source_complete_needs_review",
-        "source_file": "source.txt",
-        "needs_visual_review": false,
-        "notes": "Нужны фото размещения Deluxe. Source images used; verify before publication."
+        "manifest": "docs/03-service-catalog/media/excursions/043-cheolan-2-dnya-deluxe/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/043-cheolan-2-dnya-deluxe/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
+        "needs_visual_review": true,
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -1889,16 +1674,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "044-vechernie-shou",
-        "cover": "cover.png",
-        "gallery": [
-          "gallery-01.png",
-          "gallery-02.png",
-          "gallery-03.png"
-        ],
-        "status": "source_complete_needs_visual_review",
-        "source_file": "source.txt",
+        "manifest": "docs/03-service-catalog/media/excursions/044-vechernie-shou/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/044-vechernie-shou/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
         "needs_visual_review": true,
-        "notes": "Нужны официальные фото шоу с правами. Source images used; verify before publication."
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -1932,16 +1712,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "045-kvadrocikly",
-        "cover": "cover.png",
-        "gallery": [
-          "gallery-01.png",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "source_complete_needs_visual_review",
-        "source_file": "source.txt",
+        "manifest": "docs/03-service-catalog/media/excursions/045-kvadrocikly/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/045-kvadrocikly/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
         "needs_visual_review": true,
-        "notes": "Нужны фото активности. Source images used; verify before publication."
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -1975,16 +1750,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "046-siti-tur",
-        "cover": "cover.png",
-        "gallery": [
-          "gallery-01.png",
-          "gallery-02.png",
-          "gallery-03.png"
-        ],
-        "status": "source_complete_needs_review",
-        "source_file": "source.txt",
-        "needs_visual_review": false,
-        "notes": "Нужны фото Пхукета, храмов и смотровых. Source images used; verify before publication."
+        "manifest": "docs/03-service-catalog/media/excursions/046-siti-tur/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/046-siti-tur/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
+        "needs_visual_review": true,
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -2018,16 +1788,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "047-polet-hanumana",
-        "cover": "cover.png",
-        "gallery": [
-          "gallery-01.png",
-          "gallery-02.png",
-          "gallery-03.jpg"
-        ],
-        "status": "temporary_complete_needs_visual_review",
-        "source_file": "source.txt",
+        "manifest": "docs/03-service-catalog/media/excursions/047-polet-hanumana/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/047-polet-hanumana/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
         "needs_visual_review": true,
-        "notes": "Нужны фото зиплайна и парка. Временные фото удалены из публикационного слоя; перед публикацией нужны изображения из базы фото или новые изображения."
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -2061,16 +1826,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "048-akvapark",
-        "cover": "cover.png",
-        "gallery": [
-          "gallery-01.png",
-          "gallery-02.png",
-          "gallery-03.png"
-        ],
-        "status": "source_complete_needs_visual_review",
-        "source_file": "source.txt",
+        "manifest": "docs/03-service-catalog/media/excursions/048-akvapark/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/048-akvapark/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
         "needs_visual_review": true,
-        "notes": "Нужны официальные фото с правами. Source images used; verify before publication."
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -2104,16 +1864,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "049-delfinariy",
-        "cover": "cover.png",
-        "gallery": [
-          "gallery-01.png",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "temporary_complete_needs_visual_review",
-        "source_file": "source.txt",
+        "manifest": "docs/03-service-catalog/media/excursions/049-delfinariy/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/049-delfinariy/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
         "needs_visual_review": true,
-        "notes": "Нужны официальные фото с правами. Временные фото удалены из публикационного слоя; перед публикацией нужны изображения из базы фото или новые изображения."
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -2147,16 +1902,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "050-bangla-boxing",
-        "cover": "cover.png",
-        "gallery": [
-          "gallery-01.jpg",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "temporary_complete_needs_visual_review",
-        "source_file": "source.txt",
+        "manifest": "docs/03-service-catalog/media/excursions/050-bangla-boxing/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/050-bangla-boxing/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
         "needs_visual_review": true,
-        "notes": "Нужны фото или афиши с правами. Временные фото удалены из публикационного слоя; перед публикацией нужны изображения из базы фото или новые изображения."
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -2190,16 +1940,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "051-katamarany",
-        "cover": "cover.jpg",
-        "gallery": [
-          "gallery-01.jpg",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "temporary_complete_needs_visual_review",
-        "source_file": "source.txt",
+        "manifest": "docs/03-service-catalog/media/excursions/051-katamarany/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/051-katamarany/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
         "needs_visual_review": true,
-        "notes": "Нужны фото конкретных катамаранов. Временные фото удалены из публикационного слоя; перед публикацией нужны изображения из базы фото или новые изображения."
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -2233,16 +1978,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "052-yahty-lodki-katera",
-        "cover": "cover.jpg",
-        "gallery": [
-          "gallery-01.jpg",
-          "gallery-02.jpg",
-          "gallery-03.jpg"
-        ],
-        "status": "temporary_complete_needs_visual_review",
-        "source_file": "source.txt",
+        "manifest": "docs/03-service-catalog/media/excursions/052-yahty-lodki-katera/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/052-yahty-lodki-katera/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
         "needs_visual_review": true,
-        "notes": "Нужны фото конкретных судов. Временные фото удалены из публикационного слоя; перед публикацией нужны изображения из базы фото или новые изображения."
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -2276,16 +2016,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "053-hype-yacht",
-        "cover": "cover.png",
-        "gallery": [
-          "gallery-01.png",
-          "gallery-02.png",
-          "gallery-03.png"
-        ],
-        "status": "source_complete_needs_visual_review",
-        "source_file": "source.txt",
+        "manifest": "docs/03-service-catalog/media/excursions/053-hype-yacht/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/053-hype-yacht/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
         "needs_visual_review": true,
-        "notes": "Нужны официальные фото HYPE YACHT с правами. Source images used; verify before publication."
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,
@@ -2319,16 +2054,11 @@
       "public_text_source": "docs/07-seo-and-content/excursion-pages-copy-mvp.md",
       "media": {
         "folder": "054-yona-beach-club",
-        "cover": "cover.jpg",
-        "gallery": [
-          "gallery-01.png",
-          "gallery-02.png",
-          "gallery-03.png"
-        ],
-        "status": "source_complete_needs_visual_review",
-        "source_file": "source.txt",
+        "manifest": "docs/03-service-catalog/media/excursions/054-yona-beach-club/media-manifest.json",
+        "carousel_folder": "docs/03-service-catalog/media/excursions/054-yona-beach-club/final/carousel",
+        "status": "temporary_final_carousel_ready_needs_publication_review",
         "needs_visual_review": true,
-        "notes": "Нужны официальные фото YONA с правами. Source images used; verify before publication."
+        "notes": "Use all available suitable photos from final/carousel for local development. Final manual review, face check, duplicates, weak photos, and replacements happen before publication."
       },
       "flags": {
         "no_online_payment": true,

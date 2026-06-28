@@ -1,0 +1,214 @@
+# Development Handoff Map
+
+Статус: [x] карта передачи в будущую разработку подготовлена
+
+Дата: 2026-06-28
+
+Код проекта пока не пишем.
+
+## Цель
+
+Этот документ нужен, чтобы при старте разработки Phuket Go не перечитывать всю папку `docs`.
+
+Он показывает:
+
+- что строим;
+- где лежат главные решения;
+- какие данные брать;
+- какие папки использовать;
+- что нельзя делать в MVP.
+
+## Главное
+
+Проект: Phuket Go.
+
+Миссия: Пхукет доступен в одно касание.
+
+MVP:
+
+- только Пхукет;
+- русскоязычные туристы;
+- только экскурсии;
+- заявки без оплаты на сайте;
+- партнер получает заявку в Telegram;
+- админ получает копию всех заявок;
+- дайвинг идет отдельному исполнителю;
+- первый запуск локально на компьютере.
+
+## Основа разработки
+
+Берем шаблон:
+
+- GitHub: `https://github.com/danilparkour69-rgb/phuket-go`
+- исходный шаблон: `https://github.com/di-sukharev/vibe`
+
+Если раннее решение Phuket Go конфликтует с шаблоном `vibe`, берем подход `vibe` и адаптируем продукт под него.
+
+## Как делить проект по шаблону
+
+| Что делаем | Где делать | Почему |
+| --- | --- | --- |
+| Публичный сайт | `website` | Его должны находить Google и Яндекс |
+| Главная | `website` | Публичная SEO-страница |
+| Каталог экскурсий | `website` | Каталог должен индексироваться |
+| Страница экскурсии | `website` | Каждая экскурсия - отдельная SEO-страница |
+| Статьи | `website` | SEO и доверие |
+| FAQ, условия, контакты | `website` | Публичные страницы |
+| Личный кабинет | `webapp` | Закрытая часть после входа |
+| Админка | `webapp` | Закрытая рабочая часть |
+| Backend/API | `backend` | Заявки, пользователи, Telegram, Google Sheets |
+| Общие схемы данных | `packages/contracts` | Единые правила для сайта, админки и backend |
+| Мобильное приложение | `mobile` branch позже | Не входит в MVP |
+
+## Главные документы для старта
+
+Читать в таком порядке:
+
+1. `docs/00-project-control/NEXT_SESSION.md`
+2. `docs/10-mvp-roadmap/technical-requirements-mvp.md`
+3. `docs/10-mvp-roadmap/user-scenarios-mvp.md`
+4. `docs/09-platforms-and-architecture/data-structure-mvp.md`
+5. `docs/09-platforms-and-architecture/api-map-mvp.md`
+6. `docs/10-mvp-roadmap/page-blocks-map-mvp.md`
+7. `docs/10-mvp-roadmap/homepage-catalog-data-map-mvp.md`
+8. `docs/03-service-catalog/excursions-site-data-mvp.json`
+9. `docs/03-service-catalog/media/excursions/media-developer-handoff-map.md`
+10. `docs/10-mvp-roadmap/design-system-mvp.md`
+
+## Данные экскурсий
+
+Основная рабочая база для будущего сайта:
+
+```text
+docs/03-service-catalog/excursions-site-data-mvp.json
+```
+
+Карточки-источники:
+
+```text
+docs/03-service-catalog/excursions/
+```
+
+Индекс готовности:
+
+```text
+docs/03-service-catalog/excursions/publication-readiness-index.md
+```
+
+Сейчас все карточки можно использовать как рабочую базу MVP, но перед реальной публикацией нужна финальная проверка:
+
+- актуальность цены;
+- соответствие фото;
+- ручная чистка слабых фото;
+- финальная проверка условий.
+
+## Фото
+
+По фото больше не зависаем.
+
+Берем доступные фото, которые:
+
+- лежат в папке конкретного направления;
+- соответствуют карточке экскурсии;
+- перечислены в `media-manifest.json`.
+
+Главный документ:
+
+```text
+docs/03-service-catalog/media/excursions/media-developer-handoff-map.md
+```
+
+Сайт должен использовать:
+
+```text
+docs/03-service-catalog/media/excursions/{direction}/final/carousel/
+docs/03-service-catalog/media/excursions/{direction}/media-manifest.json
+```
+
+Не брать напрямую:
+
+```text
+original/
+original/photo-base/
+carousel-candidates/
+photo-base/
+```
+
+## Тексты
+
+Главные тексты:
+
+- `docs/07-seo-and-content/homepage-copy-mvp.md`
+- `docs/07-seo-and-content/catalog-copy-mvp.md`
+- `docs/07-seo-and-content/excursion-pages-copy-mvp.md`
+- `docs/07-seo-and-content/articles-copy-mvp.md`
+- `docs/07-seo-and-content/faq-mvp.md`
+- `docs/07-seo-and-content/booking-terms-mvp.md`
+- `docs/07-seo-and-content/contacts-mvp.md`
+
+Правило текста:
+
+Сначала продаем мечту, воспоминание и ощущение. Потом даем факты, цену, ограничения и заявку.
+
+## Заявки
+
+Главные документы:
+
+- `docs/05-lead-processing/lead-flow.md`
+- `docs/05-lead-processing/lead-statuses.md`
+- `docs/05-lead-processing/google-sheets-final-map.md`
+- `docs/05-lead-processing/partner-routing.md`
+- `docs/09-platforms-and-architecture/telegram-bots-map.md`
+
+Обязательные поля заявки:
+
+- имя;
+- телефон.
+
+Дополнительные:
+
+- Telegram;
+- дата;
+- количество людей;
+- комментарий.
+
+## Что нельзя делать в MVP
+
+- Не делать онлайн-оплату.
+- Не делать полноценный кабинет партнера.
+- Не делать мобильные приложения.
+- Не делать Telegram Mini App.
+- Не делать англоязычную версию.
+- Не делать недвижимость, визы, документы, байки и обмен денег.
+- Не делать полноценную игру.
+- Не делать SMS-авторизацию по телефону.
+- Не давать партнеру удалять карточки.
+
+## Порядок будущей разработки
+
+1. Поднять локальный проект из шаблона `vibe`.
+2. Проверить разделение `website`, `webapp`, `backend`, `packages/contracts`.
+3. Подготовить схемы данных.
+4. Подключить данные экскурсий.
+5. Собрать публичный сайт: главная, каталог, страница экскурсии, статьи.
+6. Сделать форму заявки.
+7. Сделать backend для заявок.
+8. Подключить Google Sheets.
+9. Сделать Telegram-уведомления.
+10. Сделать админку.
+11. Сделать авторизацию и личный кабинет.
+12. Добавить баллы и историю заявок.
+13. Проверить локально весь путь пользователя.
+14. Только потом готовиться к публикации.
+
+## Definition of Done
+
+- [x] Понятно, какие документы читать при старте разработки.
+- [x] Понятно, где брать данные экскурсий.
+- [x] Понятно, где брать фото.
+- [x] Понятно, что входит и не входит в MVP.
+- [x] Понятно, как разделить проект по шаблону `vibe`.
+
+## Следующий шаг
+
+- [ ] Обновить `codex-development-brief.md`, чтобы он ссылался на эту карту и свежие правила по фото.

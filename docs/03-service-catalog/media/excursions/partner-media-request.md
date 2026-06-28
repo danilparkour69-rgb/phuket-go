@@ -44,6 +44,5 @@
 
 - сохранить в нужную папку;
 - назвать `gallery-03.jpg` или следующим свободным именем;
-- обновить `source.txt`;
-- обновить `first-package-media-manifest.json`;
-- обновить `first-package-media-checklist.md`.
+- обновить `media-manifest.json` конкретной экскурсии;
+- обновить папки `original/`, `final/carousel` и `final/content`.

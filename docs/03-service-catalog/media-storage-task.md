@@ -36,11 +36,12 @@
 - `docs/03-service-catalog/media/excursions/001-slon-mantra-spa-samet-nangshe/`
 - `docs/03-service-catalog/media/excursions/018-phi-phi/`
 
-Правило именования:
+Правило хранения:
 
-- `cover.jpg` - обложка;
-- `gallery-01.jpg`, `gallery-02.jpg` - фото галереи;
-- `source.txt` - откуда взяты фото и можно ли их использовать.
+- `original/` - исходные фото;
+- `final/carousel/` - фото для верхней карусели;
+- `final/content/` - будущие фото внутри текста;
+- `media-manifest.json` - список фото, источники, типы и статусы.
 
 ## Нейросетевые изображения
 
