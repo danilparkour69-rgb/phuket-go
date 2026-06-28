@@ -5,27 +5,4 @@ Missing: 0
 Review note: needs visual/content review before publication.
 
 Files:
-- cover.jpg
-  source_url: https://www.pexels.com/photo/acrobats-performance-at-circus-14145593/
-  source_owner: Pexels / Denys Gromov
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication
-- gallery-01.jpg
-  source_url: https://www.pexels.com/photo/people-performing-in-circus-14145591/
-  source_owner: Pexels / Denys Gromov
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication
-- gallery-02.jpg
-  source_url: https://www.pexels.com/photo/people-performing-a-contortion-act-14145618/
-  source_owner: Pexels / Denys Gromov
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication
-- gallery-03.jpg
-  source_url: https://www.pexels.com/photo/black-and-white-acrobat-duo-performing-on-stage-35333257/
-  source_owner: Pexels / Jesus Marchante
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication
+- нет локальных фото после удаления временных стоковых фото; нужны изображения из базы фото или новые изображения

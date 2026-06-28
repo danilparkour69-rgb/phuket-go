@@ -1,0 +1,59 @@
+{
+  "source": "ThaiBuyTrip",
+  "our_excursion": "051-katamarany",
+  "partner_tour_title": "Яхты и катамараны",
+  "source_url": "https://ru.thaibuytrip.com/arenda-phuket/yahty-i-katamarany",
+  "status": "partner_reference_local_copy",
+  "rule": "Only main card and gallery images were saved. Review images were not downloaded.",
+  "publication_note": "Рабочие локальные референсы. К публикации будут подготовлены новые изображения.",
+  "images": [
+    {
+      "file": "gallery-24.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/components/gallery/connector.php?action=web/phpthumb&ctx=thaiRu&w=940&h=940&zc=0&far=&q=90&src=%2Fassets%2Fgallery%2F449%2F5265.jpg",
+      "bytes": 134059,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-25.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/components/gallery/connector.php?action=web/phpthumb&ctx=thaiRu&w=940&h=940&zc=0&far=&q=90&src=%2Fassets%2Fgallery%2F449%2F5264.jpg",
+      "bytes": 176012,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-26.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/components/gallery/connector.php?action=web/phpthumb&ctx=thaiRu&w=940&h=940&zc=0&far=&q=90&src=%2Fassets%2Fgallery%2F449%2F5272.jpg",
+      "bytes": 137532,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-27.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/components/gallery/connector.php?action=web/phpthumb&ctx=thaiRu&w=940&h=940&zc=0&far=&q=90&src=%2Fassets%2Fgallery%2F449%2F5270.jpg",
+      "bytes": 124735,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-28.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/components/gallery/connector.php?action=web/phpthumb&ctx=thaiRu&w=940&h=940&zc=0&far=&q=90&src=%2Fassets%2Fgallery%2F449%2F5269.png",
+      "bytes": 890232,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-29.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/components/gallery/connector.php?action=web/phpthumb&ctx=thaiRu&w=940&h=940&zc=0&far=&q=90&src=%2Fassets%2Fgallery%2F449%2F5268.jpg",
+      "bytes": 135753,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-30.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/components/gallery/connector.php?action=web/phpthumb&ctx=thaiRu&w=940&h=940&zc=0&far=&q=90&src=%2Fassets%2Fgallery%2F449%2F5271.jpg",
+      "bytes": 74584,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-31.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/components/gallery/connector.php?action=web/phpthumb&ctx=thaiRu&w=940&h=940&zc=0&far=&q=90&src=%2Fassets%2Fgallery%2F449%2F5267.jpg",
+      "bytes": 134640,
+      "source_block": "main_card_or_gallery"
+    }
+  ]
+}

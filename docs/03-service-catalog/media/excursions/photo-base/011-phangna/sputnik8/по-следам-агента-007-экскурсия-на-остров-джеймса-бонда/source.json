@@ -1,0 +1,91 @@
+{
+  "source": "Sputnik8 Phuket",
+  "our_excursion": "011-phangna",
+  "our_title": "ПхангНа",
+  "partner_tour_title": "По следам агента 007: экскурсия на остров Джеймса Бонда",
+  "source_url": "https://www.sputnik8.com/ru/phuket/activities/49159-po-sledam-agenta-007-ekskursiya-na-ostrov-dzheymsa-bonda",
+  "match_status": "close",
+  "status": "partner_reference_local_copy",
+  "rule": "Only main card gallery images were saved. Review images were not downloaded.",
+  "publication_note": "Рабочие локальные референсы. К публикации будут подготовлены новые изображения.",
+  "images": [
+    {
+      "file": "gallery-01.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/c6ed0547-201e-46f2-aff6-5e37a5401740/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 135394,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-02.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/68c2ff55-4ebf-4d3a-bfb5-39042e1830f0/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 60658,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-03.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/e9980df3-f6d7-498b-96d7-12199ae7b84c/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 169330,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-04.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/bd913c53-c12f-4101-a5d6-b295ac7062a0/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 63436,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-05.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/f372a48a-3a9e-455c-95ad-15b1d98ee10d/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 108278,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-07.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/6f89af78-3bc7-42cf-8f47-c9836345b509/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 145600,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-08.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/49dd87dd-2453-450c-a7de-e812907363fb/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 138434,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-09.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/c4deda31-780b-40ec-9031-697a9e4b1380/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 182140,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-10.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/f2bc0154-f2bc-4a91-ac14-0fb8dd718820/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 132358,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-11.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/e0166ecb-a546-4137-91e0-61a1858863ad/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 133256,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-12.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/4e27841e-23cf-43a5-9146-33461f0b1308/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 158384,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-13.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/2b0a0ca9-454c-4568-9ef1-53c3ed5468c0/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 135446,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-14.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/039404ed-d71c-43a9-a3d1-094bc5214719/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 167742,
+      "source_block": "main_card_gallery"
+    }
+  ]
+}

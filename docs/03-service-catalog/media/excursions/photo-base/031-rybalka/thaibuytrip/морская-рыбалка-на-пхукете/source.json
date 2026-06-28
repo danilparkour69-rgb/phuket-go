@@ -1,0 +1,65 @@
+{
+  "source": "ThaiBuyTrip",
+  "our_excursion": "031-rybalka",
+  "partner_tour_title": "Морская рыбалка на Пхукете",
+  "source_url": "https://ru.thaibuytrip.com/tours/morskaya-rybalka-na-phukete",
+  "status": "partner_reference_local_copy",
+  "rule": "Only main card and gallery images were saved. Review images were not downloaded.",
+  "publication_note": "Рабочие локальные референсы. К публикации будут подготовлены новые изображения.",
+  "images": [
+    {
+      "file": "gallery-02.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/components/gallery/connector.php?action=web/phpthumb&ctx=thaiRu&w=940&h=940&zc=0&far=&q=90&src=%2Fassets%2Fgallery%2F358%2F4526.jpg",
+      "bytes": 110056,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-03.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/components/gallery/connector.php?action=web/phpthumb&ctx=thaiRu&w=940&h=940&zc=0&far=&q=90&src=%2Fassets%2Fgallery%2F358%2F4524.jpg",
+      "bytes": 165977,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-05.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/components/gallery/connector.php?action=web/phpthumb&ctx=thaiRu&w=940&h=940&zc=0&far=&q=90&src=%2Fassets%2Fgallery%2F358%2F4523.jpg",
+      "bytes": 173004,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-06.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/components/gallery/connector.php?action=web/phpthumb&ctx=thaiRu&w=940&h=940&zc=0&far=&q=90&src=%2Fassets%2Fgallery%2F358%2F4522.jpg",
+      "bytes": 168658,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-07.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/components/gallery/connector.php?action=web/phpthumb&ctx=thaiRu&w=940&h=940&zc=0&far=&q=90&src=%2Fassets%2Fgallery%2F358%2F4521.jpg",
+      "bytes": 169115,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-08.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/components/gallery/connector.php?action=web/phpthumb&ctx=thaiRu&w=940&h=940&zc=0&far=&q=90&src=%2Fassets%2Fgallery%2F358%2F4525.jpg",
+      "bytes": 170206,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-09.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/components/gallery/connector.php?action=web/phpthumb&ctx=thaiRu&w=940&h=940&zc=0&far=&q=90&src=%2Fassets%2Fgallery%2F358%2F4530.jpg",
+      "bytes": 116961,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-10.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/components/gallery/connector.php?action=web/phpthumb&ctx=thaiRu&w=940&h=940&zc=0&far=&q=90&src=%2Fassets%2Fgallery%2F358%2F4528.jpg",
+      "bytes": 178879,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-11.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/components/gallery/connector.php?action=web/phpthumb&ctx=thaiRu&w=940&h=940&zc=0&far=&q=90&src=%2Fassets%2Fgallery%2F358%2F4529.jpg",
+      "bytes": 127988,
+      "source_block": "main_card_or_gallery"
+    }
+  ]
+}

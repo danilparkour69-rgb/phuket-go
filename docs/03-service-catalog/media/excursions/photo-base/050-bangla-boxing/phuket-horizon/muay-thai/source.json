@@ -1,0 +1,41 @@
+{
+  "source": "Phuket Horizon",
+  "our_excursion": "050-bangla-boxing",
+  "partner_tour_title": "Muay Thai",
+  "source_url": "https://phuket-horizon.ru/tour/muay-thai",
+  "status": "partner_reference_local_copy",
+  "rule": "Only main card and gallery images were saved. Review images were not downloaded.",
+  "publication_note": "Рабочие локальные референсы. К публикации будут подготовлены новые изображения.",
+  "images": [
+    {
+      "file": "gallery-01.webp",
+      "source_url": "https://phukethorizonserver-production.up.railway.app/files/Muay-Thai-In-bangla-phuket.webp",
+      "bytes": 169456,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-02.webp",
+      "source_url": "https://phukethorizonserver-production.up.railway.app/files/Muay-Thai-In-phuket.webp",
+      "bytes": 125418,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-03.webp",
+      "source_url": "https://phukethorizonserver-production.up.railway.app/files/Muay-Thai-In-thailand-phuket.webp",
+      "bytes": 106764,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-04.webp",
+      "source_url": "https://phukethorizonserver-production.up.railway.app/files/Muay-Thai-phuket.webp",
+      "bytes": 198676,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-05.webp",
+      "source_url": "https://phukethorizonserver-production.up.railway.app/files/muay-thai-boxing-muay-thailand.webp",
+      "bytes": 59302,
+      "source_block": "main_card_or_gallery"
+    }
+  ]
+}

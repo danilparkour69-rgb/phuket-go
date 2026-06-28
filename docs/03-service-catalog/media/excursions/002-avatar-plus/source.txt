@@ -3,27 +3,4 @@ Status: temporary_complete_needs_review
 Missing: 0
 
 Files:
-- cover.jpg
-  source_url: https://www.pexels.com/photo/silhouette-of-mountains-on-the-water-6026860/
-  source_owner: Pexels / Olivier Bergeron
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication
-- gallery-01.jpg
-  source_url: https://www.pexels.com/photo/scenic-limestone-cliffs-in-krabi-thailand-35125809/
-  source_owner: Pexels / Siarhei Nester
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication
-- gallery-02.jpg
-  source_url: https://www.pexels.com/photo/iconic-james-bond-island-in-phang-nga-bay-thailand-29275856/
-  source_owner: Pexels / Jeffry Surianto
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication
-- gallery-03.jpg
-  source_url: https://www.pexels.com/photo/stunning-krabi-cliffs-in-phang-nga-bay-35125817/
-  source_owner: Pexels / Siarhei Nester
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication
+- нет локальных фото после удаления временных стоковых фото; нужны изображения из базы фото или новые изображения

@@ -1,0 +1,55 @@
+{
+  "source": "Sputnik8 Phuket",
+  "our_excursion": "045-kvadrocikly",
+  "our_title": "Квадроциклы",
+  "partner_tour_title": "Обзорная площадка Пхукета: катание на квадроциклах, слонах и спуск зиплайн",
+  "source_url": "https://www.sputnik8.com/ru/phuket/activities/59955-obzornaya-ploschadka-phuketa-katanie-na-kvadrotsiklah-slonah-i-spusk-ziplayn",
+  "match_status": "close",
+  "status": "partner_reference_local_copy",
+  "rule": "Only main card gallery images were saved. Review images were not downloaded.",
+  "publication_note": "Рабочие локальные референсы. К публикации будут подготовлены новые изображения.",
+  "images": [
+    {
+      "file": "gallery-01.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/209cfe89-4601-4364-94e3-6a5c25019900/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 108198,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-02.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/0148cd25-7115-4581-97cc-0329bd250e36/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 130106,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-03.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/f19ca157-b97a-4aed-aeda-d26e84c292ae/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 99440,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-04.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/1d0d6272-65a9-4ece-b707-54894320a03f/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 27844,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-05.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/58b4cbd7-b406-494a-ba44-cecbf26450b7/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 133276,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-06.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/cb2a0107-c688-4fa3-848b-9b7a5060c3f6/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 149292,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-07.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/d798484c-93fd-44bd-b08f-03276fb26fb0/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 275742,
+      "source_block": "main_card_gallery"
+    }
+  ]
+}

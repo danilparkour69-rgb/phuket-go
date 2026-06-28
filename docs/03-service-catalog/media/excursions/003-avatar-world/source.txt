@@ -3,27 +3,4 @@ Status: temporary_complete_needs_review
 Missing: 0
 
 Files:
-- cover.jpg
-  source_url: https://www.pexels.com/photo/house-in-the-middle-of-the-forest-13906978/
-  source_owner: Pexels / Kirandeep Singh Walia
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication
-- gallery-01.jpg
-  source_url: https://www.pexels.com/photo/scenic-view-of-the-mountains-733092/
-  source_owner: Pexels / icon0 com
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication
-- gallery-02.jpg
-  source_url: https://www.pexels.com/photo/photo-of-green-forest-during-daytime-13914044/
-  source_owner: Pexels / Kirandeep Singh Walia
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication
-- gallery-03.jpg
-  source_url: https://www.pexels.com/photo/scenic-view-of-a-lagoon-in-the-forest-6873614/
-  source_owner: Pexels / Balazs Simon
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication
+- нет локальных фото после удаления временных стоковых фото; нужны изображения из базы фото или новые изображения

@@ -1,0 +1,31 @@
+{
+  "source": "Original Telegra.ph",
+  "our_excursion": "054-yona-beach-club",
+  "partner_tour_title": "YONA Beach Club",
+  "source_url": "https://telegra.ph/Plyazhnyj-klub-YONA-05-19",
+  "status": "original_source_local_copy",
+  "rule": "Фото перенесены из уже сохраненной локальной базы исходной карточки.",
+  "publication_note": "Рабочие локальные материалы для отбора и дальнейшей подготовки.",
+  "images": [
+    {
+      "file": "gallery-01.jpg",
+      "source_url": "https://telegra.ph/file/98d3f4d1ea361e0896a80.jpg",
+      "source_block": "original_source"
+    },
+    {
+      "file": "gallery-02.png",
+      "source_url": "https://telegra.ph/file/c9f77d1502a1d5a0d6461.png",
+      "source_block": "original_source"
+    },
+    {
+      "file": "gallery-03.png",
+      "source_url": "https://telegra.ph/file/6dc8533f4675977bd66fe.png",
+      "source_block": "original_source"
+    },
+    {
+      "file": "gallery-04.png",
+      "source_url": "https://telegra.ph/file/bbbfaa4563bca2aa4ac7b.png",
+      "source_block": "original_source"
+    }
+  ]
+}

@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>001 - проверка фото на удаление</title>
+  <style>
+    :root {
+      --bg: #f6f7f9;
+      --card: #fff;
+      --ink: #1f2937;
+      --muted: #667085;
+      --line: #d9e0ea;
+      --accent: #0f766e;
+      --danger: #b42318;
+      --danger-soft: #fff1f0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+    }
+    header {
+      padding: 18px 24px;
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+    }
+    h1 {
+      margin: 0 0 6px;
+      font-size: 22px;
+    }
+    p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 340px;
+      gap: 18px;
+      padding: 18px;
+      align-items: start;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+    figure {
+      margin: 0;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    figure.marked {
+      border-color: var(--danger);
+      background: var(--danger-soft);
+    }
+    img {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      display: block;
+      background: #eef2f6;
+    }
+    figcaption {
+      display: grid;
+      gap: 8px;
+      padding: 10px;
+      font-size: 13px;
+    }
+    .name {
+      font-weight: 700;
+    }
+    label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      color: var(--danger);
+      font-weight: 700;
+    }
+    input {
+      width: 18px;
+      height: 18px;
+    }
+    aside {
+      position: sticky;
+      top: 18px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      max-height: calc(100vh - 36px);
+      overflow: auto;
+    }
+    h2 {
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+    .count {
+      margin-bottom: 12px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    textarea {
+      width: 100%;
+      min-height: 150px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 10px;
+      font: 13px/1.45 monospace;
+      color: var(--ink);
+      background: #fbfcfe;
+    }
+    .quick-list {
+      display: grid;
+      gap: 6px;
+      margin: 10px 0 12px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fbfcfe;
+    }
+    .quick-item {
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      align-items: center;
+      gap: 6px;
+      color: var(--ink);
+      font-weight: 400;
+    }
+    .quick-item input {
+      margin: 0;
+    }
+    .quick-item a {
+      color: var(--ink);
+      text-decoration: none;
+      font-size: 13px;
+    }
+    .quick-item a:hover {
+      color: var(--accent);
+      text-decoration: underline;
+    }
+    button {
+      width: 100%;
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      border-radius: 6px;
+      padding: 10px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    button:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .note {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    @media (max-width: 1100px) {
+      .layout { grid-template-columns: 1fr; }
+      aside { position: static; max-height: none; }
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 640px) {
+      header, .layout { padding: 12px; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>001. Слоны / Mantra Spa / Самет Нангше</h1>
+    <p>Отметьте фото, которые нужно удалить из публикационной папки. Выбор сохраняется в этом браузере.</p>
+  </header>
+
+  <div class="layout">
+    <main class="grid" id="grid"></main>
+
+    <aside>
+      <h2>Удалить</h2>
+      <div class="count" id="count">Выбрано: 0</div>
+      <div class="quick-list" id="quickList"></div>
+      <textarea id="output" readonly></textarea>
+      <button id="copy">Скопировать список</button>
+      <button id="clear">Снять все галочки</button>
+      <div class="note">
+        Эта страница только собирает список. Физически фото не удаляются, пока вы отдельно не подтвердите удаление.
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    const photos = [
+      "gallery-01.webp",
+      "gallery-02.webp",
+      "gallery-03.webp",
+      "gallery-04.webp",
+      "gallery-05.webp",
+      "gallery-06.webp",
+      "gallery-07.webp",
+      "gallery-08.webp",
+      "gallery-09.webp",
+      "gallery-10.webp",
+      "gallery-11.webp",
+      "gallery-12.webp",
+      "gallery-13.webp",
+      "gallery-14.webp",
+      "gallery-15.webp",
+      "gallery-16.webp",
+      "gallery-17.webp",
+      "gallery-18.webp",
+      "gallery-19.webp",
+      "gallery-20.webp",
+      "gallery-21.webp",
+      "gallery-22.webp"
+    ];
+
+    const storageKey = "phuket-go-delete-review-001";
+    const grid = document.getElementById("grid");
+    const quickList = document.getElementById("quickList");
+    const count = document.getElementById("count");
+    const output = document.getElementById("output");
+    const copyButton = document.getElementById("copy");
+    const clearButton = document.getElementById("clear");
+
+    function readSelected() {
+      try {
+        return new Set(JSON.parse(localStorage.getItem(storageKey) || "[]"));
+      } catch {
+        return new Set();
+      }
+    }
+
+    function writeSelected(selected) {
+      localStorage.setItem(storageKey, JSON.stringify([...selected]));
+    }
+
+    function renderOutput() {
+      const selected = readSelected();
+      count.textContent = `Выбрано: ${selected.size}`;
+      output.value = [...selected].sort().join("\n");
+
+      document.querySelectorAll("figure").forEach((figure) => {
+        const file = figure.dataset.file;
+        const checkbox = figure.querySelector("input");
+        const checked = selected.has(file);
+        checkbox.checked = checked;
+        figure.classList.toggle("marked", checked);
+      });
+
+      document.querySelectorAll(".quick-item").forEach((item) => {
+        const file = item.dataset.file;
+        const checkbox = item.querySelector("input");
+        checkbox.checked = selected.has(file);
+      });
+    }
+
+    function toggleFile(file, checked) {
+      const selected = readSelected();
+      if (checked) {
+        selected.add(file);
+      } else {
+        selected.delete(file);
+      }
+      writeSelected(selected);
+      renderOutput();
+    }
+
+    function build() {
+      const selected = readSelected();
+      photos.forEach((file) => {
+        const figure = document.createElement("figure");
+        figure.id = file.replace(".", "-");
+        figure.dataset.file = file;
+        figure.innerHTML = `
+          <img loading="lazy" src="${file}" alt="${file}">
+          <figcaption>
+            <span class="name">${file}</span>
+            <label><input type="checkbox"> удалить</label>
+          </figcaption>
+        `;
+        const checkbox = figure.querySelector("input");
+        checkbox.checked = selected.has(file);
+        checkbox.addEventListener("change", () => toggleFile(file, checkbox.checked));
+        grid.appendChild(figure);
+
+        const quickItem = document.createElement("label");
+        quickItem.className = "quick-item";
+        quickItem.dataset.file = file;
+        quickItem.innerHTML = `
+          <input type="checkbox">
+          <a href="#${file.replace(".", "-")}">${file}</a>
+        `;
+        const quickCheckbox = quickItem.querySelector("input");
+        quickCheckbox.checked = selected.has(file);
+        quickCheckbox.addEventListener("change", () => toggleFile(file, quickCheckbox.checked));
+        quickList.appendChild(quickItem);
+      });
+      renderOutput();
+    }
+
+    copyButton.addEventListener("click", async () => {
+      await navigator.clipboard.writeText(output.value);
+      copyButton.textContent = "Список скопирован";
+      setTimeout(() => {
+        copyButton.textContent = "Скопировать список";
+      }, 1400);
+    });
+
+    clearButton.addEventListener("click", () => {
+      writeSelected(new Set());
+      renderOutput();
+    });
+
+    build();
+  </script>
+</body>
+</html>

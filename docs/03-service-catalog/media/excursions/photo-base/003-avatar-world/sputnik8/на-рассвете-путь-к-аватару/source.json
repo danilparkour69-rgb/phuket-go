@@ -1,0 +1,61 @@
+{
+  "source": "Sputnik8 Phuket",
+  "our_excursion": "003-avatar-world",
+  "our_title": "AVATAR WORLD",
+  "partner_tour_title": "На рассвете: путь к Аватару",
+  "source_url": "https://www.sputnik8.com/ru/phuket/activities/73612-na-rassvete-put-k-avataru",
+  "match_status": "close",
+  "status": "partner_reference_local_copy",
+  "rule": "Only main card gallery images were saved. Review images were not downloaded.",
+  "publication_note": "Рабочие локальные референсы. К публикации будут подготовлены новые изображения.",
+  "images": [
+    {
+      "file": "gallery-01.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/dab6c869-b86c-4bde-8824-8cff377a900a/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 95584,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-02.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/37228195-3eea-45cd-aadd-b972d9b512f4/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 310072,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-03.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/e9f3ffb4-08ad-4f6f-b2cb-6b68b1870061/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 102212,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-04.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/eb3667f8-ac25-4993-89e6-fee7bd3a1f91/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 55810,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-05.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/0226a340-8067-4201-923f-a160fcce508d/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 227886,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-06.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/ffd5353a-4b1c-4719-a515-4113a88a9881/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 116894,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-07.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/b5cd2fa2-f66d-4385-a521-5e790b923115/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 111064,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-08.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/e10b1e35-adc1-4a28-903a-ceafebd26f9e/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 100932,
+      "source_block": "main_card_gallery"
+    }
+  ]
+}

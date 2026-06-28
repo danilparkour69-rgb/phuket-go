@@ -15,15 +15,3 @@ Files:
   usage_permission: allowed by partner, final rights check needed
   image_type: real
   notes: source photo; verify relevance and quality before publication
-- gallery-02.jpg
-  source_url: https://www.pexels.com/photo/aerial-view-of-phi-phi-islands-in-clear-waters-33053824/
-  source_owner: Pexels / Joonseok Park
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication
-- gallery-03.jpg
-  source_url: https://www.pexels.com/photo/gazebos-on-the-beach-of-maiton-private-island-20729013/
-  source_owner: Pexels / Att Unchalisangkat
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication

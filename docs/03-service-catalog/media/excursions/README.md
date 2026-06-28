@@ -21,6 +21,8 @@
 - `missing-media-plan.md` - план добора фото, апскейла и будущих AI-вариантов.
 - `photo-scenario-rules.md` - правило фотосценария: какие роли фото нужны и как подбирать их по смыслу текста.
 - `photo-brief-template.md` - шаблон будущего `photo-brief.md` для каждой экскурсии.
+- `final-media-folder-structure-step-51-result.md` - финальная структура папок фото, карусели, контентных фото и манифеста.
+- `phi-phi-competitor-photo-reference.md` - пример разбора Пхи-Пхи по базе фото и рыночным референсам.
 
 ## Как подгружать фото в будущем
 
@@ -35,6 +37,26 @@
 5. Собрать локальные пути от `base_path`.
 
 Так мы сможем позже заменить локальные пути на Cloudinary/Yandex/S3 без ручной переделки карточек.
+
+## Финальная структура
+
+Текущие `cover.jpg` и `gallery-01.jpg` остаются рабочим минимумом.
+
+Финальный набор должен храниться так:
+
+```text
+{id}-{slug}/
+  original/
+  final/
+    carousel/
+    content/
+    social/
+  photo-brief.md
+  media-manifest.json
+  source.txt
+```
+
+Подробно: `final-media-folder-structure-step-51-result.md`.
 
 ## Как подбирать фото в будущем
 

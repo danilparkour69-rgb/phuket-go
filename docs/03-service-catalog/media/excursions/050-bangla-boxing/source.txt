@@ -17,15 +17,3 @@ Files:
   usage_permission: allowed by partner, final rights check needed
   image_type: real
   notes: source photo; verify relevance and quality before publication
-- gallery-02.jpg
-  source_url: https://www.pexels.com/photo/man-kneeling-on-boxing-ring-238636/
-  source_owner: Pexels / Flo Maderebner
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication
-- gallery-03.jpg
-  source_url: https://www.pexels.com/photo/a-two-muay-thai-fighter-11045334/
-  source_owner: Pexels / Gleb Krasnoborov
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication

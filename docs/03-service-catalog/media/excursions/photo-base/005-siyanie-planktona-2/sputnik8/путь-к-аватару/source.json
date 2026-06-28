@@ -1,0 +1,85 @@
+{
+  "source": "Sputnik8 Phuket",
+  "our_excursion": "005-siyanie-planktona-2",
+  "our_title": "Сияние планктона 2",
+  "partner_tour_title": "Путь к Аватару",
+  "source_url": "https://www.sputnik8.com/ru/phuket/activities/72538-put-k-avataru",
+  "match_status": "close",
+  "status": "partner_reference_local_copy",
+  "rule": "Only main card gallery images were saved. Review images were not downloaded.",
+  "publication_note": "Рабочие локальные референсы. К публикации будут подготовлены новые изображения.",
+  "images": [
+    {
+      "file": "gallery-01.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/5db217af-03af-4cbe-ab36-69c2cad48c50/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 100932,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-02.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/ac7d1379-609a-464a-ab11-aec6be268cfe/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 177474,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-03.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/7966eb1d-a7bb-4a92-8a1a-95234d8012d3/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 166084,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-04.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/c290ed77-84c1-4101-95db-38ca0afbc7a1/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 208700,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-05.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/a1a6aae7-9904-4b80-8d6d-d33caa38cecd/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 78812,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-06.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/86315c23-09e3-4e30-8f73-47c87318cfa0/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 54232,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-07.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/baf77c48-0d79-4041-9ef8-bfacfd0e2bad/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 130048,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-08.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/85191a02-fa2b-42e7-8c24-a68f8e17e840/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 106610,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-09.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/b35b84e7-9fbf-48b7-be86-4944700e5670/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 111064,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-10.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/b554ef3f-4e0a-41b3-b7a8-3fc5e3018694/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 67868,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-11.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/2f6d0e4f-43cf-4b28-ac1a-8f94c548ca2c/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 116894,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-12.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/de4f3040-c0ed-4d12-9739-2c5f543cb7e1/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 72742,
+      "source_block": "main_card_gallery"
+    }
+  ]
+}

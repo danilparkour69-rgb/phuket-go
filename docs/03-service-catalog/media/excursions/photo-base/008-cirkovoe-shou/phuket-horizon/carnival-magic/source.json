@@ -1,0 +1,47 @@
+{
+  "source": "Phuket Horizon",
+  "our_excursion": "008-cirkovoe-shou",
+  "partner_tour_title": "Carnival Magic",
+  "source_url": "https://phuket-horizon.ru/tour/carnival-magic",
+  "status": "partner_reference_local_copy",
+  "rule": "Only main card and gallery images were saved. Review images were not downloaded.",
+  "publication_note": "Рабочие локальные референсы. К публикации будут подготовлены новые изображения.",
+  "images": [
+    {
+      "file": "gallery-01.webp",
+      "source_url": "https://phukethorizonserver-production.up.railway.app/files/carnaval-magic-phuket-horizon-1.webp",
+      "bytes": 65020,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-02.webp",
+      "source_url": "https://phukethorizonserver-production.up.railway.app/files/carnaval-magic-phuket-horizon-2.webp",
+      "bytes": 59126,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-03.webp",
+      "source_url": "https://phukethorizonserver-production.up.railway.app/files/carnaval-magic-phuket-horizon-3.webp",
+      "bytes": 64788,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-04.webp",
+      "source_url": "https://phukethorizonserver-production.up.railway.app/files/carnaval-magic-phuket-horizon-4.webp",
+      "bytes": 91518,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-05.webp",
+      "source_url": "https://phukethorizonserver-production.up.railway.app/files/carnaval-magic-phuket-horizon-5.webp",
+      "bytes": 84418,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-06.webp",
+      "source_url": "https://phukethorizonserver-production.up.railway.app/files/carnaval-magic-video-cover.webp",
+      "bytes": 248980,
+      "source_block": "main_card_or_gallery"
+    }
+  ]
+}

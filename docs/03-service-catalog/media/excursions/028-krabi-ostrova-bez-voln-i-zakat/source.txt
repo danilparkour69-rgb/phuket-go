@@ -3,27 +3,4 @@ Status: temporary_complete_needs_review
 Missing: 0
 
 Files:
-- cover.jpg
-  source_url: https://www.pexels.com/photo/photo-of-boats-on-the-shore-during-sunset-8213820/
-  source_owner: Pexels / Nextvoyage
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication
-- gallery-01.jpg
-  source_url: https://www.pexels.com/photo/woman-wearing-white-tank-top-seating-on-boat-1006339/
-  source_owner: Pexels / Atlantic Ambience
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication
-- gallery-02.jpg
-  source_url: https://www.pexels.com/photo/white-boat-sailing-near-islands-during-golden-hour-1481096/
-  source_owner: Pexels / Nextvoyage
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication
-- gallery-03.jpg
-  source_url: https://www.pexels.com/photo/drone-photography-of-a-boat-in-a-body-of-water-in-thailand-4708321/
-  source_owner: Pexels / saad ibrahem
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication
+- нет локальных фото после удаления временных стоковых фото; нужны изображения из базы фото или новые изображения

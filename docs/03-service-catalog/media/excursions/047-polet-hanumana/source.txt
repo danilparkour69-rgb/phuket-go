@@ -23,9 +23,3 @@ Files:
   usage_permission: allowed by partner, final rights check needed
   image_type: real
   notes: source photo; verify relevance and quality before publication
-- gallery-03.jpg
-  source_url: https://www.pexels.com/photo/woman-wearing-orange-helmet-2041759/
-  source_owner: Pexels / Mam NC
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication

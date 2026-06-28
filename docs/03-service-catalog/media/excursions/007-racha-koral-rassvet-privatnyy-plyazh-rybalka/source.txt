@@ -3,27 +3,4 @@ Status: temporary_complete_needs_review
 Missing: 0
 
 Files:
-- cover.jpg
-  source_url: https://www.pexels.com/photo/traditional-longtail-boat-on-phuket-s-turquoise-waters-36609167/
-  source_owner: Pexels / Leo Wang
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication
-- gallery-01.jpg
-  source_url: https://www.pexels.com/photo/traditional-thai-longtail-boats-on-beach-shoreline-37833639/
-  source_owner: Pexels / Ball CooleR
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication
-- gallery-02.jpg
-  source_url: https://www.pexels.com/photo/serene-beach-scene-in-phuket-thailand-33860209/
-  source_owner: Pexels / Виктор Соломоник
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication
-- gallery-03.jpg
-  source_url: https://www.pexels.com/photo/beach-in-tropical-paradise-koh-yao-yai-island-in-phang-nga-thailand-landscape-with-tropical-17422290/
-  source_owner: Pexels / Aykut Ekinci
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication
+- нет локальных фото после удаления временных стоковых фото; нужны изображения из базы фото или новые изображения

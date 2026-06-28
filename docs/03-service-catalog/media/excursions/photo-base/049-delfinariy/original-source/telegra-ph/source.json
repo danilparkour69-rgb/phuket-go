@@ -1,0 +1,16 @@
+{
+  "source": "Original Telegra.ph",
+  "our_excursion": "049-delfinariy",
+  "partner_tour_title": "Дельфинарий",
+  "source_url": "https://telegra.ph/Delfinarij-05-02",
+  "status": "partial_original_source_local_copy",
+  "rule": "Перенесены только фото из исходной Telegra.ph-карточки. В старой локальной папке еще есть временные фото, но сюда они не добавлены.",
+  "publication_note": "Рабочие локальные материалы для отбора и дальнейшей подготовки.",
+  "images": [
+    {
+      "file": "gallery-01.png",
+      "source_url": "https://telegra.ph/file/74ac4a199a6df0a0571ef.png",
+      "source_block": "original_source"
+    }
+  ]
+}

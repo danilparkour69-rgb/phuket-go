@@ -1,0 +1,25 @@
+{
+  "source": "Sputnik8 Phuket",
+  "our_excursion": "010-parom-na-phi-phi",
+  "our_title": "Паром на Пхи-Пхи",
+  "partner_tour_title": "Пхукет - Пхи-Пхи: на пароме в одну или обе стороны",
+  "source_url": "https://www.sputnik8.com/ru/phuket/activities/49873-phuket-phi-phi-na-parome-v-odnu-ili-obe-storony",
+  "match_status": "exact",
+  "status": "partner_reference_local_copy",
+  "rule": "Only main card gallery images were saved. Review images were not downloaded.",
+  "publication_note": "Рабочие локальные референсы. К публикации будут подготовлены новые изображения.",
+  "images": [
+    {
+      "file": "gallery-03.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/927899ee-caf6-42a6-8d31-5f3bd8988546/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 29686,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-04.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/ca1b7d15-2764-47c6-9ba2-cf067128f165/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 172372,
+      "source_block": "main_card_gallery"
+    }
+  ]
+}

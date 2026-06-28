@@ -15,15 +15,3 @@ Files:
   usage_permission: allowed by partner, final rights check needed
   image_type: real
   notes: source photo; verify relevance and quality before publication
-- gallery-02.jpg
-  source_url: https://www.pexels.com/photo/underwater-scuba-diving-adventure-in-koh-tao-30577433/
-  source_owner: Pexels / Gerson Yokota
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication
-- gallery-03.jpg
-  source_url: https://www.pexels.com/photo/aerial-view-of-stunning-shark-bay-in-ko-tao-thailand-29496455/
-  source_owner: Pexels / mirthe diender
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication

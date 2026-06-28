@@ -5,27 +5,4 @@ Missing: 0
 Review note: needs visual/content review before publication.
 
 Files:
-- cover.jpg
-  source_url: https://www.pexels.com/photo/people-riding-jet-skis-at-sea-11953145/
-  source_owner: Pexels / Lalada .
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication
-- gallery-01.jpg
-  source_url: https://www.pexels.com/photo/person-riding-on-personal-watercraft-1268865/
-  source_owner: Pexels / Asad Photo Maldives
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication
-- gallery-02.jpg
-  source_url: https://www.pexels.com/photo/two-people-riding-a-jet-ski-1430676/
-  source_owner: Pexels / Asad Photo Maldives
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication
-- gallery-03.jpg
-  source_url: https://www.pexels.com/photo/people-walking-on-sand-beach-18109257/
-  source_owner: Pexels / Alex Nguyen
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication
+- нет локальных фото после удаления временных стоковых фото; нужны изображения из базы фото или новые изображения

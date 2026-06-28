@@ -1,5 +1,7 @@
 # CLAUDE.md
 
+Этот файл используется только при работе через Claude Code. Для Codex основная инструкция находится в `AGENTS.md`.
+
 ## Operating Standard
 
 - Answer in the user's language.
@@ -57,6 +59,7 @@
 
 - Use `README.md` as the source of truth for first-run repository download, bootstrap, and product intake instructions.
 - Keep durable project choices in README files and docs, not in this agent file.
+- For Phuket Go planning, use `project-forum/phuket-go-task-map.md` only as a progress tracker. Do not use it as a source of product, architecture, or implementation requirements; use the main documents under `docs/` instead.
 - Infrastructure, deployment, storage, local database, testing runbooks, and provider-specific choices live in `README.md` and `docs/`.
 - When a surface is deferred, prefer a short note in that surface's README over extra agent instructions.
 - Prefer a monolithic backend. Do not split into microservices unless the product has a concrete operational need.

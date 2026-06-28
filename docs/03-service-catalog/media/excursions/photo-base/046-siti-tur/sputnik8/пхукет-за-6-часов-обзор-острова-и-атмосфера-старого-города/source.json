@@ -1,0 +1,91 @@
+{
+  "source": "Sputnik8 Phuket",
+  "our_excursion": "046-siti-tur",
+  "our_title": "Сити Тур",
+  "partner_tour_title": "Пхукет за 6 часов: обзор острова и атмосфера Старого города",
+  "source_url": "https://www.sputnik8.com/ru/phuket/activities/86214-phuket-za-6-chasov-obzor-ostrova-i-atmosfera-starogo-goroda",
+  "match_status": "exact",
+  "status": "partner_reference_local_copy",
+  "rule": "Only main card gallery images were saved. Review images were not downloaded.",
+  "publication_note": "Рабочие локальные референсы. К публикации будут подготовлены новые изображения.",
+  "images": [
+    {
+      "file": "gallery-02.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/126a2ef7-72a4-4bb3-9c75-5d279d88bed9/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 86242,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-03.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/e5831ca5-1c7b-42d1-b8fb-4ad02f41ef33/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 119042,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-04.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/d1b73cb8-fcc8-488f-9d96-42fee0f3d9d8/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 137446,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-05.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/f9a294ef-0864-4a8c-83b8-92925e7a3424/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 72220,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-08.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/43de2f99-ef51-4e28-85e6-fb283fefc15c/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 17560,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-09.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/153bccf1-0efb-4d5e-9332-76ab92a3daca/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 165844,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-10.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/62d89e9f-b4f7-435a-95a8-767931fd058e/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 30132,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-11.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/68db3002-897c-45a7-845b-00d4daef2e34/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 73052,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-13.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/40e4bd70-fee2-4e52-ab74-caa77101f7ba/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 159824,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-14.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/868dbf8e-f196-405e-b815-525154104717/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 102538,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-16.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/2fdb449b-6f6e-4e7b-8387-fc4e87686bf0/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 32354,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-17.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/08ed2db7-9b2f-4862-857b-1544ad405330/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 92026,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-19.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/17c9629f-7ae2-44db-9308-b1748a3e541b/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 75390,
+      "source_block": "main_card_gallery"
+    }
+  ]
+}

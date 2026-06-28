@@ -1,0 +1,37 @@
+{
+  "source": "Sputnik8 Phuket",
+  "our_excursion": "001-slon-mantra-spa-samet-nangshe",
+  "our_title": "Слоны / Mantra Spa / Самет Нангше",
+  "partner_tour_title": "Мантра СПА, белоснежный храм, пляж слонов и Самет Нангше",
+  "source_url": "https://www.sputnik8.com/ru/phuket/activities/92241-mantra-spa-belosnezhnyy-hram-plyazh-slonov-i-samet-nangshe",
+  "match_status": "exact",
+  "status": "partner_reference_local_copy",
+  "rule": "Only main card gallery images were saved. Review images were not downloaded.",
+  "publication_note": "Рабочие локальные референсы. К публикации будут подготовлены новые изображения.",
+  "images": [
+    {
+      "file": "gallery-02.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/af7af88a-c784-45a7-9f8c-4b281c92e108/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 55810,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-03.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/5d495e2c-66f1-4e73-8797-7c6ff4eee3c2/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 93004,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-04.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/8bbb762d-ab45-4aae-8a6b-05ad14219498/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 138954,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-08.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/e638c645-4fc2-482c-825e-f84539b57dff/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 179380,
+      "source_block": "main_card_gallery"
+    }
+  ]
+}

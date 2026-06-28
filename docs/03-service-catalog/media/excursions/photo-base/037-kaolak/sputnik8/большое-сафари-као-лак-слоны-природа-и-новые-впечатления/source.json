@@ -1,0 +1,109 @@
+{
+  "source": "Sputnik8 Phuket",
+  "our_excursion": "037-kaolak",
+  "our_title": "Каолак",
+  "partner_tour_title": "Большое сафари Као Лак: слоны, природа и новые впечатления",
+  "source_url": "https://www.sputnik8.com/ru/phuket/activities/80358-bolshoe-safari-kao-lak-slony-priroda-i-novye-vpechatleniya",
+  "match_status": "exact",
+  "status": "partner_reference_local_copy",
+  "rule": "Only main card gallery images were saved. Review images were not downloaded.",
+  "publication_note": "Рабочие локальные референсы. К публикации будут подготовлены новые изображения.",
+  "images": [
+    {
+      "file": "gallery-01.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/cddc35ee-c14a-480f-b384-2400767e5ca9/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 68708,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-02.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/19e0d3db-0609-4bef-a66f-f193fc69484c/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 41456,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-03.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/b166dffa-c36f-4f1c-acd3-866f8ed9d5f9/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 82378,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-07.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/1c2c1004-ce1b-49bb-be58-d814da5a4029/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 98710,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-08.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/a608073f-282c-453e-810a-4d44c8ddb20d/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 90850,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-09.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/f682162a-e16f-488a-8fd6-b320dfaa0e53/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 68884,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-10.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/3a75f443-6731-422b-b4ed-3d6e5df29464/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 89994,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-12.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/98222d41-6094-47e3-97db-6cbe3728b321/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 134484,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-13.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/2df92653-ddda-440c-8c6d-82e72d0b2c44/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 48276,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-15.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/cd3e445c-bc7f-4b9c-b4f4-1cc60caedea5/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 113872,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-16.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/a8cbce2c-9883-478a-b004-3224188473cd/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 370768,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-17.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/c876a069-ab96-40d0-bc86-0af881883c2f/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 90788,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-19.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/8e15cdde-1957-47e6-bd5d-3fa8e7905f11/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 68186,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-20.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/67157e7f-9e7c-437d-a714-f8f37045006a/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 370324,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-23.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/52589994-c6c4-457a-830e-16d3a3295c99/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 101784,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-24.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/2d5878d8-39c1-4a1d-bf4b-daafd0f4cc6b/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 98180,
+      "source_block": "main_card_gallery"
+    }
+  ]
+}

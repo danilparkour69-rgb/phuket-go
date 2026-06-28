@@ -230,9 +230,13 @@ Postgres станет основной базой для:
 | `image_type` | Да | real, ai_enhanced, ai_generated |
 | `alt` | Нет | Описание фото |
 | `is_cover` | Да | Главное фото или нет |
+| `block` | Нет | Где стоит фото: carousel, route, format_day, included, safety, emotion |
+| `role` | Нет | Роль фото: cover_emotion, route_place, transport, activity, detail_or_trust |
 | `sort_order` | Да | Порядок в галерее |
 | `source_url` | Нет | Откуда взяли фото |
+| `source_type` | Нет | partner_permission, own, stock_license, pexels, ai_generated |
 | `usage_allowed` | Да | Можно использовать |
+| `needs_review` | Да | Нужна ли проверка перед публикацией |
 
 Правила:
 
@@ -243,6 +247,8 @@ Postgres станет основной базой для:
 - AI-изображения можно использовать, но нужно отличать их от реальных фото;
 - AI-изображение нельзя выдавать за реальное фото конкретной экскурсии;
 - оригиналов высокого качества пока нет.
+- финальная структура фото описана в `../03-service-catalog/media/excursions/final-media-folder-structure-step-51-result.md`;
+- карусель и фото по тексту должны храниться как разные роли, чтобы сайт мог подгружать их автоматически.
 
 ## Lead
 

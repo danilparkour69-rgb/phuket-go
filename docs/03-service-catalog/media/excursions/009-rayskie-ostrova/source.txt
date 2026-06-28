@@ -3,27 +3,4 @@ Status: temporary_complete_needs_review
 Missing: 0
 
 Files:
-- cover.jpg
-  source_url: https://www.pexels.com/photo/serene-beach-landscape-with-vibrant-ocean-view-36647555/
-  source_owner: Pexels / Leo Wang
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication
-- gallery-01.jpg
-  source_url: https://www.pexels.com/photo/serene-beachscape-in-krabi-thailand-35126213/
-  source_owner: Pexels / Siarhei Nester
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication
-- gallery-02.jpg
-  source_url: https://www.pexels.com/photo/boat-near-island-on-body-of-water-237739/
-  source_owner: Pexels / Vaibhav Kashyap
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication
-- gallery-03.jpg
-  source_url: https://www.pexels.com/photo/stunning-limestone-cliffs-in-krabi-thailand-35126795/
-  source_owner: Pexels / Siarhei Nester
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication
+- нет локальных фото после удаления временных стоковых фото; нужны изображения из базы фото или новые изображения

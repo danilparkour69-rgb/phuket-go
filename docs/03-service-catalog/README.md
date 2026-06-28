@@ -37,6 +37,13 @@
 - `mvp-categories.md`
 - `services-database-task.md`
 - `media-storage-task.md`
+- `media/excursions/photo-base/download-report.md`
+- `media/excursions/thaibuytrip-missing-directions-search.md`
+- `media/excursions/thaibuytrip-card-images-download-report.md`
+- `media/excursions/phuket-horizon-missing-directions-search.md`
+- `media/excursions/phuket-horizon-card-images-download-report.md`
+- `media/excursions/final-missing-photo-base-card-photos.md`
+- `media/excursions/photo-base-selection-index.md`
 - `price-display-rules.md`
 - `initial-excursions-source-marusya.md`
 - `initial-excursions-links-marusya.md`
@@ -44,6 +51,7 @@
 - `excursions/README.md`
 - `excursions/batch-generation-log.md`
 - `partner-questions.md`
+- `photo-base-analog-map.md`
 - `excursions-site-data-mvp.json`
 - `excursions-site-data-map.md`
 - `excursions/001-slon-mantra-spa-samet-nangshe.md`

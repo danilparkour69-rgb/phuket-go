@@ -17,15 +17,3 @@ Files:
   usage_permission: allowed by partner, final rights check needed
   image_type: real
   notes: source photo; verify relevance and quality before publication
-- gallery-02.jpg
-  source_url: https://www.pexels.com/photo/dolphin-show-performance-in-outdoor-pool-30915666/
-  source_owner: Pexels / Marian Florinel Condruz
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication
-- gallery-03.jpg
-  source_url: https://www.pexels.com/photo/dolphins-jumping-in-a-water-park-14336618/
-  source_owner: Pexels / Shaheen K Awan
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication

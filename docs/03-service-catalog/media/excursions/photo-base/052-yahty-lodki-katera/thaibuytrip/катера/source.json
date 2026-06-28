@@ -1,0 +1,95 @@
+{
+  "source": "ThaiBuyTrip",
+  "our_excursion": "052-yahty-lodki-katera",
+  "partner_tour_title": "Катера",
+  "source_url": "https://ru.thaibuytrip.com/arenda-phuket/katera",
+  "status": "partner_reference_local_copy",
+  "rule": "Only main card and gallery images were saved. Review images were not downloaded.",
+  "publication_note": "Рабочие локальные референсы. К публикации будут подготовлены новые изображения.",
+  "images": [
+    {
+      "file": "gallery-10.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/components/gallery/connector.php?action=web/phpthumb&ctx=thaiRu&w=1880&h=1254&zc=1&far=C&q=90&src=%2Fassets%2Fgallery%2F831%2F10112.jpg",
+      "bytes": 400461,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-11.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/components/gallery/connector.php?action=web/phpthumb&ctx=thaiRu&w=1880&h=1254&zc=1&far=C&q=90&src=%2Fassets%2Fgallery%2F831%2F10113.jpg",
+      "bytes": 385643,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-12.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/components/gallery/connector.php?action=web/phpthumb&ctx=thaiRu&w=1880&h=1254&zc=1&far=C&q=90&src=%2Fassets%2Fgallery%2F831%2F10114.jpg",
+      "bytes": 347246,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-13.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/components/gallery/connector.php?action=web/phpthumb&ctx=thaiRu&w=1880&h=1254&zc=1&far=C&q=90&src=%2Fassets%2Fgallery%2F831%2F10115.jpg",
+      "bytes": 524990,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-16.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/components/gallery/connector.php?action=web/phpthumb&ctx=thaiRu&w=1880&h=1254&zc=1&far=C&q=90&src=%2Fassets%2Fgallery%2F829%2F10107.jpeg",
+      "bytes": 481153,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-18.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/components/gallery/connector.php?action=web/phpthumb&ctx=thaiRu&w=1880&h=1254&zc=1&far=C&q=90&src=%2Fassets%2Fgallery%2F829%2F10106.jpeg",
+      "bytes": 552263,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-27.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/img/e/thailand/routes/coral.jpg",
+      "bytes": 197762,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-28.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/img/e/thailand/routes/maiton.jpg",
+      "bytes": 133140,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-29.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/img/e/thailand/routes/raha-yai.jpg",
+      "bytes": 139528,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-30.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/img/e/thailand/routes/raha-noi.jpg",
+      "bytes": 130346,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-31.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/img/e/thailand/routes/phi-phi.jpg",
+      "bytes": 134754,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-32.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/img/e/thailand/routes/promtep.jpg",
+      "bytes": 157623,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-33.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/img/e/thailand/routes/james-bond.jpg",
+      "bytes": 208912,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-34.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/img/e/thailand/routes/phang-nga.jpg",
+      "bytes": 173010,
+      "source_block": "main_card_or_gallery"
+    }
+  ]
+}

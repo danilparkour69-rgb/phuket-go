@@ -1,0 +1,55 @@
+{
+  "source": "Sputnik8 Phuket",
+  "our_excursion": "014-similany-2-dnya",
+  "our_title": "Симиланы 2 дня",
+  "partner_tour_title": "Однодневная поездка на Симиланы на скоростном катере",
+  "source_url": "https://www.sputnik8.com/ru/phuket/activities/60072-odnodnevnaya-poezdka-na-similany-na-skorostnom-katere-transfer-na-vybor",
+  "match_status": "generic",
+  "status": "partner_reference_local_copy",
+  "rule": "Only main card gallery images were saved. Review images were not downloaded.",
+  "publication_note": "Рабочие локальные референсы. К публикации будут подготовлены новые изображения.",
+  "images": [
+    {
+      "file": "gallery-01.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/4d5d8ae8-50f8-4a98-8499-fe6e096b626e/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 68426,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-02.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/78c4358e-dc5b-4554-b92f-39dceefe314c/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 56510,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-03.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/240f33ed-1fa0-459e-8d31-5b37499985ae/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 36732,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-04.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/f5275a9b-1763-40e2-9f33-d099bb2ef0dd/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 128822,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-05.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/48f8cea3-b37e-4b08-b875-2212ba682efc/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 60348,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-06.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/54a0078d-49d2-4e78-ab72-a70b974d4b8c/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 98394,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-07.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/a25c07dc-6d31-433a-9020-6ef25ef8735a/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 51152,
+      "source_block": "main_card_gallery"
+    }
+  ]
+}

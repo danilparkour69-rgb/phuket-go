@@ -1,0 +1,17 @@
+{
+  "source": "Phuket Horizon",
+  "our_excursion": "025-rok-ha",
+  "partner_tour_title": "Ко Рок и Ко Ха",
+  "source_url": "https://phuket-horizon.ru/tour/khorok-khoha-1d",
+  "status": "partner_reference_local_copy",
+  "rule": "Only main card and gallery images were saved. Review images were not downloaded.",
+  "publication_note": "Рабочие локальные референсы. К публикации будут подготовлены новые изображения.",
+  "images": [
+    {
+      "file": "gallery-01.webp",
+      "source_url": "https://phukethorizonserver-production.up.railway.app/files/rok1d_1.webp",
+      "bytes": 170204,
+      "source_block": "main_card_or_gallery"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "source": "Original Telegra.ph",
+  "our_excursion": "015-surin",
+  "partner_tour_title": "Сурин",
+  "source_url": "https://telegra.ph/Surinskie-ostrova-11-18",
+  "status": "original_source_local_copy",
+  "rule": "Фото перенесены из уже сохраненной локальной базы исходной карточки.",
+  "publication_note": "Рабочие локальные материалы для отбора и дальнейшей подготовки.",
+  "images": [
+    {
+      "file": "gallery-01.png",
+      "source_url": "https://telegra.ph/file/f4c62f55bda110ba35dda.png",
+      "source_block": "original_source"
+    }
+  ]
+}

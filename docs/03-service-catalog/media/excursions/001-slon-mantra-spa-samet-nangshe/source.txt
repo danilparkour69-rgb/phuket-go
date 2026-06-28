@@ -6,27 +6,4 @@ Review note: needs visual/content review before publication.
 Special rule: do not publish elephant riding photos.
 
 Files:
-- cover.jpg
-  source_url: https://www.pexels.com/photo/an-elephant-on-a-wooden-fence-10620586/
-  source_owner: Pexels / phiraphon srithakae
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication
-- gallery-01.jpg
-  source_url: https://www.pexels.com/photo/asian-elephant-in-chiang-mai-nature-sanctuary-31730950/
-  source_owner: Pexels / Morgann McKunes
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication
-- gallery-02.jpg
-  source_url: https://www.pexels.com/photo/asian-elephants-in-thailand-s-lush-environment-32263691/
-  source_owner: Pexels / Charlotte Hilliar
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication
-- gallery-03.jpg
-  source_url: https://www.pexels.com/photo/a-man-standing-next-to-elephants-in-a-zoo-18067449/
-  source_owner: Pexels / Kirandeep Singh Walia
-  usage_permission: Pexels API/source, final license check needed
-  image_type: real
-  notes: temporary Pexels source; verify location, relevance, and rights before publication
+- нет локальных фото после удаления временных стоковых фото; нужны изображения из базы фото или новые изображения

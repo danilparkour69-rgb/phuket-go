@@ -1,0 +1,31 @@
+{
+  "source": "Original Telegra.ph",
+  "our_excursion": "053-hype-yacht",
+  "partner_tour_title": "HYPE YACHT",
+  "source_url": "https://telegra.ph/HYPE-Yacht-05-10",
+  "status": "original_source_local_copy",
+  "rule": "Фото перенесены из уже сохраненной локальной базы исходной карточки.",
+  "publication_note": "Рабочие локальные материалы для отбора и дальнейшей подготовки.",
+  "images": [
+    {
+      "file": "gallery-01.png",
+      "source_url": "https://telegra.ph/file/12d55eea7338a89090991.png",
+      "source_block": "original_source"
+    },
+    {
+      "file": "gallery-02.png",
+      "source_url": "https://telegra.ph/file/5709ffc2c2a04616fff9f.png",
+      "source_block": "original_source"
+    },
+    {
+      "file": "gallery-03.png",
+      "source_url": "https://telegra.ph/file/74735d7b6bc0045b68d71.png",
+      "source_block": "original_source"
+    },
+    {
+      "file": "gallery-04.png",
+      "source_url": "https://telegra.ph/file/e6f8875977aa17895622d.png",
+      "source_block": "original_source"
+    }
+  ]
+}

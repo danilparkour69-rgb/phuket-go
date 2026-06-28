@@ -1,0 +1,53 @@
+{
+  "source": "ThaiBuyTrip",
+  "our_excursion": "026-racha-koral-mayton",
+  "partner_tour_title": "Майтон / Корал / Рача",
+  "source_url": "https://ru.thaibuytrip.com/tours/maithon-corel-racha",
+  "status": "partner_reference_local_copy",
+  "rule": "Only main card and gallery images were saved. Review images were not downloaded.",
+  "publication_note": "Рабочие локальные референсы. К публикации будут подготовлены новые изображения.",
+  "images": [
+    {
+      "file": "gallery-03.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/components/gallery/connector.php?action=web/phpthumb&ctx=thaiRu&w=940&h=940&zc=0&far=&q=90&src=%2Fassets%2Fgallery%2F724%2F8693.jpg",
+      "bytes": 171611,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-05.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/components/gallery/connector.php?action=web/phpthumb&ctx=thaiRu&w=940&h=940&zc=0&far=&q=90&src=%2Fassets%2Fgallery%2F724%2F8699.jpg",
+      "bytes": 159614,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-07.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/components/gallery/connector.php?action=web/phpthumb&ctx=thaiRu&w=940&h=940&zc=0&far=&q=90&src=%2Fassets%2Fgallery%2F724%2F8697.jpg",
+      "bytes": 132474,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-08.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/components/gallery/connector.php?action=web/phpthumb&ctx=thaiRu&w=940&h=940&zc=0&far=&q=90&src=%2Fassets%2Fgallery%2F724%2F8694.jpg",
+      "bytes": 154918,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-09.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/components/gallery/connector.php?action=web/phpthumb&ctx=thaiRu&w=940&h=940&zc=0&far=&q=90&src=%2Fassets%2Fgallery%2F724%2F8700.jpg",
+      "bytes": 96372,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-10.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/components/gallery/connector.php?action=web/phpthumb&ctx=thaiRu&w=940&h=940&zc=0&far=&q=90&src=%2Fassets%2Fgallery%2F724%2F8698.jpg",
+      "bytes": 177064,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-11.jpg",
+      "source_url": "https://ru.thaibuytrip.com/assets/components/gallery/connector.php?action=web/phpthumb&ctx=thaiRu&w=940&h=940&zc=0&far=&q=90&src=%2Fassets%2Fgallery%2F724%2F8692.jpg",
+      "bytes": 110271,
+      "source_block": "main_card_or_gallery"
+    }
+  ]
+}

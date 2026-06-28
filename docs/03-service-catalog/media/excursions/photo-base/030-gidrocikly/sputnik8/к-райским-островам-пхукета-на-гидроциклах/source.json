@@ -1,0 +1,43 @@
+{
+  "source": "Sputnik8 Phuket",
+  "our_excursion": "030-gidrocikly",
+  "our_title": "Гидроциклы",
+  "partner_tour_title": "К райским островам Пхукета на гидроциклах",
+  "source_url": "https://www.sputnik8.com/ru/phuket/activities/71319-k-rayskim-ostrovam-phuketa-na-gidrotsiklah",
+  "match_status": "exact",
+  "status": "partner_reference_local_copy",
+  "rule": "Only main card gallery images were saved. Review images were not downloaded.",
+  "publication_note": "Рабочие локальные референсы. К публикации будут подготовлены новые изображения.",
+  "images": [
+    {
+      "file": "gallery-02.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/10f52175-8df2-4b36-993a-cbfb870ff541/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 166700,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-04.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/dde35a39-3d77-4917-a81e-07e8e18eeec8/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 82286,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-05.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/6d35e249-632d-4204-9342-c89c8d074bb5/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 267992,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-06.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/ac88af8a-de8c-4a62-8161-50e116f2586a/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 100822,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-07.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/95a62137-9c3d-4176-b2cd-401462b6ab02/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 164474,
+      "source_block": "main_card_gallery"
+    }
+  ]
+}

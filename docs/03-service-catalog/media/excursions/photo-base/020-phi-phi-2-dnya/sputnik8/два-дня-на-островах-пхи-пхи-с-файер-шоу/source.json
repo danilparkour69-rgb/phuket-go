@@ -1,0 +1,61 @@
+{
+  "source": "Sputnik8 Phuket",
+  "our_excursion": "020-phi-phi-2-dnya",
+  "our_title": "Пхи-Пхи 2 дня",
+  "partner_tour_title": "Два дня на островах Пхи-Пхи с файер-шоу",
+  "source_url": "https://www.sputnik8.com/ru/phuket/activities/86203-dva-dnya-na-ostrovah-phi-phi-s-fayer-shou",
+  "match_status": "exact",
+  "status": "partner_reference_local_copy",
+  "rule": "Only main card gallery images were saved. Review images were not downloaded.",
+  "publication_note": "Рабочие локальные референсы. К публикации будут подготовлены новые изображения.",
+  "images": [
+    {
+      "file": "gallery-01.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/05cf8237-4dc1-4f69-bcfa-a86a01ec8021/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 72278,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-03.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/5ba2b58f-ba00-4549-8898-6364252d8c0b/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 76442,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-05.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/e9f87f29-d9a4-465e-ab80-c87b72116326/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 47076,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-07.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/0249b128-a391-4d6c-b265-885febec53cf/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 78088,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-09.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/0c9d139b-16ee-44df-a1d9-72409959884e/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 34250,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-11.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/3b04cd30-c097-41ff-88a6-539f7765b0f9/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 309944,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-13.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/6a511540-ed34-4d30-b865-71bd339dd271/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 49996,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-76.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/93650c22-0573-41b7-a50c-a22a6df831cd/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 275812,
+      "source_block": "main_card_gallery"
+    }
+  ]
+}

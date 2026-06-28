@@ -1,0 +1,35 @@
+{
+  "source": "Phuket Horizon",
+  "our_excursion": "044-vechernie-shou",
+  "partner_tour_title": "Вечерние шоу",
+  "source_url": "https://phuket-horizon.ru/tours/show",
+  "status": "partner_reference_local_copy",
+  "rule": "Only main card and gallery images were saved. Review images were not downloaded.",
+  "publication_note": "Рабочие локальные референсы. К публикации будут подготовлены новые изображения.",
+  "images": [
+    {
+      "file": "gallery-01.webp",
+      "source_url": "https://phukethorizonserver-production.up.railway.app/files/01_fantasea.webp",
+      "bytes": 55952,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-02.webp",
+      "source_url": "https://phukethorizonserver-production.up.railway.app/files/1-siam-naramit.webp",
+      "bytes": 162242,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-03.webp",
+      "source_url": "https://phukethorizonserver-production.up.railway.app/files/1-simon-photo013.webp",
+      "bytes": 330212,
+      "source_block": "main_card_or_gallery"
+    },
+    {
+      "file": "gallery-04.webp",
+      "source_url": "https://phukethorizonserver-production.up.railway.app/files/carnaval-magic-phuket-horizon-1.webp",
+      "bytes": 65020,
+      "source_block": "main_card_or_gallery"
+    }
+  ]
+}

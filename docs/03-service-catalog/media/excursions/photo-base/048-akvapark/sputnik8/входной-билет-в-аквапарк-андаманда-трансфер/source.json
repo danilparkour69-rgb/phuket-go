@@ -1,0 +1,43 @@
+{
+  "source": "Sputnik8 Phuket",
+  "our_excursion": "048-akvapark",
+  "our_title": "Аквапарк",
+  "partner_tour_title": "Входной билет в аквапарк Андаманда + трансфер",
+  "source_url": "https://www.sputnik8.com/ru/phuket/activities/49848-vhodnoy-bilet-v-akvapark-andamanda-transfer",
+  "match_status": "exact",
+  "status": "partner_reference_local_copy",
+  "rule": "Only main card gallery images were saved. Review images were not downloaded.",
+  "publication_note": "Рабочие локальные референсы. К публикации будут подготовлены новые изображения.",
+  "images": [
+    {
+      "file": "gallery-01.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/5d70088c-577e-4fa1-867d-43225cb451b5/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 35020,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-02.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/15da40b4-81d8-4fdc-984a-42081d0f895b/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 35532,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-03.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/1a21b045-14b7-4cf4-93dd-028275c418dc/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 165496,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-04.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/7a0e2f7b-5286-4f13-b6f7-f5cabb54e05a/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 68614,
+      "source_block": "main_card_gallery"
+    },
+    {
+      "file": "gallery-05.webp",
+      "source_url": "https://7d9e88a8-f178-4098-bea5-48d960920605.selcdn.net/bc96eee6-e3cf-49e4-ab81-b319f43e0790/-/format/webp/-/quality/smart_retina/-/stretch/off/-/resize/1900x/",
+      "bytes": 144256,
+      "source_block": "main_card_gallery"
+    }
+  ]
+}
