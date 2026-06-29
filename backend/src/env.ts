@@ -53,6 +53,13 @@ const envSchema = z.object({
   SPACES_UPLOAD_URL_TTL_SECONDS: z.coerce.number().int().positive().max(7 * 24 * 60 * 60).default(15 * 60),
   SPACES_DOWNLOAD_URL_TTL_SECONDS: z.coerce.number().int().positive().max(7 * 24 * 60 * 60).default(5 * 60),
   SPACES_PUBLIC_CACHE_CONTROL: stringWithDefault('public, max-age=31536000, immutable'),
+  TRIPADVISOR_ALLOW_REFRESH: booleanStringSchema,
+  TRIPADVISOR_API_KEY: optionalStringSchema,
+  TRIPADVISOR_API_BASE_URL: stringWithDefault('https://api.content.tripadvisor.com/api/v1'),
+  TRIPADVISOR_SYNC_STALE_HOURS: z.coerce.number().int().nonnegative().default(24),
+  TRIPADVISOR_MAX_REQUESTS_PER_RUN: z.coerce.number().int().positive().default(10),
+  TRIPADVISOR_DAILY_MAX_REQUESTS: z.coerce.number().int().positive().default(200),
+  TRIPADVISOR_REQUEST_TIMEOUT_MS: z.coerce.number().int().positive().default(8000),
 }).superRefine((env, ctx) => {
   validateJwtSecret(env, ctx)
   validateCorsOrigins(env, ctx)

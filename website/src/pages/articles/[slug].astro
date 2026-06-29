@@ -1,0 +1,377 @@
+---
+import { loadArticleBySlug, loadArticles, type ArticleEntry } from '../../lib/articles'
+
+export const prerender = true
+
+export async function getStaticPaths() {
+  const articles = await loadArticles()
+  return articles.map((article) => ({
+    params: { slug: article.slug },
+  }))
+}
+
+const slug = Astro.params.slug
+
+if (!slug) {
+  throw new Error('Article slug is required')
+}
+
+const [article, allArticles] = await Promise.all([loadArticleBySlug(slug), loadArticles()])
+
+if (!article) {
+  throw new Error(`Article ${slug} not found`)
+}
+
+const relatedCards = allArticles.filter((item) => item.slug !== article.slug).slice(0, 3)
+
+const directLinkMap: Record<string, string> = {
+  FAQ: '/faq',
+  'Условия бронирования': '/booking-terms',
+  'Контакты Phuket Go': '/contacts',
+  Контакты: '/contacts',
+  'Экскурсии на Пхукете': '/',
+}
+
+function relatedHref(label: string, articles: ArticleEntry[]) {
+  const direct = directLinkMap[label]
+  if (direct) return direct
+
+  const match = articles.find((articleItem) => articleItem.h1 === label || articleItem.title === label)
+  return match ? `/articles/${match.slug}` : null
+}
+---
+
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{article.seoTitle}</title>
+    <meta name="description" content={article.seoDescription} />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="Phuket Go">
+        <span class="brand__mark">PG</span>
+        <span>Phuket Go</span>
+      </a>
+      <nav class="site-nav" aria-label="Основная навигация">
+        <a href="/">Каталог</a>
+        <a href="/articles">Статьи</a>
+        <a href="/faq">FAQ</a>
+        <a href="/contacts">Контакты</a>
+      </nav>
+    </header>
+
+    <main class="article-page">
+      <article class="article-shell">
+        <nav class="breadcrumbs" aria-label="Хлебные крошки">
+          <a href="/">Главная</a>
+          <span>/</span>
+          <a href="/articles">Статьи</a>
+          <span>/</span>
+          <span>{article.h1}</span>
+        </nav>
+
+        <header class="article-hero">
+          <p class="eyebrow">Phuket Go</p>
+          <h1>{article.h1}</h1>
+          <div class="article-hero__meta">
+            <span>{article.readTimeMinutes} мин чтения</span>
+            <span>Полезный материал перед поездкой</span>
+          </div>
+          <p class="lead">{article.seoDescription}</p>
+        </header>
+
+        <section class="article-intro">
+          {article.intro.map((paragraph) => (
+            <p>{paragraph}</p>
+          ))}
+        </section>
+
+        <section class="article-body">
+          {article.sections.map((section) => (
+            <section class="content-block">
+              <h2>{section.heading}</h2>
+              {section.paragraphs.map((paragraph) => (
+                <p>{paragraph}</p>
+              ))}
+              {section.bullets.length > 0 ? (
+                <ul>
+                  {section.bullets.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+              ) : null}
+            </section>
+          ))}
+        </section>
+
+        {article.relatedLinks.length > 0 ? (
+          <section class="link-block" aria-labelledby="related-links-title">
+            <div class="section-heading">
+              <h2 id="related-links-title">Полезно открыть дальше</h2>
+            </div>
+            <div class="chip-list">
+              {article.relatedLinks.map((label) => {
+                const href = relatedHref(label, allArticles)
+                return href ? (
+                  <a class="chip-link" href={href}>{label}</a>
+                ) : (
+                  <span class="chip-link chip-link--muted">{label}</span>
+                )
+              })}
+            </div>
+          </section>
+        ) : null}
+
+        {article.sources.length > 0 ? (
+          <section class="sources-block" aria-labelledby="sources-title">
+            <div class="section-heading">
+              <h2 id="sources-title">Источники</h2>
+            </div>
+            <ul class="sources-list">
+              {article.sources.map((source) => (
+                <li>
+                  <a href={source.url} rel="noreferrer noopener" target="_blank">{source.label}</a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
+
+        <section class="cta-panel" aria-labelledby="cta-title">
+          <div>
+            <p class="eyebrow">Дальше по делу</p>
+            <h2 id="cta-title">Выберите экскурсию и переходите к маршруту</h2>
+            <p>
+              Когда общая картина уже понятна, проще перейти в каталог и открыть конкретную
+              экскурсию под ваш формат отдыха.
+            </p>
+          </div>
+          <div class="cta-panel__actions">
+            <a class="cta-primary" href="/">Открыть каталог</a>
+            <a class="cta-secondary" href="/articles">Все статьи</a>
+          </div>
+        </section>
+      </article>
+
+      {relatedCards.length > 0 ? (
+        <section class="related-articles" aria-labelledby="related-articles-title">
+          <div class="section-heading">
+            <h2 id="related-articles-title">Похожие материалы</h2>
+            <a href="/articles">Смотреть все</a>
+          </div>
+          <div class="related-grid">
+            {relatedCards.map((item) => (
+              <article class="related-card">
+                <span>{item.readTimeMinutes} мин чтения</span>
+                <h3>
+                  <a href={`/articles/${item.slug}`}>{item.h1}</a>
+                </h3>
+                <p>{item.summary}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
+    </main>
+  </body>
+</html>
+
+<style>
+  :root {
+    color-scheme: light;
+    --page-bg: #f7f6f2;
+    --surface: #ffffff;
+    --surface-muted: #f0ede5;
+    --text: #1f1f1c;
+    --text-soft: #5e5a52;
+    --line: rgba(31, 31, 28, 0.12);
+    --accent: #1f1f1c;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--page-bg);
+    color: var(--text);
+  }
+  a { color: inherit; text-decoration: none; }
+
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 24px;
+    background: color-mix(in srgb, var(--page-bg) 88%, white 12%);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--line);
+  }
+  .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; }
+  .brand__mark {
+    width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 999px; background: var(--accent); color: white; font-size: 12px;
+  }
+  .site-nav { display: inline-flex; align-items: center; gap: 18px; font-size: 14px; }
+
+  .article-page {
+    width: min(1120px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 28px 0 72px;
+  }
+
+  .article-shell {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 28px;
+    padding: 28px;
+  }
+
+  .breadcrumbs {
+    display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-soft); margin-bottom: 18px;
+  }
+  .eyebrow {
+    margin: 0 0 8px; font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--text-soft);
+  }
+  h1 {
+    margin: 0;
+    font-size: clamp(34px, 5vw, 56px);
+    line-height: 1;
+  }
+  .article-hero__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .article-hero__meta span,
+  .related-card span,
+  .chip-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px;
+    padding: 0 12px;
+    border-radius: 999px;
+    background: var(--surface-muted);
+    color: var(--text-soft);
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .lead {
+    max-width: 760px; margin: 18px 0 0; font-size: 18px; line-height: 1.6; color: var(--text-soft);
+  }
+  .article-intro,
+  .article-body {
+    margin-top: 28px;
+  }
+  .article-intro p,
+  .content-block p,
+  .cta-panel p:last-child,
+  .related-card p {
+    margin: 0;
+    color: var(--text-soft);
+    line-height: 1.7;
+  }
+  .article-intro p + p,
+  .content-block p + p {
+    margin-top: 14px;
+  }
+  .content-block + .content-block,
+  .link-block,
+  .sources-block {
+    margin-top: 28px;
+  }
+  .content-block h2,
+  .section-heading h2,
+  .cta-panel h2 {
+    margin: 0 0 14px;
+  }
+  .content-block ul,
+  .sources-list {
+    margin: 14px 0 0;
+    padding-left: 18px;
+    color: var(--text-soft);
+    line-height: 1.7;
+  }
+  .section-heading {
+    display: flex; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 18px;
+  }
+  .section-heading h2 { margin: 0; font-size: 28px; }
+  .section-heading a { font-size: 14px; color: var(--text-soft); }
+  .chip-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .chip-link { background: var(--surface-muted); }
+  .chip-link--muted { opacity: 0.72; }
+  .sources-list a { text-decoration: underline; text-underline-offset: 3px; }
+  .cta-panel {
+    margin-top: 32px;
+    padding: 24px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .cta-panel__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 12px;
+  }
+  .cta-primary,
+  .cta-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0 18px;
+    border-radius: 999px;
+    font-weight: 600;
+  }
+  .cta-primary { background: var(--accent); color: white; }
+  .cta-secondary { border: 1px solid var(--line); background: white; }
+
+  .related-articles { margin-top: 24px; }
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .related-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 20px;
+  }
+  .related-card h3 { margin: 16px 0 12px; }
+
+  @media (max-width: 920px) {
+    .related-grid { grid-template-columns: 1fr; }
+    .cta-panel {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .cta-panel__actions { justify-content: flex-start; }
+  }
+  @media (max-width: 720px) {
+    .site-header { padding: 16px; flex-wrap: wrap; }
+    .article-page { width: min(100% - 24px, 1120px); padding-bottom: 56px; }
+    .article-shell { padding: 20px; border-radius: 22px; }
+    h1 { font-size: 34px; }
+    .lead { font-size: 16px; }
+    .section-heading { flex-direction: column; align-items: flex-start; }
+  }
+</style>

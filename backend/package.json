@@ -1,5 +1,5 @@
 {
-  "name": "@web-app-demo/backend",
+  "name": "@phuket-go/backend",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -13,7 +13,7 @@
     "build": "bun run prisma:generate && tsc --noEmit",
     "typecheck": "bun run prisma:generate && tsc --noEmit",
     "test": "bun run test:unit && bun run test:integration",
-    "test:unit": "bun test src/env.test.ts src/db.test.ts src/contracts.test.ts src/cron.test.ts src/auth/access-tokens.test.ts src/auth/passwords.test.ts src/auth/refresh-tokens.test.ts src/auth/routes.test.ts src/storage/service.test.ts",
+    "test:unit": "bun run prisma:generate && bun test src/env.test.ts src/db.test.ts src/contracts.test.ts src/cron.test.ts src/auth/access-tokens.test.ts src/auth/passwords.test.ts src/auth/refresh-tokens.test.ts src/auth/routes.test.ts src/media/routes.test.ts src/storage/service.test.ts",
     "test:integration": "bun scripts/test-integration.mjs",
     "smoke:docker": "bun scripts/docker-smoke.mjs",
     "prisma": "prisma",
@@ -21,6 +21,9 @@
     "prisma:generate:raw": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:deploy": "prisma migrate deploy",
+    "tripadvisor:save-key": "bun run prisma:generate && bun src/tripadvisor/save-key.ts",
+    "tripadvisor:sync": "bun run prisma:generate && bun src/cron.ts -- tripadvisor:sync-ratings",
+    "seed:catalog": "bun run prisma:generate && bun scripts/seed-catalog.ts",
     "prisma:validate": "prisma validate"
   },
   "dependencies": {
@@ -30,7 +33,7 @@
     "@hono/zod-validator": "^0.8.0",
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
-    "@web-app-demo/contracts": "workspace:*",
+    "@phuket-go/contracts": "workspace:*",
     "dotenv": "^17.4.2",
     "hono": "^4.12.19",
     "jose": "^6.2.3",

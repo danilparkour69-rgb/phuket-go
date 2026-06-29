@@ -7,21 +7,123 @@ datasource db {
   provider = "postgresql"
 }
 
+enum UserStatus {
+  ACTIVE  @map("active")
+  BLOCKED @map("blocked")
+
+  @@map("user_status")
+}
+
+enum PartnerStatus {
+  ACTIVE @map("active")
+  HIDDEN @map("hidden")
+  DEBT   @map("debt")
+
+  @@map("partner_status")
+}
+
+enum CommissionType {
+  PER_PERSON @map("per_person")
+  FIXED      @map("fixed")
+  PERCENT    @map("percent")
+
+  @@map("commission_type")
+}
+
+enum ExcursionStatus {
+  DRAFT     @map("draft")
+  PUBLISHED @map("published")
+  HIDDEN    @map("hidden")
+
+  @@map("excursion_status")
+}
+
+enum ExcursionPhotoImageType {
+  REAL         @map("real")
+  AI_ENHANCED  @map("ai_enhanced")
+  AI_GENERATED @map("ai_generated")
+
+  @@map("excursion_photo_image_type")
+}
+
+enum LeadStatus {
+  NEW             @map("new")
+  WAITING_PARTNER @map("waiting_partner")
+  ACCEPTED        @map("accepted")
+  DECLINED        @map("declined")
+  COMPLETED       @map("completed")
+  CANCELLED       @map("cancelled")
+
+  @@map("lead_status")
+}
+
+enum LeadSource {
+  WEBSITE  @map("website")
+  ARTICLE  @map("article")
+  ADMIN    @map("admin")
+  TELEGRAM @map("telegram")
+
+  @@map("lead_source")
+}
+
+enum LeadContactChannel {
+  TELEGRAM @map("telegram")
+  WHATSAPP @map("whatsapp")
+  MAX      @map("max")
+
+  @@map("lead_contact_channel")
+}
+
+enum LeadActorType {
+  SYSTEM  @map("system")
+  USER    @map("user")
+  ADMIN   @map("admin")
+  PARTNER @map("partner")
+
+  @@map("lead_actor_type")
+}
+
+enum TripAdvisorMatchStatus {
+  NOT_MATCHED  @map("not_matched")
+  MATCHED      @map("matched")
+  APPROVED     @map("approved")
+  DISABLED     @map("disabled")
+
+  @@map("tripadvisor_match_status")
+}
+
+enum TripAdvisorSyncStatus {
+  NOT_STARTED @map("not_started")
+  SUCCESS     @map("success")
+  ERROR       @map("error")
+  SKIPPED     @map("skipped")
+
+  @@map("tripadvisor_sync_status")
+}
+
 model User {
-  id           String        @id @default(dbgenerated("uuidv7()")) @db.Uuid
-  email        String        @unique
-  passwordHash String        @map("password_hash")
-  displayName  String?       @map("display_name")
-  createdAt    DateTime      @default(now()) @map("created_at")
-  updatedAt    DateTime      @updatedAt @map("updated_at")
-  sessions     AuthSession[]
+  id               String        @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  email            String        @unique
+  passwordHash     String        @map("password_hash")
+  displayName      String?       @map("display_name")
+  phone            String?
+  telegramUsername String?       @map("telegram_username")
+  telegramChatId   String?       @map("telegram_chat_id")
+  pointsBalance    Int           @default(100) @map("points_balance")
+  level            Int           @default(1)
+  isAdmin          Boolean       @default(false) @map("is_admin")
+  status           UserStatus    @default(ACTIVE)
+  createdAt        DateTime      @default(now()) @map("created_at")
+  updatedAt        DateTime      @updatedAt @map("updated_at")
+  sessions         AuthSession[]
+  leads            Lead[]
 
   @@map("users")
 }
 
 model AuthSession {
   id               String    @id @default(dbgenerated("uuidv7()")) @db.Uuid
-  userId           String    @db.Uuid @map("user_id")
+  userId           String    @map("user_id") @db.Uuid
   refreshTokenHash String    @unique(map: "auth_sessions_refresh_token_hash_key") @map("refresh_token_hash")
   expiresAt        DateTime  @map("expires_at")
   revokedAt        DateTime? @map("revoked_at")
@@ -34,4 +136,190 @@ model AuthSession {
   @@index([userId], map: "auth_sessions_user_id_idx")
   @@index([expiresAt], map: "auth_sessions_expires_at_idx")
   @@map("auth_sessions")
+}
+
+model Partner {
+  id                   String         @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  name                 String
+  contactName          String?        @map("contact_name")
+  phone                String?
+  telegramUsername     String?        @map("telegram_username")
+  telegramChatId       String?        @map("telegram_chat_id")
+  commissionType       CommissionType @default(PER_PERSON) @map("commission_type")
+  defaultCommissionThb Int            @default(100) @map("default_commission_thb")
+  status               PartnerStatus  @default(ACTIVE)
+  adminNote            String?        @map("admin_note")
+  createdAt            DateTime       @default(now()) @map("created_at")
+  updatedAt            DateTime       @updatedAt @map("updated_at")
+  excursions           Excursion[]
+  leads                Lead[]
+
+  @@map("partners")
+}
+
+model ExcursionCategory {
+  id          String          @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  slug        String          @unique
+  title       String
+  description String?
+  sortOrder   Int             @default(0) @map("sort_order")
+  status      ExcursionStatus @default(PUBLISHED)
+  createdAt   DateTime        @default(now()) @map("created_at")
+  updatedAt   DateTime        @updatedAt @map("updated_at")
+  excursions  Excursion[]
+
+  @@index([status, sortOrder], map: "excursion_categories_status_sort_order_idx")
+  @@map("excursion_categories")
+}
+
+model Excursion {
+  id                 String            @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  slug               String            @unique
+  title              String
+  categoryId         String            @map("category_id") @db.Uuid
+  shortEmotion       String            @map("short_emotion")
+  description        String
+  route              String?
+  duration           String?
+  priceFromThb       Int               @map("price_from_thb")
+  priceFromRub       Int               @map("price_from_rub")
+  rubRate            Decimal           @map("rub_rate") @db.Decimal(10, 4)
+  rateDate           DateTime          @map("rate_date")
+  currencyNote       String            @map("currency_note")
+  included           Json?
+  notIncluded        Json?             @map("not_included")
+  takeWithYou        Json?             @map("take_with_you")
+  restrictions       Json?
+  insurance          String
+  guideLanguageNote  String?           @map("guide_language_note")
+  cancellationPolicy String?           @map("cancellation_policy")
+  partnerId          String            @map("partner_id") @db.Uuid
+  status             ExcursionStatus   @default(DRAFT)
+  seoTitle           String            @map("seo_title")
+  seoDescription     String            @map("seo_description")
+  sourceUrl          String?           @map("source_url")
+  adminNote          String?           @map("admin_note")
+  tripadvisorLocationId       String?      @map("tripadvisor_location_id")
+  tripadvisorLocationName     String?      @map("tripadvisor_location_name")
+  tripadvisorRating           Decimal?     @map("tripadvisor_rating") @db.Decimal(3, 2)
+  tripadvisorReviewCount      Int?         @map("tripadvisor_review_count")
+  tripadvisorRanking          Int?         @map("tripadvisor_ranking")
+  tripadvisorWebUrl           String?      @map("tripadvisor_web_url")
+  tripadvisorRatingImageUrl   String?      @map("tripadvisor_rating_image_url")
+  tripadvisorLastSyncedAt      DateTime?    @map("tripadvisor_last_synced_at")
+  tripadvisorMatchStatus       TripAdvisorMatchStatus @default(NOT_MATCHED) @map("tripadvisor_match_status")
+  tripadvisorSyncStatus        TripAdvisorSyncStatus @default(NOT_STARTED) @map("tripadvisor_sync_status")
+  tripadvisorSyncMessage       String?      @map("tripadvisor_sync_message")
+  tripadvisorDisplayAllowed    Boolean      @default(false) @map("tripadvisor_display_allowed")
+  createdAt          DateTime          @default(now()) @map("created_at")
+  updatedAt          DateTime          @updatedAt @map("updated_at")
+  category           ExcursionCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict, map: "excursions_category_id_fkey")
+  partner            Partner           @relation(fields: [partnerId], references: [id], onDelete: Restrict, map: "excursions_partner_id_fkey")
+  photos             ExcursionPhoto[]
+  leads              Lead[]
+
+  @@index([categoryId, status], map: "excursions_category_id_status_idx")
+  @@index([partnerId], map: "excursions_partner_id_idx")
+  @@index([status, priceFromRub], map: "excursions_status_price_from_rub_idx")
+  @@map("excursions")
+}
+
+model ExcursionPhoto {
+  id              String                  @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  excursionId     String                  @map("excursion_id") @db.Uuid
+  url             String
+  storageProvider String                  @map("storage_provider")
+  imageType       ExcursionPhotoImageType @default(REAL) @map("image_type")
+  alt             String?
+  isCover         Boolean                 @default(false) @map("is_cover")
+  block           String?
+  role            String?
+  sortOrder       Int                     @default(0) @map("sort_order")
+  sourceUrl       String?                 @map("source_url")
+  sourceType      String?                 @map("source_type")
+  usageAllowed    Boolean                 @default(true) @map("usage_allowed")
+  needsReview     Boolean                 @default(false) @map("needs_review")
+  createdAt       DateTime                @default(now()) @map("created_at")
+  updatedAt       DateTime                @updatedAt @map("updated_at")
+  excursion       Excursion               @relation(fields: [excursionId], references: [id], onDelete: Cascade, map: "excursion_photos_excursion_id_fkey")
+
+  @@index([excursionId, sortOrder], map: "excursion_photos_excursion_id_sort_order_idx")
+  @@map("excursion_photos")
+}
+
+model Lead {
+  id               String              @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  publicNumber     String              @unique @map("public_number")
+  source           LeadSource          @default(WEBSITE)
+  status           LeadStatus          @default(NEW)
+  customerName     String              @map("customer_name")
+  customerPhone    String              @map("customer_phone")
+  customerTelegram String?             @map("customer_telegram")
+  contactChannel   LeadContactChannel? @map("contact_channel")
+  requestedDate    DateTime?           @map("requested_date")
+  peopleCount      Int?                @map("people_count")
+  comment          String?
+  sourcePage       String?             @map("source_page")
+  userId           String?             @map("user_id") @db.Uuid
+  excursionId      String              @map("excursion_id") @db.Uuid
+  excursionTitle   String              @map("excursion_title_snapshot")
+  partnerId        String              @map("partner_id") @db.Uuid
+  priceRub         Int?                @map("price_rub_snapshot")
+  priceThb         Int?                @map("price_thb_snapshot")
+  commissionThb    Int                 @default(100) @map("commission_per_person_thb")
+  commissionTotal  Int?                @map("commission_total_thb")
+  adminNote        String?             @map("admin_note")
+  createdAt        DateTime            @default(now()) @map("created_at")
+  updatedAt        DateTime            @updatedAt @map("updated_at")
+  user             User?               @relation(fields: [userId], references: [id], onDelete: SetNull, map: "leads_user_id_fkey")
+  excursion        Excursion           @relation(fields: [excursionId], references: [id], onDelete: Restrict, map: "leads_excursion_id_fkey")
+  partner          Partner             @relation(fields: [partnerId], references: [id], onDelete: Restrict, map: "leads_partner_id_fkey")
+  statusHistory    LeadStatusHistory[]
+
+  @@index([status, createdAt], map: "leads_status_created_at_idx")
+  @@index([userId, createdAt], map: "leads_user_id_created_at_idx")
+  @@index([excursionId], map: "leads_excursion_id_idx")
+  @@index([partnerId], map: "leads_partner_id_idx")
+  @@map("leads")
+}
+
+model LeadStatusHistory {
+  id         String        @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  leadId     String        @map("lead_id") @db.Uuid
+  fromStatus LeadStatus?   @map("from_status")
+  toStatus   LeadStatus    @map("to_status")
+  actorType  LeadActorType @default(SYSTEM) @map("actor_type")
+  actorId    String?       @map("actor_id") @db.Uuid
+  comment    String?
+  createdAt  DateTime      @default(now()) @map("created_at")
+  lead       Lead          @relation(fields: [leadId], references: [id], onDelete: Cascade, map: "lead_status_history_lead_id_fkey")
+
+  @@index([leadId, createdAt], map: "lead_status_history_lead_id_created_at_idx")
+  @@map("lead_status_history")
+}
+
+model IntegrationCredential {
+  id                 String   @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  provider           String   @unique
+  apiKey             String   @map("api_key")
+  isActive           Boolean  @default(true) @map("is_active")
+  lastUsedAt         DateTime? @map("last_used_at")
+  lastValidationAt   DateTime? @map("last_validation_at")
+  lastValidationNote String?  @map("last_validation_note")
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+
+  @@map("integration_credentials")
+}
+
+model IntegrationApiUsage {
+  id            String   @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  provider      String
+  budgetDate    DateTime @map("budget_date")
+  requestCount  Int      @default(0) @map("request_count")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@unique([provider, budgetDate])
+  @@map("integration_api_usage")
 }

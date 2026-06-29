@@ -1,0 +1,4695 @@
+---
+import {
+  cardImageUrls,
+  categoryTitle,
+  formatRub,
+  formatThb,
+  galleryImages,
+  loadCatalog,
+  loadExcursion,
+  loadExcursionReviews,
+} from '../../lib/catalog'
+import type { ExcursionCardDto } from '@phuket-go/contracts'
+
+export const prerender = true
+
+export async function getStaticPaths() {
+  const catalog = await loadCatalog()
+  if (catalog.status !== 'ready') return []
+
+  return catalog.excursions.map((excursion) => ({
+    params: { slug: excursion.slug },
+  }))
+}
+
+const slug = Astro.params.slug
+
+if (!slug) {
+  throw new Error('Excursion slug is required')
+}
+
+const [{ apiUrl, excursion }, catalog, { reviews: excursionReviews }] = await Promise.all([
+  loadExcursion(slug),
+  loadCatalog(),
+  loadExcursionReviews(slug),
+])
+const images = galleryImages(excursion, apiUrl)
+const galleryPreview = images.slice(0, 6)
+const mobileGalleryPreview = images.slice(0, 12)
+const railGallery = images.slice(0, 8)
+const mainImage = images[0] ?? null
+const pageTitle = `${excursion.title} - Phuket Go`
+const pageDescription = excursion.shortEmotion
+const descriptionParagraphs = excursion.description
+  .split(/\n{2,}/)
+  .map((paragraph) => paragraph.trim())
+  .filter(Boolean)
+const routeItems =
+  excursion.route
+    ?.split('\n')
+    .map((item) => item.replace(/^- /, '').trim())
+    .filter(Boolean) ?? []
+const includedItems = publicList(excursion.included)
+const notIncludedItems = publicList(excursion.notIncluded)
+const takeWithYouItems = publicList(excursion.takeWithYou)
+const restrictionItems = publicList(excursion.restrictions)
+const previewCatalogExcursions =
+  catalog.status === 'ready'
+    ? catalog.excursions.map((item) => ({
+        ...item,
+        imageUrl: firstCardImage(item),
+      }))
+    : []
+const currentDiscoveryCard = {
+  id: excursion.id,
+  slug: excursion.slug,
+  title: excursion.title,
+  categorySlug: excursion.categorySlug,
+  shortEmotion: excursion.shortEmotion,
+  priceFromRub: excursion.priceFromRub,
+  priceFromThb: excursion.priceFromThb,
+  duration: excursion.duration,
+  imageUrl: mainImage?.absoluteUrl ?? firstCardImage(excursion),
+  externalRating: excursion.externalRating,
+  badge: 'Текущая экскурсия',
+}
+const similarExperienceCards = [
+  currentDiscoveryCard,
+  ...previewCatalogExcursions
+    .filter((item) => item.slug !== excursion.slug && item.categorySlug === excursion.categorySlug)
+    .slice(0, 7)
+    .map((item) => ({
+      ...item,
+      badge: null,
+    })),
+]
+const recommendationPool = previewCatalogExcursions.filter(
+  (item) => item.slug !== excursion.slug && !similarExperienceCards.some((card) => card.slug === item.slug),
+)
+const alsoBoughtCards = [
+  ...recommendationPool.filter((item) => item.categorySlug === excursion.categorySlug),
+  ...recommendationPool.filter((item) => item.categorySlug !== excursion.categorySlug),
+]
+  .slice(0, 8)
+  .map((item) => ({
+    ...item,
+    badge: null,
+  }))
+const recentlyViewedCards = [currentDiscoveryCard]
+const exploreLinkGroups = [
+  {
+    title: 'Похожие форматы отдыха',
+    links: [
+      { label: 'Морские экскурсии', href: '/#sea-tours' },
+      { label: 'Островные маршруты', href: '/excursions/phi-phi' },
+      { label: 'Однодневные туры', href: '/excursions/11-ostrovov' },
+      { label: 'Катера и лодки', href: '/excursions/yahty-lodki-katera' },
+      { label: 'Пляжные маршруты', href: '/excursions/racha-koral' },
+    ],
+  },
+  {
+    title: 'Что посмотреть на Пхукете',
+    links: [
+      { label: 'Остров Джеймса Бонда', href: '/excursions/dzheyms-bond' },
+      { label: 'Пхи-Пхи', href: '/excursions/phi-phi' },
+      { label: 'Симиланские острова', href: '/excursions/similany' },
+      { label: 'Старый город Пхукета', href: '/excursions/siti-tur' },
+      { label: 'Бангла Boxing', href: '/excursions/bangla-boxing' },
+    ],
+  },
+  {
+    title: 'Еще места рядом с Пхукетом',
+    links: [
+      { label: 'Краби', href: '/excursions/krabi' },
+      { label: 'Пханг Нга', href: '/excursions/phangna' },
+      { label: 'Као Лак', href: '/excursions/kaolak' },
+      { label: 'Чео Лан', href: '/excursions/cheolan-1-den' },
+      { label: 'Сурин', href: '/excursions/surin' },
+    ],
+  },
+  {
+    title: 'Ближайшие направления',
+    links: [
+      { label: 'Пхи-Пхи', href: '/excursions/phi-phi' },
+      { label: 'Рача', href: '/excursions/racha-koral' },
+      { label: 'Корал', href: '/excursions/koral-1-den' },
+      { label: 'Рок и Ха', href: '/excursions/rok-ha' },
+      { label: 'Краби', href: '/excursions/krabi-ostrova-bez-voln-i-zakat' },
+    ],
+  },
+  {
+    title: 'Еще экскурсии на Пхукете',
+    links: [
+      { label: 'Рафтинг', href: '/excursions/rafting' },
+      { label: 'Полет Ханумана', href: '/excursions/polet-hanumana' },
+      { label: 'Дельфинарий', href: '/excursions/delfinariy' },
+      { label: 'Hype Yacht', href: '/excursions/hype-yacht' },
+      { label: 'Сити-тур', href: '/excursions/siti-tur' },
+    ],
+  },
+]
+const footerColumns = [
+  {
+    title: 'Phuket Go',
+    links: [
+      { label: 'Все экскурсии', href: '/' },
+      { label: 'Статьи', href: '/articles' },
+      { label: 'FAQ', href: '/faq' },
+      { label: 'Контакты', href: '/contacts' },
+      { label: 'Условия бронирования', href: '/booking-terms' },
+      { label: 'Морские туры', href: '/#sea-tours' },
+      { label: 'Наземные маршруты', href: '/#land-tours' },
+    ],
+  },
+  {
+    title: 'Помощь',
+    links: [
+      { label: 'Как проходит бронь', href: '#booking-form' },
+      { label: 'Забронировать', href: '#booking-form' },
+      { label: 'Отзывы', href: '#reviews' },
+    ],
+  },
+  {
+    title: 'Направления',
+    links: [
+      { label: 'Пхи-Пхи', href: '/excursions/phi-phi' },
+      { label: 'Симиланы', href: '/excursions/similany' },
+      { label: 'Чеолан', href: '/excursions/cheolan-1-den' },
+    ],
+  },
+]
+const quickFacts = [
+  { label: 'Длительность', value: excursion.duration ?? 'По программе' },
+  { label: 'Трансфер', value: 'Забор из отеля' },
+  { label: 'Билет', value: 'Мобильное подтверждение' },
+  { label: 'Язык', value: publicText(excursion.guideLanguageNote ?? 'Русский гид') },
+]
+const promotedExcursions =
+  catalog.status === 'ready'
+    ? catalog.excursions
+        .filter((item) => item.slug !== excursion.slug)
+        .slice(0, 4)
+        .map((item) => ({
+          ...item,
+          imageUrl: firstCardImage(item),
+        }))
+    : []
+const overviewHighlights = [
+  `Длительность: ${excursion.duration ?? 'по программе'}`,
+  'Трансфер и детали забора подтверждаются после заявки',
+  'Русский гид сопровождает маршрут и помогает на месте',
+  'Бесплатное бронирование: менеджер подтверждает детали после заявки',
+]
+const hasPickupDetails = true
+const photoCountLabel = images.length > 0 ? `${images.length} фото` : 'Фото готовятся'
+const reviewSourceSummary =
+  excursionReviews && (excursionReviews.reviewCount !== null || excursionReviews.score !== null)
+    ? {
+        rating: excursionReviews.score,
+        url: excursionReviews.sourceUrl,
+        reviewCount: excursionReviews.reviewCount ?? 0,
+        source: 'TripAdvisor',
+        sourceKey: 'tripadvisor',
+      }
+    : null
+
+const hasTripAdvisorSummary = Boolean(reviewSourceSummary)
+const trustSummary = hasTripAdvisorSummary ? reviewSourceSummary : null
+const hasTrustSummary = Boolean(trustSummary)
+
+const formattedTrustRating =
+  typeof trustSummary?.rating === 'number' ? trustSummary.rating.toFixed(1) : 'Без оценок'
+const formattedReviewCount =
+  typeof trustSummary?.reviewCount === 'number' ? trustSummary.reviewCount.toString() : '0'
+const trustSourceLabel = trustSummary?.source ?? 'TripAdvisor'
+const trustSourceUrl = trustSummary?.url ?? '#reviews'
+const visibleReviewCount = Number(formattedReviewCount) || 0
+const normalizedReviewCount = Number.isFinite(visibleReviewCount) ? Math.min(visibleReviewCount, 999) : 0
+const trustSummaryText = hasTrustSummary ? `${formattedReviewCount} отзывов` : 'Отзывы в пути'
+const displayReviewItems = excursionReviews?.items ?? []
+const featuredReview = displayReviewItems[0] ?? null
+const travelerLoveTags = ['Все', categoryTitle(excursion.categorySlug), 'Русский гид']
+const travelerLoveCards = displayReviewItems.slice(0, 2)
+const reviewStarFilters = [
+  { key: 'all', label: 'Все', count: displayReviewItems.length },
+  ...[5, 4, 3, 2, 1].map((star) => ({
+    key: String(star),
+    label: `${star}★`,
+    count: displayReviewItems.filter((item) => Math.round(item.rating ?? 0) === star).length,
+  })),
+].filter((item) => item.key === 'all' || item.count > 0)
+const leadEndpoint = new URL('/api/catalog/leads', apiUrl).toString()
+const contactChannels = [
+  { value: 'telegram', label: 'Telegram' },
+  { value: 'whatsapp', label: 'WhatsApp' },
+  { value: 'max', label: 'Max' },
+]
+const initialGuestCount = 2
+
+const bottomMenuIconSet: Record<string, string> = {
+  includes:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>',
+  route:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11z"/><circle cx="12" cy="10" r="3"/></svg>',
+  photos:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m3 16 4-4 3 3 5-5 6 6"/></svg>',
+  reviews:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2.5 15.09 8.26 21.45 9.27 17 13.97 18.18 20.18 12 17.27 5.82 20.18 7 13.97 2.55 9.27 8.91 8.26 12 2.5"/></svg>',
+  booking:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4"/><path d="M8 3v4"/><path d="M3 9h18"/><path d="M7 13h2"/><path d="M11 17h2"/></svg>',
+}
+
+function menuIcon(key: string) {
+  return bottomMenuIconSet[key] ?? ''
+}
+
+const bottomMenuItems = [
+  {
+    key: 'includes',
+    label: 'Что включено',
+    icon: 'includes',
+    description: 'Питание, трансфер, страховка и прочее',
+    href: '#section-includes',
+    targetId: 'section-includes',
+    action: null,
+  },
+  {
+    key: 'route',
+    label: 'Что ожидать',
+    icon: 'route',
+    description: 'Как проходит день на месте',
+    href: '#section-itinerary',
+    targetId: 'section-itinerary',
+    action: null,
+  },
+  {
+    key: 'photos',
+    label: 'Фото',
+    icon: 'photos',
+    description: trustSummaryText,
+    href: '#photos',
+    targetId: 'photos',
+    action: null,
+  },
+  {
+    key: 'reviews',
+    label: 'Отзывы',
+    icon: 'reviews',
+    description: `Отзывы ${hasTripAdvisorSummary ? 'TripAdvisor' : 'по туризму'}`,
+    href: '#reviews',
+    targetId: 'reviews',
+    action: null,
+  },
+  {
+    key: 'booking',
+    label: 'Бронь',
+    icon: 'booking',
+    description: 'Оставить заявку',
+    href: '#booking-form',
+    targetId: 'booking-form',
+    action: 'booking',
+  },
+]
+
+const sectionNavItems = [
+  {
+    key: 'overview',
+    label: 'Обзор',
+    href: '#section-overview',
+    targetId: 'section-overview',
+  },
+  {
+    key: 'includes',
+    label: 'Что включено',
+    href: '#section-includes',
+    targetId: 'section-includes',
+  },
+  {
+    key: 'pickup',
+    label: 'Трансфер',
+    href: '#section-pickup',
+    targetId: 'section-pickup',
+  },
+  {
+    key: 'route',
+    label: 'Что ожидать',
+    href: '#section-itinerary',
+    targetId: 'section-itinerary',
+  },
+  {
+    key: 'details',
+    label: 'Доп. информация',
+    href: '#section-details',
+    targetId: 'section-details',
+  },
+  {
+    key: 'cancellation',
+    label: 'Отмена',
+    href: '#section-cancellation',
+    targetId: 'section-cancellation',
+  },
+  {
+    key: 'reviews',
+    label: 'Отзывы',
+    href: '#reviews',
+    targetId: 'reviews',
+  },
+]
+function formatReviewDate(value: string | null) {
+  if (!value) return null
+  const parsed = new Date(value)
+  if (Number.isNaN(parsed.getTime())) return value
+
+  return parsed.toLocaleDateString('ru-RU', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+  })
+}
+
+function ratingStars(value: number | null | undefined) {
+  const safe = value ?? 0
+  const rounded = Math.max(0, Math.min(5, Math.round(safe * 2) / 2))
+  const full = Math.floor(rounded)
+  const half = rounded % 1 === 0.5
+  const empty = 5 - full - (half ? 1 : 0)
+  return '★'.repeat(full) + (half ? '☆' : '') + '☆'.repeat(Math.max(0, empty))
+}
+
+function pluralizeRu(count: number, one: string, few: string, many: string) {
+  const mod10 = count % 10
+  const mod100 = count % 100
+  if (mod10 === 1 && mod100 !== 11) return one
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return few
+  return many
+}
+
+function firstCardImage(item: ExcursionCardDto) {
+  const [url] = cardImageUrls(item, apiUrl)
+  return url ?? null
+}
+
+function publicList(items: string[]) {
+  return items.flatMap(splitPublicItem).map(publicText).filter(Boolean)
+}
+
+function splitPublicItem(item: string) {
+  if (item.length < 90) return [item]
+  return item
+    .split(/,\s*/)
+    .map((part) => part.trim())
+    .filter((part) => part.length > 0)
+}
+
+function publicText(value: string) {
+  const normalized = value.trim().replace(/\.$/, '')
+  if (normalized.toLowerCase().includes('англоязычный гид')) {
+    return 'Русский гид'
+  }
+
+  return normalized
+}
+
+function discoveryLocationLabel(_categorySlug: string) {
+  if (_categorySlug === 'sea-tours' || _categorySlug === 'water-transport') {
+    return 'Пхукет и острова Андаманского моря'
+  }
+
+  if (_categorySlug === 'land-tours' || _categorySlug === 'active') {
+    return 'Пхукет и соседние провинции'
+  }
+
+  return 'Пхукет, Таиланд'
+}
+---
+
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/">Phuket Go</a>
+      <div class="search-pill" aria-label="Поиск">
+        <span></span>
+        <strong>Пхукет</strong>
+      </div>
+      <nav aria-label="Основная навигация">
+        <a href="/">Экскурсии</a>
+        <a href="/articles">Статьи</a>
+        <a href="/faq">FAQ</a>
+        <a href="/contacts">Контакты</a>
+        <a href="/booking-terms">Условия</a>
+        <a href="/#sea-tours">Морские туры</a>
+        <a href="/#land-tours">Наземные туры</a>
+      </nav>
+    </header>
+
+    <main class="tour-page">
+      <nav class="breadcrumbs" aria-label="Хлебные крошки">
+        <a href="/">Все экскурсии на Пхукете</a>
+        <span>/</span>
+        <a href="/">Главная</a>
+        <span>/</span>
+        <a href="/">{categoryTitle(excursion.categorySlug)}</a>
+        <span>/</span>
+        <span>{excursion.title}</span>
+      </nav>
+    
+    <section class="product-head" aria-labelledby="page-title">
+        <div class="badge-row" aria-label="Преимущества">
+          <span>Бесплатное бронирование</span>
+          <span>{categoryTitle(excursion.categorySlug)}</span>
+          <span>Пхукет, Таиланд</span>
+        </div>
+        <h1 id="page-title">{excursion.title}</h1>
+      <div class="trust-row">
+        <div class="rating-link-wrap">
+          {hasTrustSummary ? (
+            <>
+              <a
+                class="rating-link"
+                href={trustSourceUrl}
+                rel="noreferrer noopener"
+                target="_blank"
+                aria-label={`Открыть рейтинг и отзывы ${trustSourceLabel}`}
+              >
+                <span class="rating" aria-label={`Рейтинг ${trustSummary?.rating ?? 0}`}>
+                  {ratingStars(trustSummary?.rating)}
+                </span>
+                <strong>{formattedTrustRating}</strong>
+              </a>
+              <a href="#reviews" class="rating-link__meta">
+                <span>{formattedReviewCount}</span>
+                <span> отзывов</span>
+                <span aria-hidden="true"> • </span>
+                <span>{trustSourceLabel}</span>
+              </a>
+            </>
+          ) : (
+            <>
+              <span class="rating" aria-label="Блок рейтинга">★★★★★ Без оценок</span>
+              <a href="#reviews">Отзывы скоро</a>
+            </>
+          )}
+        </div>
+        <span class="divider" aria-hidden="true"></span>
+        <strong class="reviews-meta">Подходит для активного дня</strong>
+        <span class="divider" aria-hidden="true"></span>
+        <strong>Пхукет, Таиланд</strong>
+      </div>
+      </section>
+
+      <section class="product-shell" aria-label="Карточка экскурсии">
+        <div class="product-main">
+          <section class="viator-gallery" aria-label="Фото экскурсии">
+          <script
+            id="gallery-data"
+            type="application/json"
+            is:inline
+            set:html={JSON.stringify(
+              images.map((image, index) => ({
+                index,
+                url: image.absoluteUrl,
+                alt: image.alt ?? excursion.title,
+              })),
+            )}
+          />
+          <div class="gallery-mobile-strip" aria-label="Фото">
+            {mobileGalleryPreview.map((image, index) => (
+              <button
+                class:list={['gallery-thumb', 'gallery-thumb--mobile']}
+                type="button"
+                data-gallery-thumb-index={index}
+                aria-label={`Открыть фото ${index + 1}`}
+              >
+                <img src={image.absoluteUrl} alt={image.alt ?? excursion.title} loading={index < 2 ? 'eager' : 'lazy'} />
+              </button>
+            ))}
+          </div>
+
+            {galleryPreview.length > 0 && (
+              <div class="gallery-rail" aria-label="Миниатюры">
+                {railGallery.map((image, index) => (
+                  <button
+                    class:list={['gallery-thumb', index === 0 && 'gallery-thumb--active']}
+                    type="button"
+                    data-gallery-thumb-index={index}
+                    aria-label={`Открыть фото ${index + 1}`}
+                  >
+                    <img src={image.absoluteUrl} alt={image.alt ?? excursion.title} loading={index < 3 ? 'eager' : 'lazy'} />
+                    {index === railGallery.length - 1 && images.length > railGallery.length && (
+                      <span>Еще</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
+            <figure class="gallery-main">
+              {mainImage ? (
+                <img
+                  id="gallery-main-image"
+                  src={mainImage.absoluteUrl}
+                  alt={mainImage.alt ?? excursion.title}
+                  data-gallery-current-index="0"
+                  data-gallery-open="true"
+                  loading="eager"
+                />
+              ) : (
+                <div class="gallery-main-placeholder">Фото готовятся</div>
+              )}
+              <div class="gallery-actions" aria-label="Действия">
+                <button type="button" data-share-button>Поделиться</button>
+                <button type="button" data-favorite-toggle aria-pressed="false">♡ В избранное</button>
+              </div>
+              <a class="gallery-more" href="#photos" data-gallery-open="true">{photoCountLabel}</a>
+              <button
+                class="gallery-arrow gallery-arrow--left"
+                type="button"
+                aria-label="Предыдущее фото"
+                id="gallery-arrow-prev"
+                data-gallery-action="prev"
+              >
+                <span class="gallery-arrow__glyph" aria-hidden="true">‹</span>
+              </button>
+              <button
+                class="gallery-arrow gallery-arrow--right"
+                type="button"
+                aria-label="Следующее фото"
+                id="gallery-arrow-next"
+                data-gallery-action="next"
+              >
+                <span class="gallery-arrow__glyph" aria-hidden="true">›</span>
+              </button>
+              <div class="gallery-dots" aria-label="Слайд индикаторы">
+                {images.slice(0, 8).map((_image, index) => (
+                  <button
+                    class:list={['gallery-dot', index === 0 && 'gallery-dot--active']}
+                    type="button"
+                    data-gallery-dot={index}
+                    aria-label={`Перейти к фото ${index + 1}`}
+                  ></button>
+                ))}
+              </div>
+            </figure>
+          </section>
+
+          <section class="quick-facts" aria-label="Коротко об экскурсии">
+            {quickFacts.map((item) => (
+              <div class="quick-fact">
+                <span></span>
+                <strong>{item.value}</strong>
+                <small>{item.label}</small>
+              </div>
+            ))}
+          </section>
+
+          <section class="traveler-love" aria-labelledby="traveler-love-title">
+            <div class="traveler-love__heading">
+              <h2 id="traveler-love-title">Почему путешественникам нравится</h2>
+              <a href="#reviews">
+                {hasTrustSummary ? `${formattedTrustRating} · ${formattedReviewCount} отзывов` : 'Отзывы скоро'}
+              </a>
+            </div>
+            <div class="traveler-love__chips" aria-label="Темы отзывов">
+              {travelerLoveTags.map((tag, index) => (
+                <button
+                  class:list={['traveler-love__chip', index === 0 && 'traveler-love__chip--active']}
+                  type="button"
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
+            <div class="traveler-love__cards">
+              {travelerLoveCards.length > 0 ? (
+                travelerLoveCards.map((item) => (
+                  <article class="traveler-love-card">
+                    <div class="traveler-love-card__stars">{ratingStars(item.rating ?? 5)}</div>
+                    <p>{item.text}</p>
+                    <small>
+                      {item.author ?? 'Гость'}
+                      {item.date ? ` · ${formatReviewDate(item.date)}` : ''}
+                    </small>
+                  </article>
+                ))
+              ) : (
+                <>
+                  <article class="traveler-love-card">
+                    <div class="traveler-love-card__stars">★★★★★</div>
+                    <p>Маршрут дает понятный активный день: трансфер, сопровождение и программа собираются в одну простую заявку.</p>
+                    <small>Проверяем отзывы TripAdvisor</small>
+                  </article>
+                  <article class="traveler-love-card">
+                    <div class="traveler-love-card__stars">★★★★★</div>
+                    <p>Формат подходит тем, кто хочет заранее понимать длительность, язык сопровождения и порядок бронирования.</p>
+                    <small>Отзывы будут подключены после сверки</small>
+                  </article>
+                </>
+              )}
+            </div>
+          </section>
+
+          {promotedExcursions.length > 0 && (
+            <section class="content-section promoted" aria-labelledby="promoted-title">
+              <h2 id="promoted-title">Рекомендуемые впечатления</h2>
+              <div class="promoted-grid">
+                {promotedExcursions.map((item) => (
+                  <a class="promoted-card" href={`/excursions/${item.slug}`}>
+                    {item.imageUrl && <img src={item.imageUrl} alt={item.title} loading="lazy" />}
+                    <span>{discoveryLocationLabel(item.categorySlug)}</span>
+                    <strong>{item.title}</strong>
+                    <small>
+                      от {formatThb(item.priceFromThb)}
+                      <em>за человека</em>
+                    </small>
+                  </a>
+                ))}
+              </div>
+            </section>
+          )}
+
+          <article class="tour-content">
+            <section class="content-section" id="section-overview" aria-labelledby="overview-title">
+              <h2 id="overview-title">Обзор</h2>
+              {descriptionParagraphs.map((paragraph) => <p>{paragraph}</p>)}
+              <ul class="highlight-list">
+                {overviewHighlights.map((item) => <li>{item}</li>)}
+              </ul>
+            </section>
+
+            <section class="content-section" id="section-includes" aria-labelledby="included-title-heading">
+              <h2 id="included-title-heading">Что включено</h2>
+              <div class="included-list">
+                {(includedItems.length ? includedItems : ['Трансфер по программе', 'Русский гид', 'Страховка', 'Обед или питание по программе']).map((item) => (
+                  <div>
+                    <span></span>
+                    <p>{item}</p>
+                  </div>
+                ))}
+              </div>
+              {notIncludedItems.length > 0 && (
+                <div class="not-included-list" aria-label="Что оплачивается отдельно">
+                  <h3>Что оплачивается отдельно</h3>
+                  <ul>
+                    {notIncludedItems.map((item) => <li>{item}</li>)}
+                  </ul>
+                </div>
+              )}
+            </section>
+
+            {hasPickupDetails && (
+              <section class="content-section" id="section-pickup" aria-labelledby="pickup-title">
+                <h2 id="pickup-title">Место встречи и трансфер</h2>
+                <div class="pickup-grid">
+                  <div>
+                    <h3>Точки забора</h3>
+                    <p>
+                      Забираем из районов Пхукета. Точную точку и возможность забора менеджер подтверждает после заявки.
+                    </p>
+                  </div>
+                  <div>
+                    <h3>Детали трансфера</h3>
+                    <p>Время выезда зависит от района проживания, поэтому трансфер подтверждается индивидуально.</p>
+                  </div>
+                  <div>
+                    <h3>Время старта</h3>
+                    <p>Точное время старта зависит от выбранного слота и района проживания. Итоговое время подтверждаем заранее.</p>
+                  </div>
+                </div>
+              </section>
+            )}
+
+            <section class="content-section" id="section-itinerary" aria-labelledby="itinerary-title-heading">
+              <h2 id="itinerary-title-heading">Что ожидать</h2>
+              {routeItems.length > 0 ? (
+                <div class="timeline">
+                  {routeItems.map((item, index) => (
+                    <div class="timeline__item">
+                      <span>{index + 1}</span>
+                      <p>{item}</p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p>Маршрут и подробный план уточняется менеджером после подтверждения вашей даты.</p>
+              )}
+            </section>
+
+            <section class="content-section" id="section-details" aria-labelledby="details-title">
+              <h2 id="details-title">Дополнительная информация</h2>
+              <div class="accordion-list">
+                <details open>
+                  <summary>Что взять с собой</summary>
+                  <ul>
+                    {(takeWithYouItems.length ? takeWithYouItems : ['Купальник', 'Полотенце', 'Солнцезащитный крем', 'Головной убор']).map((item) => <li>{item}</li>)}
+                  </ul>
+                </details>
+                <details>
+                  <summary>Ограничения</summary>
+                  <ul>
+                    {(restrictionItems.length ? restrictionItems : ['Ограничения по здоровью уточняются при подтверждении.']).map((item) => <li>{item}</li>)}
+                  </ul>
+                </details>
+                <details>
+                  <summary>Язык и сопровождение</summary>
+                  <p>{publicText(excursion.guideLanguageNote ?? 'Русский гид')}</p>
+                </details>
+              </div>
+            </section>
+
+            <section class="content-section" id="section-cancellation" aria-labelledby="cancellation-title">
+              <h2 id="cancellation-title">Отмена и перенос</h2>
+              <p>{excursion.cancellationPolicy ?? 'При плохой погоде возможен перенос или возврат.'}</p>
+            </section>
+
+            <section class="content-section question-section" id="section-questions" aria-labelledby="questions-title">
+              <h2 id="questions-title">Вопросы?</h2>
+              <p>Оставьте заявку, и менеджер поможет выбрать дату, формат связи, точку трансфера и детали по этой экскурсии.</p>
+              <a href="#booking-form" data-booking-action="booking">Забронировать</a>
+            </section>
+
+            <section class="content-section booking-form" id="booking-form" aria-labelledby="booking-title">
+              <h2 id="booking-title">Забронировать</h2>
+              <p>Оставьте контакт — после подтверждения пришлём точные условия и контакт для связи.</p>
+              <form
+                class="booking-form__form"
+                id="lead-form"
+                method="post"
+                data-lead-endpoint={leadEndpoint}
+              >
+                <input type="hidden" name="excursionId" value={excursion.id} />
+                <input type="hidden" name="source" value="website" />
+                <input type="hidden" name="sourcePage" value={slug} />
+
+                <label>
+                  <span>Дата</span>
+                  <input
+                    type="date"
+                    name="requestedDate"
+                    min={new Date().toISOString().slice(0, 10)}
+                    required
+                  />
+                </label>
+                <label>
+                  <span>Гостей</span>
+                  <input
+                    type="number"
+                    name="peopleCount"
+                    min="1"
+                    max="30"
+                    value="2"
+                    required
+                  />
+                </label>
+                <label>
+                  <span>Ваше имя</span>
+                  <input type="text" name="customerName" placeholder="Имя" required />
+                </label>
+                <label>
+                  <span>Телефон</span>
+                  <input type="tel" name="customerPhone" placeholder="+66 ..." required />
+                </label>
+                <label>
+                  <span>Контакт в Telegram/WhatsApp/Max</span>
+                  <input type="text" name="customerTelegram" placeholder="@username или номер" />
+                </label>
+                <label>
+                  <span>Комментарий</span>
+                  <textarea
+                    name="comment"
+                    rows="3"
+                    placeholder="Сколько человек, район заезда, особые пожелания"
+                  />
+                </label>
+                <button type="submit">Отправить заявку</button>
+                <div id="lead-form-result" aria-live="polite"></div>
+              </form>
+              <div class="lead-contact-step" id="lead-contact-step" hidden>
+                <strong>Выберите удобный канал связи</strong>
+                <p>Так менеджеру будет проще продолжить общение по вашей заявке.</p>
+                <div class="lead-contact-step__actions">
+                  {contactChannels.map((channel) => (
+                    <button
+                      type="button"
+                      class="lead-contact-step__button"
+                      data-lead-contact-channel={channel.value}
+                    >
+                      {channel.label}
+                    </button>
+                  ))}
+                </div>
+                <div class="lead-contact-step__result" id="lead-contact-step-result" aria-live="polite"></div>
+              </div>
+            </section>
+
+            <section class="content-section" id="photos" aria-labelledby="photos-title">
+              <h2 id="photos-title">Фото маршрута</h2>
+              {images.length > 0 ? (
+                <div class="photo-strip">
+                  {images.map((image, index) => (
+                    <img
+                      src={image.absoluteUrl}
+                      alt={image.alt ?? excursion.title}
+                      loading={index < 4 ? 'eager' : 'lazy'}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <p>Фотографии обновятся после подтверждения и отбора лучших ракурсов.</p>
+              )}
+            </section>
+
+            <section class="content-section" id="reviews" aria-labelledby="reviews-title">
+              <h2 id="reviews-title">Отзывы</h2>
+              {hasTrustSummary ? (
+                <div class="reviews-summary">
+                  <div class="reviews-summary__stats">
+                    <strong>{formattedTrustRating}</strong>
+                    <span>
+                      {formattedReviewCount} {pluralizeRu(normalizedReviewCount, 'отзыв', 'отзыва', 'отзывов')} · {trustSourceLabel}
+                    </span>
+                  </div>
+                </div>
+              ) : null}
+              {displayReviewItems.length > 0 ? (
+                <>
+                  {featuredReview ? (
+                    <article class="featured-review">
+                      <div class="featured-review__eyebrow">Избранный отзыв</div>
+                      <header class="review-card__header">
+                        <span>{featuredReview.author ?? 'Гость TripAdvisor'}</span>
+                        {featuredReview.rating !== null ? (
+                          <strong>{featuredReview.rating?.toFixed(1)} ★</strong>
+                        ) : (
+                          <strong>—</strong>
+                        )}
+                      </header>
+                      {featuredReview.title ? <h3>{featuredReview.title}</h3> : null}
+                      <p>{featuredReview.text}</p>
+                      <small>
+                        {featuredReview.date ? formatReviewDate(featuredReview.date) : 'Дата не указана'}
+                        {featuredReview.location ? ` · ${featuredReview.location}` : ''}
+                      </small>
+                    </article>
+                  ) : null}
+                  <div class="review-tools" aria-label="Фильтры отзывов">
+                    <div class="review-tools__filters">
+                      {reviewStarFilters.map((filter, index) => (
+                        <button
+                          type="button"
+                          class:list={['review-filter-chip', index === 0 && 'review-filter-chip--active']}
+                          data-review-filter={filter.key}
+                          aria-pressed={index === 0 ? 'true' : 'false'}
+                        >
+                          <span>{filter.label}</span>
+                          <strong>{filter.count}</strong>
+                        </button>
+                      ))}
+                    </div>
+                    <div class="review-tools__controls">
+                      <label class="review-tools__search">
+                        <span>Поиск по отзывам</span>
+                        <input
+                          type="search"
+                          data-review-search
+                          placeholder="Например: гид, лодка, дети"
+                        />
+                      </label>
+                      <label class="review-tools__sort">
+                        <span>Сортировка</span>
+                        <select data-review-sort>
+                          <option value="relevance">Сначала полезные</option>
+                          <option value="newest">Сначала новые</option>
+                          <option value="oldest">Сначала старые</option>
+                          <option value="highest">Сначала высокий рейтинг</option>
+                          <option value="lowest">Сначала низкий рейтинг</option>
+                        </select>
+                      </label>
+                    </div>
+                  </div>
+                  <div class="reviews-feed" data-review-feed>
+                    {displayReviewItems.map((item, index) => (
+                      <article
+                        class="review-card"
+                        data-review-card
+                        data-review-index={index}
+                        data-review-rating={item.rating !== null ? item.rating?.toFixed(1) : ''}
+                        data-review-date={item.date ?? ''}
+                        data-review-search-text={`${item.author ?? ''} ${item.title ?? ''} ${item.text ?? ''} ${item.location ?? ''}`.toLowerCase()}
+                      >
+                        <header class="review-card__header">
+                          <span>{item.author ?? 'Гость TripAdvisor'}</span>
+                          {item.rating !== null ? <strong>{item.rating?.toFixed(1)} ★</strong> : <strong>—</strong>}
+                        </header>
+                        {item.title ? <h3>{item.title}</h3> : null}
+                        <p
+                          class:list={[
+                            'review-card__text',
+                            item.text.length > 260 && 'review-card__text--clamped',
+                          ]}
+                          data-review-text
+                        >
+                          {item.text}
+                        </p>
+                        {item.text.length > 260 ? (
+                          <button
+                            type="button"
+                            class="review-card__toggle"
+                            data-review-toggle
+                            aria-expanded="false"
+                          >
+                            Читать дальше
+                          </button>
+                        ) : null}
+                        <small>
+                          {item.date ? formatReviewDate(item.date) : 'Дата не указана'}
+                          {item.location ? ` · ${item.location}` : ''}
+                        </small>
+                      </article>
+                    ))}
+                  </div>
+                  <p class="reviews-feed__empty" data-review-empty hidden>
+                    По такому фильтру отзывов пока нет. Попробуйте снять часть ограничений.
+                  </p>
+                  {displayReviewItems.length > 6 ? (
+                    <button type="button" class="reviews-feed__more" data-review-show-more>
+                      Показать еще отзывы
+                    </button>
+                  ) : null}
+                </>
+              ) : (
+                <div class="review-placeholder">
+                  <strong>Отзывы пока не загружены</strong>
+                  <p>Публикация отзывов TripAdvisor подгружается для этой экскурсии.</p>
+                </div>
+              )}
+              {excursionReviews?.sourceUrl ? (
+                <a class="tripadvisor-link" href={excursionReviews.sourceUrl} rel="noreferrer noopener" target="_blank">
+                  Открыть все отзывы на TripAdvisor
+                </a>
+              ) : null}
+            </section>
+            <section class="content-section" id="tour-tips" aria-labelledby="tour-tips-title">
+              <h2 id="tour-tips-title">Советы и идеи на день</h2>
+              <div class="inline-pills">
+                <span>Безопасно и легко</span>
+                <span>Подходит для фото-сюжета</span>
+                <span>Нейтральный маршрут по температуре</span>
+              </div>
+            </section>
+          </article>
+        </div>
+
+        <aside class="booking-stack" aria-label="Бронирование">
+          <section class="booking-card">
+            <div class="booking-card__price">
+              <strong>от {formatThb(excursion.priceFromThb)}</strong>
+              <small>≈ {formatRub(excursion.priceFromRub)} за человека</small>
+            </div>
+            <div class="booking-card__meta">
+              <span>Бесплатное бронирование</span>
+              <span>Подтверждение менеджером</span>
+            </div>
+            <div class="booking-card__selectors" aria-label="Параметры бронирования">
+              <button type="button" data-booking-selector="date">
+                <span>Дата</span>
+                <strong data-booking-selector-value="date">Выбрать</strong>
+              </button>
+              <button type="button" data-booking-selector="guests">
+                <span>Гости</span>
+                <strong data-booking-selector-value="guests">{initialGuestCount} гостя</strong>
+              </button>
+            </div>
+            <a class="booking-card__button booking-card__button--strong" href="#booking-form" data-booking-action="booking">Забронировать</a>
+            <div class="booking-card__benefits">
+              <p><strong>Что дальше:</strong> отправляете заявку, а менеджер подтверждает дату, детали и удобный канал связи.</p>
+              <p><strong>Что удобно:</strong> можно сначала выбрать дату и количество гостей, а потом спокойно согласовать нюансы.</p>
+            </div>
+          </section>
+          <section class="booking-note">
+            <strong>Бронируют заранее</strong>
+            <p>Популярные даты лучше согласовывать заранее, особенно если нужен конкретный слот, трансфер из отеля или утренний старт.</p>
+          </section>
+        </aside>
+      </section>
+
+      <section class="detail-discovery" aria-label="Дополнительные рекомендации">
+        <section class="discovery-block" aria-labelledby="compare-similar-title">
+          <div class="discovery-block__heading">
+            <h2 id="compare-similar-title">Сравните похожие экскурсии</h2>
+            <a href="/">Смотреть весь каталог</a>
+          </div>
+          <div class="experience-carousel" data-carousel>
+            <div class="experience-carousel__meta" data-carousel-meta>
+              <span class="experience-carousel__count">
+                <span data-carousel-page>1</span>
+                <span>/</span>
+                <span data-carousel-pages>1</span>
+              </span>
+              <div class="experience-carousel__controls">
+                <button type="button" class="experience-carousel__control" data-carousel-prev aria-label="Предыдущие предложения">
+                  ‹
+                </button>
+                <button type="button" class="experience-carousel__control" data-carousel-next aria-label="Следующие предложения">
+                  ›
+                </button>
+              </div>
+            </div>
+            <div class="experience-carousel__viewport" data-carousel-viewport>
+              <div class="experience-grid experience-carousel__track" data-carousel-track>
+            {similarExperienceCards.map((item, index) => (
+              <a class:list={['experience-card', index === 0 && 'experience-card--current']} href={`/excursions/${item.slug}`}>
+                <div class="experience-card__media">
+                  {item.badge ? <span class="experience-card__badge">{item.badge}</span> : null}
+                  <span class="experience-card__favorite" aria-hidden="true">♡</span>
+                  {item.imageUrl ? (
+                    <img src={item.imageUrl} alt={item.title} loading="lazy" />
+                  ) : (
+                    <span class="experience-card__placeholder">Фото готовятся</span>
+                  )}
+                </div>
+                <div class="experience-card__body">
+                  <small>{discoveryLocationLabel(item.categorySlug)}</small>
+                  <strong>{item.title}</strong>
+                  <div class="experience-card__rating">
+                    <span class="experience-card__stars" aria-hidden="true">
+                      {ratingStars(item.externalRating?.score ?? 5)}
+                    </span>
+                    <span>
+                      {item.externalRating?.reviewCount
+                        ? `${item.externalRating.reviewCount} отзывов`
+                        : 'Отзывы скоро'}
+                    </span>
+                  </div>
+                  <div class="experience-card__facts">
+                    <span>{item.duration ?? 'Программа на день'}</span>
+                    <span>Русский гид</span>
+                    <span>Бесплатная бронь</span>
+                  </div>
+                  <div class="experience-card__price">
+                    <span>от {formatThb(item.priceFromThb)}</span>
+                    <small>≈ {formatRub(item.priceFromRub)}</small>
+                  </div>
+                </div>
+              </a>
+            ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="discovery-block" aria-labelledby="also-booked-title">
+          <div class="discovery-block__heading">
+            <h2 id="also-booked-title">С этой экскурсией часто выбирают</h2>
+            <a href="/">Еще варианты</a>
+          </div>
+          <div class="experience-carousel" data-carousel>
+            <div class="experience-carousel__meta" data-carousel-meta>
+              <span class="experience-carousel__count">
+                <span data-carousel-page>1</span>
+                <span>/</span>
+                <span data-carousel-pages>1</span>
+              </span>
+              <div class="experience-carousel__controls">
+                <button type="button" class="experience-carousel__control" data-carousel-prev aria-label="Предыдущие варианты">
+                  ‹
+                </button>
+                <button type="button" class="experience-carousel__control" data-carousel-next aria-label="Следующие варианты">
+                  ›
+                </button>
+              </div>
+            </div>
+            <div class="experience-carousel__viewport" data-carousel-viewport>
+              <div class="experience-grid experience-grid--compact experience-carousel__track" data-carousel-track>
+            {alsoBoughtCards.map((item) => (
+              <a class="experience-card experience-card--compact" href={`/excursions/${item.slug}`}>
+                <div class="experience-card__media">
+                  <span class="experience-card__favorite" aria-hidden="true">♡</span>
+                  {item.imageUrl ? (
+                    <img src={item.imageUrl} alt={item.title} loading="lazy" />
+                  ) : (
+                    <span class="experience-card__placeholder">Фото готовятся</span>
+                  )}
+                </div>
+                <div class="experience-card__body">
+                  <small>{discoveryLocationLabel(item.categorySlug)}</small>
+                  <strong>{item.title}</strong>
+                  <div class="experience-card__rating">
+                    <span class="experience-card__stars" aria-hidden="true">
+                      {ratingStars(item.externalRating?.score ?? 5)}
+                    </span>
+                    <span>
+                      {item.externalRating?.reviewCount
+                        ? `${item.externalRating.reviewCount} отзывов`
+                        : 'Отзывы скоро'}
+                    </span>
+                  </div>
+                  <div class="experience-card__facts">
+                    <span>{item.duration ?? 'Программа на день'}</span>
+                    <span>Русский гид</span>
+                    <span>Бесплатное бронирование</span>
+                  </div>
+                  <div class="experience-card__price">
+                    <span>от {formatThb(item.priceFromThb)}</span>
+                    <small>≈ {formatRub(item.priceFromRub)}</small>
+                  </div>
+                </div>
+              </a>
+            ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="discovery-links" aria-label="Похожие занятия и направления">
+          {exploreLinkGroups.map((group) => (
+            <div class="discovery-links__group">
+              <h2>{group.title}</h2>
+              <div class="discovery-links__row">
+                {group.links.map((link) => (
+                  <a href={link.href}>{link.label}</a>
+                ))}
+              </div>
+            </div>
+          ))}
+        </section>
+
+        <section class="discovery-block" aria-labelledby="recently-viewed-title">
+          <div class="discovery-block__heading">
+            <h2 id="recently-viewed-title">Вы недавно смотрели</h2>
+          </div>
+          <div class="experience-carousel" data-carousel>
+            <div class="experience-carousel__meta" data-carousel-meta>
+              <span class="experience-carousel__count">
+                <span data-carousel-page>1</span>
+                <span>/</span>
+                <span data-carousel-pages>1</span>
+              </span>
+              <div class="experience-carousel__controls">
+                <button type="button" class="experience-carousel__control" data-carousel-prev aria-label="Предыдущие просмотренные">
+                  ‹
+                </button>
+                <button type="button" class="experience-carousel__control" data-carousel-next aria-label="Следующие просмотренные">
+                  ›
+                </button>
+              </div>
+            </div>
+            <div class="experience-carousel__viewport" data-carousel-viewport>
+              <div class="recently-viewed-grid experience-carousel__track" data-carousel-track>
+            {recentlyViewedCards.map((item) => (
+              <a class="experience-card experience-card--compact" href={`/excursions/${item.slug}`}>
+                <div class="experience-card__media">
+                  <span class="experience-card__favorite" aria-hidden="true">♡</span>
+                  {item.imageUrl ? (
+                    <img src={item.imageUrl} alt={item.title} loading="lazy" />
+                  ) : (
+                    <span class="experience-card__placeholder">Фото готовятся</span>
+                  )}
+                </div>
+                <div class="experience-card__body">
+                  <small>{discoveryLocationLabel(item.categorySlug)}</small>
+                  <strong>{item.title}</strong>
+                  <div class="experience-card__rating">
+                    <span class="experience-card__stars" aria-hidden="true">
+                      {ratingStars(item.externalRating?.score ?? 5)}
+                    </span>
+                    <span>
+                      {item.externalRating?.reviewCount
+                        ? `${item.externalRating.reviewCount} отзывов`
+                        : 'Отзывы скоро'}
+                    </span>
+                  </div>
+                  <div class="experience-card__facts">
+                    <span>Русский гид</span>
+                  </div>
+                  <div class="experience-card__price">
+                    <span>от {formatThb(item.priceFromThb)}</span>
+                    <small>≈ {formatRub(item.priceFromRub)}</small>
+                  </div>
+                </div>
+              </a>
+            ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <nav class="section-anchor-bar" id="section-anchor-bar" aria-label="Навигация по разделам">
+        <div class="section-anchor-bar__inner">
+          {sectionNavItems.map((item) => (
+            <a
+              class="section-anchor-bar__item"
+              href={item.href}
+              data-section-nav={item.key}
+              data-section-target={item.targetId}
+            >
+              {item.label}
+            </a>
+          ))}
+        </div>
+      </nav>
+
+      <nav class="bottom-funnel-menu" aria-label="Блоки внизу страницы">
+        {bottomMenuItems.map((item) => (
+          <a
+            class:list={[
+              'bottom-funnel-menu__item',
+              item.action && item.action === 'booking' && 'bottom-funnel-menu__item--primary',
+            ]}
+            href={item.href}
+            data-booking-action={item.action}
+            data-bottom-nav={item.key}
+            data-bottom-target={item.targetId}
+            aria-label={`Блок «${item.label.toLowerCase()}»`}
+          >
+            <span class="bottom-funnel-menu__icon" aria-hidden="true">
+              <span set:html={menuIcon(item.icon)} />
+            </span>
+            <strong>{item.label}</strong>
+            <span>{item.description}</span>
+          </a>
+        ))}
+      </nav>
+
+      {mainImage ? (
+        <div class="gallery-modal" id="gallery-modal" hidden>
+          <div class="gallery-modal__backdrop" data-gallery-modal-close></div>
+          <div class="gallery-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="gallery-modal-title">
+            <button type="button" class="gallery-modal__close" data-gallery-modal-close aria-label="Закрыть галерею">
+              ×
+            </button>
+            <div class="gallery-modal__top">
+              <strong id="gallery-modal-title">{excursion.title}</strong>
+              <span data-gallery-modal-counter>1 / {images.length}</span>
+            </div>
+            <div class="gallery-modal__stage">
+              <button type="button" class="gallery-modal__arrow gallery-modal__arrow--left" data-gallery-modal-prev aria-label="Предыдущее фото">
+                ‹
+              </button>
+              <img
+                id="gallery-modal-image"
+                src={mainImage.absoluteUrl}
+                alt={mainImage.alt ?? excursion.title}
+              />
+              <button type="button" class="gallery-modal__arrow gallery-modal__arrow--right" data-gallery-modal-next aria-label="Следующее фото">
+                ›
+              </button>
+            </div>
+            <div class="gallery-modal__thumbs" aria-label="Миниатюры галереи">
+              {images.map((image, index) => (
+                <button
+                  type="button"
+                  class:list={['gallery-modal__thumb', index === 0 && 'gallery-modal__thumb--active']}
+                  data-gallery-modal-thumb={index}
+                  aria-label={`Фото ${index + 1}`}
+                >
+                  <img src={image.absoluteUrl} alt={image.alt ?? excursion.title} loading="lazy" />
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      ) : null}
+    </main>
+
+    <footer class="site-footer">
+      <div class="site-footer__socials" aria-label="Социальные сети">
+        <a href="/" aria-label="Facebook">f</a>
+        <a href="/" aria-label="X">x</a>
+        <a href="/" aria-label="Pinterest">p</a>
+        <a href="/" aria-label="Instagram">ig</a>
+        <a href="/" aria-label="YouTube">yt</a>
+        <a href="/" aria-label="TikTok">tt</a>
+      </div>
+      <div class="site-footer__grid">
+        {footerColumns.map((column) => (
+          <div class="site-footer__column">
+            <strong>{column.title}</strong>
+            <div class="site-footer__links">
+              {column.links.map((link) => (
+                <a href={link.href}>{link.label}</a>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      <div class="site-footer__bottom">
+        <div class="site-footer__apps">
+          <a href="/">Google Play</a>
+          <a href="/">App Store</a>
+        </div>
+        <small>© 2026 Phuket Go. Каталог экскурсий и бронирование через менеджера.</small>
+      </div>
+    </footer>
+
+    <script is:inline>
+      function safeText(value) {
+        if (value === null || value === undefined) return ''
+        return String(value)
+      }
+
+      var galleryDataElement = document.getElementById('gallery-data')
+      var galleryData = []
+      if (galleryDataElement && galleryDataElement.textContent) {
+        try {
+          var parsed = JSON.parse(galleryDataElement.textContent)
+          if (Array.isArray(parsed)) galleryData = parsed
+        } catch (error) {
+          galleryData = []
+          console.error('gallery-data parse error', error)
+        }
+      }
+
+      var galleryMainImage = document.getElementById('gallery-main-image')
+      var galleryRoot = document.querySelector('.viator-gallery')
+      var galleryMain = document.querySelector('.gallery-main')
+      var galleryThumbs = Array.from(document.querySelectorAll('[data-gallery-thumb-index]'))
+      var galleryDots = Array.from(document.querySelectorAll('[data-gallery-dot]'))
+      var galleryOpenTriggers = Array.from(document.querySelectorAll('[data-gallery-open]'))
+      var galleryModal = document.getElementById('gallery-modal')
+      var galleryModalImage = document.getElementById('gallery-modal-image')
+      var galleryModalCounter = document.querySelector('[data-gallery-modal-counter]')
+      var galleryModalCloseButtons = Array.from(document.querySelectorAll('[data-gallery-modal-close]'))
+      var galleryModalThumbs = Array.from(document.querySelectorAll('[data-gallery-modal-thumb]'))
+      var galleryModalPrev = document.querySelector('[data-gallery-modal-prev]')
+      var galleryModalNext = document.querySelector('[data-gallery-modal-next]')
+      var leadForm = document.getElementById('lead-form')
+      var leadFormResult = document.getElementById('lead-form-result')
+      var shareButton = document.querySelector('[data-share-button]')
+      var favoriteToggle = document.querySelector('[data-favorite-toggle]')
+      var bookingSelectorButtons = Array.from(document.querySelectorAll('[data-booking-selector]'))
+      var bookingDateSummary = document.querySelector('[data-booking-selector-value=\"date\"]')
+      var bookingGuestSummary = document.querySelector('[data-booking-selector-value=\"guests\"]')
+      var siteHeader = document.querySelector('.site-header')
+      var sectionAnchorBar = document.getElementById('section-anchor-bar')
+      var bottomFunnelMenu = document.querySelector('.bottom-funnel-menu')
+      var sectionOverview = document.getElementById('section-overview')
+      var reviewFeed = document.querySelector('[data-review-feed]')
+      var reviewCards = Array.from(document.querySelectorAll('[data-review-card]'))
+      var reviewFilterButtons = Array.from(document.querySelectorAll('[data-review-filter]'))
+      var reviewSearch = document.querySelector('[data-review-search]')
+      var reviewSort = document.querySelector('[data-review-sort]')
+      var reviewEmpty = document.querySelector('[data-review-empty]')
+      var reviewShowMore = document.querySelector('[data-review-show-more]')
+      var discoveryCarousels = Array.from(document.querySelectorAll('[data-carousel]'))
+      var activeGalleryIndex = 0
+      var isGalleryModalOpen = false
+      var galleryTouchStartX = null
+      var galleryTouchStartY = null
+
+      function normalizeGalleryIndex(value, fallback) {
+        var parsed = Number.parseInt(value, 10)
+        if (!Number.isFinite(parsed)) return fallback
+        if (!galleryData.length) return fallback
+        var maxIndex = galleryData.length - 1
+        if (parsed < 0) return 0
+        if (parsed > maxIndex) return maxIndex
+        return parsed
+      }
+
+      function setActiveGallery(index) {
+        if (!galleryData.length) return
+        activeGalleryIndex = normalizeGalleryIndex(index, 0)
+        var item = galleryData[activeGalleryIndex]
+
+        if (galleryMainImage && galleryMainImage instanceof HTMLImageElement) {
+          galleryMainImage.src = item.url
+          galleryMainImage.alt = item.alt || item.title || document.title
+          galleryMainImage.dataset.galleryCurrentIndex = safeText(activeGalleryIndex)
+        }
+
+        galleryThumbs.forEach(function (button) {
+          var thumbIndex = normalizeGalleryIndex(button.dataset.galleryThumbIndex, -1)
+          if (thumbIndex === -1) return
+          button.classList.toggle('gallery-thumb--active', thumbIndex === activeGalleryIndex)
+          button.setAttribute('aria-current', thumbIndex === activeGalleryIndex ? 'true' : 'false')
+        })
+
+        galleryDots.forEach(function (button) {
+          var dotIndex = normalizeGalleryIndex(button.dataset.galleryDot, -1)
+          if (dotIndex === -1) return
+          button.classList.toggle('gallery-dot--active', dotIndex === activeGalleryIndex)
+          button.setAttribute('aria-current', dotIndex === activeGalleryIndex ? 'true' : 'false')
+        })
+
+        if (galleryModalImage instanceof HTMLImageElement) {
+          galleryModalImage.src = item.url
+          galleryModalImage.alt = item.alt || item.title || document.title
+        }
+
+        if (galleryModalCounter) {
+          galleryModalCounter.textContent = activeGalleryIndex + 1 + ' / ' + galleryData.length
+        }
+
+        galleryModalThumbs.forEach(function (button) {
+          var thumbIndex = normalizeGalleryIndex(button.getAttribute('data-gallery-modal-thumb'), -1)
+          if (thumbIndex === -1) return
+          button.classList.toggle('gallery-modal__thumb--active', thumbIndex === activeGalleryIndex)
+          button.setAttribute('aria-current', thumbIndex === activeGalleryIndex ? 'true' : 'false')
+        })
+      }
+
+      function setGalleryModalOpen(nextState) {
+        if (!(galleryModal instanceof HTMLElement)) return
+        isGalleryModalOpen = nextState
+        galleryModal.hidden = !nextState
+        document.body.classList.toggle('gallery-modal-open', nextState)
+      }
+
+      function openGalleryModal(index) {
+        setActiveGallery(index)
+        setGalleryModalOpen(true)
+      }
+
+      if (galleryRoot && typeof galleryRoot.addEventListener === 'function') {
+        galleryRoot.addEventListener('click', function (event) {
+          var target = event.target
+          if (!(target instanceof Element) || !galleryData.length) return
+
+          var thumbButton = target.closest('[data-gallery-thumb-index]')
+          if (thumbButton instanceof HTMLElement) {
+            var nextThumbIndex = normalizeGalleryIndex(thumbButton.dataset.galleryThumbIndex, 0)
+            setActiveGallery(nextThumbIndex)
+            thumbButton.scrollIntoView({
+              behavior: 'smooth',
+              block: 'nearest',
+              inline: 'nearest',
+            })
+            return
+          }
+
+          var dotButton = target.closest('[data-gallery-dot]')
+          if (dotButton instanceof HTMLElement) {
+            var nextDotIndex = normalizeGalleryIndex(dotButton.dataset.galleryDot, 0)
+            setActiveGallery(nextDotIndex)
+            return
+          }
+
+          var actionButton = target.closest('[data-gallery-action]')
+          if (!(actionButton instanceof HTMLElement)) return
+
+          if (actionButton.dataset.galleryAction === 'prev') {
+            setActiveGallery(activeGalleryIndex > 0 ? activeGalleryIndex - 1 : galleryData.length - 1)
+            return
+          }
+
+          if (actionButton.dataset.galleryAction === 'next') {
+            setActiveGallery(activeGalleryIndex < galleryData.length - 1 ? activeGalleryIndex + 1 : 0)
+          }
+        })
+      }
+
+      if (galleryMain && typeof galleryMain.addEventListener === 'function') {
+        galleryMain.addEventListener(
+          'touchstart',
+          function (event) {
+            var touch = event.touches && event.touches[0]
+            if (!touch) return
+            galleryTouchStartX = touch.clientX
+            galleryTouchStartY = touch.clientY
+          },
+          { passive: true },
+        )
+
+        galleryMain.addEventListener(
+          'touchend',
+          function (event) {
+            if (galleryTouchStartX === null || galleryTouchStartY === null || !galleryData.length) return
+            var touch = event.changedTouches && event.changedTouches[0]
+            if (!touch) return
+            var deltaX = touch.clientX - galleryTouchStartX
+            var deltaY = touch.clientY - galleryTouchStartY
+
+            galleryTouchStartX = null
+            galleryTouchStartY = null
+
+            if (Math.abs(deltaX) < 44 || Math.abs(deltaX) <= Math.abs(deltaY)) return
+
+            if (deltaX < 0) {
+              setActiveGallery(activeGalleryIndex < galleryData.length - 1 ? activeGalleryIndex + 1 : 0)
+              return
+            }
+
+            setActiveGallery(activeGalleryIndex > 0 ? activeGalleryIndex - 1 : galleryData.length - 1)
+          },
+          { passive: true },
+        )
+      }
+
+      setActiveGallery(0)
+
+      galleryOpenTriggers.forEach(function (trigger) {
+        trigger.addEventListener('click', function (event) {
+          event.preventDefault()
+          openGalleryModal(activeGalleryIndex)
+        })
+      })
+
+      galleryModalCloseButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+          setGalleryModalOpen(false)
+        })
+      })
+
+      galleryModalThumbs.forEach(function (button) {
+        button.addEventListener('click', function () {
+          var nextIndex = normalizeGalleryIndex(button.getAttribute('data-gallery-modal-thumb'), 0)
+          setActiveGallery(nextIndex)
+        })
+      })
+
+      if (galleryModalPrev instanceof HTMLButtonElement) {
+        galleryModalPrev.addEventListener('click', function () {
+          setActiveGallery(activeGalleryIndex > 0 ? activeGalleryIndex - 1 : galleryData.length - 1)
+        })
+      }
+
+      if (galleryModalNext instanceof HTMLButtonElement) {
+        galleryModalNext.addEventListener('click', function () {
+          setActiveGallery(activeGalleryIndex < galleryData.length - 1 ? activeGalleryIndex + 1 : 0)
+        })
+      }
+
+      document.addEventListener('keydown', function (event) {
+        if (!isGalleryModalOpen) return
+        if (event.key === 'Escape') {
+          setGalleryModalOpen(false)
+          return
+        }
+        if (event.key === 'ArrowLeft') {
+          setActiveGallery(activeGalleryIndex > 0 ? activeGalleryIndex - 1 : galleryData.length - 1)
+          return
+        }
+        if (event.key === 'ArrowRight') {
+          setActiveGallery(activeGalleryIndex < galleryData.length - 1 ? activeGalleryIndex + 1 : 0)
+        }
+      })
+
+      function formatSelectedDate(value) {
+        if (!value) return 'Выбрать'
+        var parsed = new Date(value)
+        if (Number.isNaN(parsed.getTime())) return 'Выбрать'
+        return parsed.toLocaleDateString('ru-RU', {
+          day: '2-digit',
+          month: 'short',
+        })
+      }
+
+      function formatSelectedGuests(value) {
+        var amount = Number.parseInt(value || '', 10)
+        if (!Number.isFinite(amount) || amount <= 0) return 'Уточнить'
+        var lastDigit = amount % 10
+        var lastTwoDigits = amount % 100
+        var word = 'гостей'
+        if (lastDigit === 1 && lastTwoDigits !== 11) word = 'гость'
+        if (lastDigit >= 2 && lastDigit <= 4 && (lastTwoDigits < 10 || lastTwoDigits >= 20)) {
+          word = 'гостя'
+        }
+        return amount + ' ' + word
+      }
+
+      function syncBookingSelectorState() {
+        if (!(leadForm instanceof HTMLFormElement)) return
+        var dateField = leadForm.elements.namedItem('requestedDate')
+        var guestsField = leadForm.elements.namedItem('peopleCount')
+
+        if (bookingDateSummary && dateField instanceof HTMLInputElement) {
+          bookingDateSummary.textContent = formatSelectedDate(dateField.value)
+        }
+
+        if (bookingGuestSummary && guestsField instanceof HTMLInputElement) {
+          bookingGuestSummary.textContent = formatSelectedGuests(guestsField.value)
+        }
+      }
+
+      syncBookingSelectorState()
+
+      function focusBookingField(fieldName) {
+        if (!(leadForm instanceof HTMLFormElement)) return
+        leadForm.scrollIntoView({ behavior: 'smooth', block: 'start' })
+
+        window.setTimeout(function () {
+          var field = leadForm.elements.namedItem(fieldName)
+          if (
+            field instanceof HTMLInputElement ||
+            field instanceof HTMLSelectElement ||
+            field instanceof HTMLTextAreaElement
+          ) {
+            field.focus()
+          }
+        }, 180)
+      }
+
+      if (shareButton instanceof HTMLButtonElement) {
+        shareButton.addEventListener('click', async function () {
+          var originalText = shareButton.textContent || 'Поделиться'
+          try {
+            if (navigator.share) {
+              await navigator.share({
+                title: document.title,
+                url: window.location.href,
+              })
+            } else if (navigator.clipboard && navigator.clipboard.writeText) {
+              await navigator.clipboard.writeText(window.location.href)
+            }
+
+            shareButton.textContent = 'Ссылка готова'
+          } catch (_error) {
+            shareButton.textContent = 'Не удалось'
+          }
+
+          window.setTimeout(function () {
+            shareButton.textContent = originalText
+          }, 1400)
+        })
+      }
+
+      if (favoriteToggle instanceof HTMLButtonElement) {
+        favoriteToggle.addEventListener('click', function () {
+          var isPressed = favoriteToggle.getAttribute('aria-pressed') === 'true'
+          favoriteToggle.setAttribute('aria-pressed', isPressed ? 'false' : 'true')
+          favoriteToggle.textContent = isPressed ? '♡ В избранное' : '♥ В избранном'
+        })
+      }
+
+      bookingSelectorButtons.forEach(function (button) {
+        if (!(button instanceof HTMLButtonElement)) return
+        button.addEventListener('click', function () {
+          var selectorType = button.dataset.bookingSelector
+          if (selectorType === 'date') {
+            focusBookingField('requestedDate')
+            return
+          }
+
+          if (selectorType === 'guests') {
+            focusBookingField('peopleCount')
+          }
+        })
+      })
+
+      if (leadForm instanceof HTMLFormElement) {
+        var dateField = leadForm.elements.namedItem('requestedDate')
+        var guestsField = leadForm.elements.namedItem('peopleCount')
+        if (dateField instanceof HTMLInputElement) {
+          dateField.addEventListener('change', syncBookingSelectorState)
+          dateField.addEventListener('input', syncBookingSelectorState)
+        }
+        if (guestsField instanceof HTMLInputElement) {
+          guestsField.addEventListener('change', syncBookingSelectorState)
+          guestsField.addEventListener('input', syncBookingSelectorState)
+        }
+      }
+
+      var bookingActions = Array.from(document.querySelectorAll('[data-booking-action]'))
+      bookingActions.forEach(function (actionElement) {
+        actionElement.addEventListener('click', function () {
+          if (!(leadForm instanceof HTMLFormElement)) return
+
+          leadForm.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          setTimeout(function () {
+            var firstName = leadForm.querySelector('[name=\"customerName\"]')
+            if (firstName instanceof HTMLInputElement) {
+              firstName.focus()
+            }
+          }, 180)
+        })
+      })
+
+      var bottomNavItems = Array.from(document.querySelectorAll('[data-bottom-nav][data-bottom-target]'))
+      var sectionNavLinks = Array.from(document.querySelectorAll('[data-section-nav][data-section-target]'))
+      var trackedTargets = Array.from(
+        new Set(
+          bottomNavItems
+            .map(function (item) {
+              return item.getAttribute('data-bottom-target')
+            })
+            .concat(
+              sectionNavLinks.map(function (item) {
+                return item.getAttribute('data-section-target')
+              }),
+            )
+            .filter(Boolean),
+        ),
+      )
+      var navSections = trackedTargets
+        .map(function (targetId) {
+          var section = document.getElementById(targetId)
+          return section
+            ? {
+                targetId: targetId,
+                section: section,
+              }
+            : null
+        })
+        .filter(Boolean)
+
+      function setActiveBottomNav(targetId) {
+        bottomNavItems.forEach(function (item) {
+          var isActive = item.getAttribute('data-bottom-target') === targetId
+          item.classList.toggle('bottom-funnel-menu__item--active', isActive)
+          if (isActive) {
+            item.setAttribute('aria-current', 'page')
+          } else {
+            item.removeAttribute('aria-current')
+          }
+        })
+
+        sectionNavLinks.forEach(function (item) {
+          var isActive = item.getAttribute('data-section-target') === targetId
+          item.classList.toggle('section-anchor-bar__item--active', isActive)
+          if (isActive) {
+            item.setAttribute('aria-current', 'page')
+          } else {
+            item.removeAttribute('aria-current')
+          }
+        })
+      }
+
+      setActiveBottomNav(
+        sectionNavLinks[0]
+          ? sectionNavLinks[0].getAttribute('data-section-target') || 'section-overview'
+          : 'section-overview',
+      )
+
+      function syncFixedNavigationState() {
+        var headerHeight = siteHeader instanceof HTMLElement ? siteHeader.getBoundingClientRect().height : 0
+        document.documentElement.style.setProperty('--site-header-height', Math.round(headerHeight) + 'px')
+
+        if (sectionAnchorBar instanceof HTMLElement) {
+          document.documentElement.style.setProperty(
+            '--section-anchor-height',
+            Math.round(sectionAnchorBar.getBoundingClientRect().height) + 'px',
+          )
+        }
+
+        if (!(sectionOverview instanceof HTMLElement)) return
+
+        var overviewTop = sectionOverview.getBoundingClientRect().top
+        var mobileThreshold = window.innerHeight * 0.9
+        var desktopThreshold = headerHeight + 28
+        var isDesktop = window.innerWidth >= 1040
+        var shouldShow = overviewTop <= (window.innerWidth < 1040 ? mobileThreshold : desktopThreshold)
+
+        if (sectionAnchorBar instanceof HTMLElement) {
+          sectionAnchorBar.classList.toggle('section-anchor-bar--visible', shouldShow && isDesktop)
+        }
+
+        if (bottomFunnelMenu instanceof HTMLElement) {
+          bottomFunnelMenu.classList.toggle('bottom-funnel-menu--visible', shouldShow && !isDesktop)
+        }
+      }
+
+      if (typeof window.IntersectionObserver === 'function' && navSections.length > 0) {
+        var navObserver = new IntersectionObserver(
+          function (entries) {
+            var visible = entries
+              .filter(function (entry) {
+                return entry.isIntersecting
+              })
+              .sort(function (a, b) {
+                return b.intersectionRatio - a.intersectionRatio
+              })
+
+            if (!visible.length) return
+
+            var current = visible[0]
+            var targetRow = navSections.find(function (row) {
+              return row.section === current.target
+            })
+            if (!targetRow || !targetRow.targetId) return
+
+            setActiveBottomNav(targetRow.targetId)
+          },
+          {
+            rootMargin: '-14% 0px -55% 0px',
+          },
+        )
+
+        navSections.forEach(function (row) {
+          navObserver.observe(row.section)
+        })
+      }
+
+      Array.from(
+        document.querySelectorAll(
+          '[data-bottom-target]:not([data-booking-action]), [data-section-target]',
+        ),
+      ).forEach(function (link) {
+        link.addEventListener('click', function (event) {
+          var targetId =
+            link.getAttribute('data-bottom-target') || link.getAttribute('data-section-target')
+          if (!targetId) return
+          var section = document.getElementById(targetId)
+          if (!section) return
+          event.preventDefault()
+          section.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        })
+      })
+
+      if (reviewFeed instanceof HTMLElement && reviewCards.length > 0) {
+        var activeReviewFilter = 'all'
+        var reviewExpandAll = false
+
+        function parseReviewDate(value) {
+          var parsed = Date.parse(value || '')
+          return Number.isFinite(parsed) ? parsed : 0
+        }
+
+        function sortReviewCards(cards) {
+          var mode =
+            reviewSort instanceof HTMLSelectElement ? reviewSort.value : 'relevance'
+          var nextCards = cards.slice()
+
+          if (mode === 'newest') {
+            nextCards.sort(function (left, right) {
+              return parseReviewDate(right.dataset.reviewDate) - parseReviewDate(left.dataset.reviewDate)
+            })
+            return nextCards
+          }
+
+          if (mode === 'oldest') {
+            nextCards.sort(function (left, right) {
+              return parseReviewDate(left.dataset.reviewDate) - parseReviewDate(right.dataset.reviewDate)
+            })
+            return nextCards
+          }
+
+          if (mode === 'highest') {
+            nextCards.sort(function (left, right) {
+              return Number.parseFloat(right.dataset.reviewRating || '0') - Number.parseFloat(left.dataset.reviewRating || '0')
+            })
+            return nextCards
+          }
+
+          if (mode === 'lowest') {
+            nextCards.sort(function (left, right) {
+              return Number.parseFloat(left.dataset.reviewRating || '0') - Number.parseFloat(right.dataset.reviewRating || '0')
+            })
+            return nextCards
+          }
+
+          nextCards.sort(function (left, right) {
+            return Number.parseInt(left.dataset.reviewIndex || '0', 10) - Number.parseInt(right.dataset.reviewIndex || '0', 10)
+          })
+          return nextCards
+        }
+
+        function applyReviewFilters() {
+          var query =
+            reviewSearch instanceof HTMLInputElement ? reviewSearch.value.trim().toLowerCase() : ''
+
+          var filtered = reviewCards.filter(function (card) {
+            var rating = Math.round(Number.parseFloat(card.dataset.reviewRating || '0'))
+            var matchesFilter = activeReviewFilter === 'all' || String(rating) === activeReviewFilter
+            var haystack = card.dataset.reviewSearchText || ''
+            var matchesSearch = !query || haystack.indexOf(query) !== -1
+            return matchesFilter && matchesSearch
+          })
+
+          filtered = sortReviewCards(filtered)
+          filtered.forEach(function (card) {
+            reviewFeed.appendChild(card)
+          })
+
+          reviewCards.forEach(function (card) {
+            card.hidden = filtered.indexOf(card) === -1
+          })
+
+          filtered.forEach(function (card, index) {
+            card.hidden = !reviewExpandAll && index >= 6
+          })
+
+          if (reviewEmpty instanceof HTMLElement) {
+            reviewEmpty.hidden = filtered.length > 0
+          }
+
+          if (reviewShowMore instanceof HTMLButtonElement) {
+            reviewShowMore.hidden = filtered.length <= 6
+            reviewShowMore.textContent = reviewExpandAll ? 'Свернуть отзывы' : 'Показать еще отзывы'
+          }
+        }
+
+        reviewFilterButtons.forEach(function (button) {
+          button.addEventListener('click', function () {
+            activeReviewFilter = button.getAttribute('data-review-filter') || 'all'
+            reviewExpandAll = false
+            reviewFilterButtons.forEach(function (item) {
+              var isActive = item === button
+              item.classList.toggle('review-filter-chip--active', isActive)
+              item.setAttribute('aria-pressed', isActive ? 'true' : 'false')
+            })
+            applyReviewFilters()
+          })
+        })
+
+        if (reviewSearch instanceof HTMLInputElement) {
+          reviewSearch.addEventListener('input', function () {
+            reviewExpandAll = false
+            applyReviewFilters()
+          })
+        }
+
+        if (reviewSort instanceof HTMLSelectElement) {
+          reviewSort.addEventListener('change', function () {
+            applyReviewFilters()
+          })
+        }
+
+        if (reviewShowMore instanceof HTMLButtonElement) {
+          reviewShowMore.addEventListener('click', function () {
+            reviewExpandAll = !reviewExpandAll
+            applyReviewFilters()
+          })
+        }
+
+        reviewCards.forEach(function (card) {
+          var toggle = card.querySelector('[data-review-toggle]')
+          var text = card.querySelector('[data-review-text]')
+          if (!(toggle instanceof HTMLButtonElement) || !(text instanceof HTMLElement)) return
+          toggle.addEventListener('click', function () {
+            var isExpanded = toggle.getAttribute('aria-expanded') === 'true'
+            toggle.setAttribute('aria-expanded', isExpanded ? 'false' : 'true')
+            text.classList.toggle('review-card__text--clamped', isExpanded)
+            toggle.textContent = isExpanded ? 'Читать дальше' : 'Свернуть'
+          })
+        })
+
+        applyReviewFilters()
+      }
+
+      discoveryCarousels.forEach(function (carousel) {
+        var viewport = carousel.querySelector('[data-carousel-viewport]')
+        var track = carousel.querySelector('[data-carousel-track]')
+        var prev = carousel.querySelector('[data-carousel-prev]')
+        var next = carousel.querySelector('[data-carousel-next]')
+        var pageLabel = carousel.querySelector('[data-carousel-page]')
+        var totalLabel = carousel.querySelector('[data-carousel-pages]')
+        var meta = carousel.querySelector('[data-carousel-meta]')
+
+        if (!(viewport instanceof HTMLElement) || !(track instanceof HTMLElement)) return
+
+        function getCarouselMetrics() {
+          var cards = Array.from(track.querySelectorAll('.experience-card'))
+          if (!cards.length) {
+            return {
+              current: 1,
+              pages: 1,
+              scrollStep: viewport.clientWidth,
+            }
+          }
+
+          var firstCard = cards[0]
+          var trackStyles = window.getComputedStyle(track)
+          var gap = Number.parseFloat(trackStyles.columnGap || trackStyles.gap || '0') || 0
+          var cardWidth = firstCard.getBoundingClientRect().width + gap
+          var cardsPerPage = Math.max(1, Math.floor((viewport.clientWidth + gap) / Math.max(cardWidth, 1)))
+          var pages = Math.max(1, Math.ceil(cards.length / cardsPerPage))
+          var scrollStep = cardsPerPage * cardWidth
+          var current = Math.min(pages, Math.max(1, Math.round(viewport.scrollLeft / Math.max(scrollStep, 1)) + 1))
+
+          return {
+            current: current,
+            pages: pages,
+            scrollStep: scrollStep,
+          }
+        }
+
+        function updateCarouselState() {
+          var metrics = getCarouselMetrics()
+          var pages = metrics.pages
+          var current = metrics.current
+
+          if (pageLabel) pageLabel.textContent = String(current)
+          if (totalLabel) totalLabel.textContent = String(pages)
+          if (prev instanceof HTMLButtonElement) prev.disabled = current <= 1
+          if (next instanceof HTMLButtonElement) next.disabled = current >= pages
+          if (meta instanceof HTMLElement) meta.hidden = pages <= 1
+        }
+
+        if (prev instanceof HTMLButtonElement) {
+          prev.addEventListener('click', function () {
+            var metrics = getCarouselMetrics()
+            viewport.scrollBy({ left: -metrics.scrollStep, behavior: 'smooth' })
+          })
+        }
+
+        if (next instanceof HTMLButtonElement) {
+          next.addEventListener('click', function () {
+            var metrics = getCarouselMetrics()
+            viewport.scrollBy({ left: metrics.scrollStep, behavior: 'smooth' })
+          })
+        }
+
+        viewport.addEventListener('scroll', updateCarouselState, { passive: true })
+        window.addEventListener('resize', updateCarouselState)
+        updateCarouselState()
+        window.requestAnimationFrame(updateCarouselState)
+        window.setTimeout(updateCarouselState, 250)
+        window.addEventListener('load', updateCarouselState, { once: true })
+      })
+
+      syncFixedNavigationState()
+      window.addEventListener('scroll', syncFixedNavigationState, { passive: true })
+      window.addEventListener('resize', syncFixedNavigationState)
+
+      if (leadForm && leadForm instanceof HTMLFormElement && leadFormResult instanceof HTMLDivElement) {
+        var leadFormResultElement = leadFormResult
+        var leadContactStep = document.getElementById('lead-contact-step')
+        var leadContactStepResult = document.getElementById('lead-contact-step-result')
+        var leadContactButtons = Array.prototype.slice.call(
+          document.querySelectorAll('[data-lead-contact-channel]'),
+        )
+        var latestLeadId = ''
+
+        function setLeadFormResult(text, state) {
+          leadFormResultElement.textContent = text
+          leadFormResultElement.classList.remove('lead-result--success', 'lead-result--error')
+          if (state === 'success') {
+            leadFormResultElement.classList.add('lead-result--success')
+            return
+          }
+          if (state === 'error') {
+            leadFormResultElement.classList.add('lead-result--error')
+          }
+        }
+
+        function setLeadContactStepVisible(isVisible) {
+          if (!(leadContactStep instanceof HTMLDivElement)) return
+          if (isVisible) {
+            leadContactStep.removeAttribute('hidden')
+            return
+          }
+          leadContactStep.setAttribute('hidden', '')
+        }
+
+        function setLeadContactButtonsDisabled(isDisabled) {
+          leadContactButtons.forEach(function (button) {
+            if (button instanceof HTMLButtonElement) {
+              button.disabled = isDisabled
+            }
+          })
+        }
+
+        function setLeadContactStepResult(text, state) {
+          if (!(leadContactStepResult instanceof HTMLDivElement)) return
+          leadContactStepResult.textContent = text
+          leadContactStepResult.classList.remove(
+            'lead-contact-step__result--success',
+            'lead-contact-step__result--error',
+          )
+          if (state === 'success') {
+            leadContactStepResult.classList.add('lead-contact-step__result--success')
+            return
+          }
+          if (state === 'error') {
+            leadContactStepResult.classList.add('lead-contact-step__result--error')
+          }
+        }
+
+        function resetLeadContactStep() {
+          latestLeadId = ''
+          setLeadContactStepVisible(false)
+          setLeadContactButtonsDisabled(false)
+          setLeadContactStepResult('', 'idle')
+          leadContactButtons.forEach(function (button) {
+            if (button instanceof HTMLButtonElement) {
+              button.setAttribute('aria-pressed', 'false')
+            }
+          })
+        }
+
+        var leadApiEndpoint =
+          leadForm.dataset.leadEndpoint || new URL('/api/catalog/leads', window.location.origin).toString()
+
+        resetLeadContactStep()
+
+        leadForm.addEventListener('submit', async function (event) {
+          event.preventDefault()
+
+          var formData = new FormData(leadForm)
+          var rawPeople = safeText(formData.get('peopleCount')).trim()
+          var peopleCount = rawPeople ? Number(rawPeople) : undefined
+
+          var payload = {
+            excursionId: safeText(formData.get('excursionId')).trim(),
+            customerName: safeText(formData.get('customerName')).trim(),
+            customerPhone: safeText(formData.get('customerPhone')).trim(),
+            customerTelegram: safeText(formData.get('customerTelegram')).trim() || undefined,
+            requestedDate: safeText(formData.get('requestedDate')).trim() || undefined,
+            peopleCount: Number.isFinite(peopleCount) ? peopleCount : undefined,
+            comment: safeText(formData.get('comment')).trim() || undefined,
+            source: 'website',
+            sourcePage: safeText(formData.get('sourcePage')).trim() || undefined,
+          }
+
+          resetLeadContactStep()
+          setLeadFormResult('Отправляем заявку...', 'idle')
+
+          try {
+            var response = await fetch(leadApiEndpoint, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+              },
+              body: JSON.stringify(payload),
+            })
+
+            if (!response.ok) {
+              var text = await response.text()
+              throw new Error(text || ('Ошибка ' + response.status))
+            }
+
+            var responseBody = await response.json()
+            var createdLeadId =
+              responseBody &&
+              responseBody.lead &&
+              typeof responseBody.lead.id === 'string'
+                ? responseBody.lead.id
+                : ''
+
+            if (!createdLeadId) {
+              throw new Error('Не удалось получить идентификатор заявки')
+            }
+
+            latestLeadId = createdLeadId
+            setLeadFormResult('Спасибо за обращение! Теперь выберите удобный канал связи.', 'success')
+            setLeadContactStepVisible(true)
+            leadForm.reset()
+            syncBookingSelectorState()
+          } catch (error) {
+            var errorMessage = error && error.message ? error.message : 'проверьте подключение к серверу'
+            setLeadFormResult('Не удалось отправить заявку: ' + errorMessage, 'error')
+          }
+        })
+
+        leadContactButtons.forEach(function (button) {
+          if (!(button instanceof HTMLButtonElement)) return
+
+          button.addEventListener('click', async function () {
+            if (!latestLeadId) return
+
+            var contactChannel = safeText(button.dataset.leadContactChannel).trim()
+            if (!contactChannel) return
+
+            setLeadContactButtonsDisabled(true)
+            setLeadContactStepResult('Сохраняем выбранный канал связи...', 'idle')
+
+            try {
+              var contactChannelEndpoint = new URL(
+                './' + encodeURIComponent(latestLeadId) + '/contact-channel',
+                leadApiEndpoint.endsWith('/') ? leadApiEndpoint : leadApiEndpoint + '/',
+              ).toString()
+
+              var response = await fetch(contactChannelEndpoint, {
+                method: 'PATCH',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Accept: 'application/json',
+                },
+                body: JSON.stringify({
+                  contactChannel: contactChannel,
+                }),
+              })
+
+              if (!response.ok) {
+                var text = await response.text()
+                throw new Error(text || ('Ошибка ' + response.status))
+              }
+
+              leadContactButtons.forEach(function (candidate) {
+                if (candidate instanceof HTMLButtonElement) {
+                  candidate.setAttribute(
+                    'aria-pressed',
+                    String(candidate.dataset.leadContactChannel === contactChannel),
+                  )
+                }
+              })
+
+              setLeadContactStepResult(
+                'Канал связи сохранён. Менеджер продолжит общение через ' + button.textContent + '.',
+                'success',
+              )
+            } catch (error) {
+              var errorMessage = error && error.message ? error.message : 'проверьте подключение к серверу'
+              setLeadContactStepResult(
+                'Не удалось сохранить канал связи: ' + errorMessage,
+                'error',
+              )
+            } finally {
+              setLeadContactButtonsDisabled(false)
+            }
+          })
+        })
+      }
+    </script>
+  </body>
+</html>
+
+<style>
+  :root {
+    --site-header-height: 72px;
+    --section-anchor-height: 0px;
+    color-scheme: light;
+    font-family:
+      Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+      sans-serif;
+    background: #fff;
+    color: #171f1d;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: #fff;
+  }
+
+  a,
+  button {
+    color: inherit;
+    font: inherit;
+  }
+
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: grid;
+    grid-template-columns: auto minmax(220px, 420px) auto;
+    gap: 22px;
+    align-items: center;
+    border-bottom: 1px solid #e6ebe9;
+    background: rgba(255, 255, 255, 0.98);
+    padding: 10px max(24px, calc((100vw - 1180px) / 2));
+    backdrop-filter: blur(12px);
+  }
+
+  .brand {
+    font-size: 1.15rem;
+    font-weight: 900;
+    text-decoration: none;
+  }
+
+  .search-pill {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    min-height: 42px;
+    border: 1px solid #dfe5e3;
+    border-radius: 999px;
+    padding: 0 18px;
+    box-shadow: 0 5px 18px rgba(28, 45, 41, 0.08);
+  }
+
+  .search-pill span {
+    width: 14px;
+    height: 14px;
+    border: 2px solid #17211f;
+    border-radius: 999px;
+  }
+
+  .site-header nav {
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px;
+    color: #384641;
+    font-size: 0.95rem;
+  }
+
+  .site-header a {
+    text-decoration: none;
+  }
+
+  .tour-page {
+    width: min(1180px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 18px 0 74px;
+  }
+
+  .breadcrumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    align-items: center;
+    margin-bottom: 18px;
+    color: #4e5b58;
+    font-size: 0.9rem;
+  }
+
+  .breadcrumbs a {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .product-head {
+    margin-bottom: 16px;
+  }
+
+  .badge-row,
+  .trust-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 13px;
+    align-items: center;
+  }
+
+  .badge-row {
+    margin-bottom: 14px;
+  }
+
+  .badge-row span {
+    border: 1px solid #dfe7e4;
+    border-radius: 999px;
+    background: #f6faf8;
+    padding: 7px 12px;
+    color: #2d5148;
+    font-size: 0.86rem;
+    font-weight: 780;
+  }
+
+  .trust-row {
+    color: #33423f;
+    font-size: 0.94rem;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .rating-link-wrap {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .trust-row > span:not(.divider):not(.rating-link-wrap):not(.trust-row__meta) {
+    width: 1px;
+    height: 18px;
+    background: #cdd7d3;
+  }
+
+  .divider {
+    width: 1px;
+    height: 18px;
+    display: inline-block;
+    background: #cdd7d3;
+    margin: 0 2px;
+  }
+
+  .rating-link {
+    color: #0f2a1f;
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    text-decoration: none;
+  }
+
+  .rating-link strong {
+    font-size: 1rem;
+    color: #133c29;
+  }
+
+  .rating-link__meta {
+    color: #5f6b67;
+    text-decoration: none;
+  }
+
+  .rating-link__meta span:last-child {
+    color: #1f5a38;
+    font-weight: 700;
+  }
+
+  .trust-row__meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #66756f;
+  }
+
+  .trust-row__meta span:first-child {
+    color: #133c29;
+  }
+
+  .reviews-meta {
+    color: #17211f;
+  }
+
+  .reviews-summary {
+    border: 1px solid #d7e2de;
+    border-radius: 10px;
+    padding: 14px 16px;
+    background: #f8fbfa;
+    margin-bottom: 16px;
+  }
+
+  .reviews-summary__stats {
+    display: grid;
+    gap: 3px;
+  }
+
+  .reviews-summary__stats strong {
+    font-size: 1.28rem;
+    color: #143427;
+    line-height: 1.1;
+  }
+
+  .reviews-summary__stats span {
+    color: #4f615b;
+    font-size: 0.93rem;
+  }
+
+  .reviews-feed {
+    display: grid;
+    gap: 12px;
+  }
+
+  .review-card {
+    border: 1px solid #e0e8e5;
+    border-radius: 10px;
+    padding: 14px 16px;
+    background: #fff;
+  }
+
+  .review-card__header {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-weight: 750;
+    margin-bottom: 6px;
+    color: #182723;
+  }
+
+  .review-card__header strong {
+    color: #1f684f;
+  }
+
+  .review-card h3 {
+    margin: 0 0 7px;
+    font-size: 1rem;
+    color: #1f2a28;
+  }
+
+  .review-card p {
+    margin: 0;
+    line-height: 1.45;
+    color: #404f4b;
+  }
+
+  .review-card small {
+    display: block;
+    margin-top: 8px;
+    color: #6f807b;
+  }
+
+  .featured-review {
+    border: 1px solid #dbe6e1;
+    border-radius: 12px;
+    padding: 18px;
+    background: #fbfdfc;
+    margin-bottom: 16px;
+  }
+
+  .featured-review__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px;
+    border-radius: 999px;
+    padding: 0 10px;
+    margin-bottom: 12px;
+    background: #edf6f2;
+    color: #184734;
+    font-size: 0.78rem;
+    font-weight: 840;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .review-tools {
+    display: grid;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+
+  .review-tools__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .review-filter-chip {
+    min-height: 36px;
+    border-radius: 999px;
+    border: 1px solid #d7e2de;
+    background: #fff;
+    padding: 0 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: #21312d;
+    font-weight: 760;
+  }
+
+  .review-filter-chip strong {
+    color: #1f684f;
+  }
+
+  .review-filter-chip--active {
+    border-color: #1f5c4b;
+    background: #e9f4ee;
+    color: #133c2c;
+  }
+
+  .review-tools__controls {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 220px;
+    gap: 12px;
+  }
+
+  .review-tools__search,
+  .review-tools__sort {
+    display: grid;
+    gap: 6px;
+  }
+
+  .review-tools__search span,
+  .review-tools__sort span {
+    font-size: 0.85rem;
+    font-weight: 760;
+    color: #4e5f5a;
+  }
+
+  .review-tools__search input,
+  .review-tools__sort select {
+    width: 100%;
+    min-height: 44px;
+    border-radius: 10px;
+    border: 1px solid #d3ddd9;
+    background: #fff;
+    padding: 0 12px;
+    color: #17211f;
+  }
+
+  .review-card__text--clamped {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .review-card__toggle,
+  .reviews-feed__more {
+    margin-top: 10px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #135741;
+    font-weight: 780;
+    cursor: pointer;
+  }
+
+  .reviews-feed__empty {
+    margin: 8px 0 0;
+    color: #62736e;
+  }
+
+  .tripadvisor-link {
+    margin-top: 14px;
+    display: inline-block;
+    color: #0f5f43;
+    font-weight: 760;
+  }
+
+  .gallery-mobile-strip {
+    display: none;
+  }
+
+  .gallery-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: #b7c4bf;
+  }
+
+  .gallery-dot--active {
+    width: 18px;
+    background: #122e25;
+    border-radius: 999px;
+  }
+
+  .gallery-dots {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 16px;
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  .gallery-dots .gallery-dot {
+    pointer-events: auto;
+    transition: width 160ms ease;
+  }
+
+  .gallery-dots {
+    opacity: 0.95;
+  }
+
+  .section-anchor-bar {
+    position: fixed;
+    top: var(--site-header-height);
+    left: 0;
+    right: 0;
+    z-index: 25;
+    transform: translateY(calc(-100% - 12px));
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      transform 220ms ease,
+      opacity 180ms ease;
+    border-bottom: 1px solid #dde6e2;
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(16px);
+  }
+
+  .section-anchor-bar--visible {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .section-anchor-bar__inner {
+    width: min(1180px, calc(100% - 40px));
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 10px 0;
+    scrollbar-width: none;
+  }
+
+  .section-anchor-bar__inner::-webkit-scrollbar {
+    display: none;
+  }
+
+  .section-anchor-bar__item {
+    flex: 0 0 auto;
+    min-height: 36px;
+    border-radius: 999px;
+    border: 1px solid #dce5e1;
+    background: #f6faf8;
+    color: #21322e;
+    text-decoration: none;
+    padding: 0 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 760;
+    white-space: nowrap;
+    transition:
+      background 160ms ease,
+      border-color 160ms ease,
+      color 160ms ease;
+  }
+
+  .section-anchor-bar__item:hover,
+  .section-anchor-bar__item:focus-visible {
+    background: #eef6f2;
+    border-color: #c6d8d1;
+  }
+
+  .section-anchor-bar__item--active {
+    border-color: #1f5c4b;
+    background: #e9f4ee;
+    color: #134032;
+  }
+
+  .bottom-funnel-menu {
+    display: none;
+    margin: 34px -24px 0;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    border-top: 1px solid #dfe6e4;
+    border-bottom: 1px solid #dfe6e4;
+    background: #fff;
+    isolation: isolate;
+  }
+
+  .bottom-funnel-menu__item {
+    min-height: 104px;
+    text-decoration: none;
+    border-right: 1px solid #dfe6e4;
+    padding: 14px;
+    color: #1a2724;
+    display: grid;
+    align-content: start;
+    justify-items: start;
+    gap: 6px;
+  }
+
+  .bottom-funnel-menu__item:last-child {
+    border-right: 0;
+  }
+
+  .bottom-funnel-menu__item strong {
+    font-size: 0.9rem;
+    line-height: 1.15;
+  }
+
+  .bottom-funnel-menu__item span:last-child {
+    color: #5f6f6a;
+    font-size: 0.82rem;
+    line-height: 1.3;
+  }
+
+  .bottom-funnel-menu__item--primary {
+    color: #ffffff;
+    background: linear-gradient(180deg, #1f5c4b 0%, #1c4f42 100%);
+    border-color: #1f5c4b;
+  }
+
+  .bottom-funnel-menu__item--primary .bottom-funnel-menu__icon {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.42);
+  }
+
+  .bottom-funnel-menu__item--primary strong {
+    color: #ffffff;
+  }
+
+  .bottom-funnel-menu__item--primary span:last-child {
+    color: #ceefe6;
+  }
+
+  .bottom-funnel-menu__icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    border: 1px solid #d6e0dc;
+    margin-bottom: 2px;
+    color: #17372b;
+    background: #f4f8f6;
+    flex: 0 0 auto;
+  }
+
+  .bottom-funnel-menu__icon svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .bottom-funnel-menu__item:hover,
+  .bottom-funnel-menu__item:focus-visible {
+    background: #f5faf8;
+  }
+
+  .bottom-funnel-menu__item--active {
+    background: #e9f4ee;
+    box-shadow: inset 0 -3px 0 #1f5c4b;
+    color: #123a2f;
+  }
+
+  .bottom-funnel-menu__item--active .bottom-funnel-menu__icon {
+    border-color: #1f5c4b;
+    color: #164232;
+    background: #f0fbf5;
+  }
+
+  .booking-card__button--strong {
+    background: #1f5c4b;
+    box-shadow: 0 14px 22px rgba(30, 82, 66, 0.18);
+  }
+
+  .rating {
+    color: #278b72;
+    letter-spacing: 0;
+  }
+
+  h1,
+  h2,
+  h3,
+  p,
+  figure {
+    margin-top: 0;
+  }
+
+  h1 {
+    max-width: 780px;
+    margin-bottom: 10px;
+    font-size: clamp(1.82rem, 2.65vw, 2.72rem);
+    line-height: 1.1;
+    letter-spacing: 0;
+  }
+
+  h2 {
+    margin-bottom: 16px;
+    font-size: clamp(1.32rem, 1.85vw, 1.72rem);
+    line-height: 1.18;
+    letter-spacing: 0;
+  }
+
+  h3 {
+    margin-bottom: 10px;
+    font-size: 1.05rem;
+    line-height: 1.3;
+    letter-spacing: 0;
+  }
+
+  .product-shell {
+    display: grid;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .product-main {
+    min-width: 0;
+  }
+
+  .viator-gallery {
+    display: grid;
+    grid-template-columns: 112px minmax(0, 1fr);
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  .gallery-rail {
+    display: grid;
+    gap: 8px;
+  }
+
+  .gallery-thumb {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    height: 76px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: #eaf1ee;
+    text-decoration: none;
+  }
+
+  .gallery-thumb--active {
+    border-color: #17211f;
+  }
+
+  .gallery-thumb img,
+  .gallery-main img,
+  .promoted-card img,
+  .photo-strip img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .gallery-thumb img,
+  .gallery-main img,
+  .promoted-card img {
+    transition: transform 180ms ease;
+  }
+
+  .gallery-thumb:hover img,
+  .gallery-main:hover img,
+  .promoted-card:hover img,
+  .experience-card:hover .experience-card__media img {
+    transform: scale(1.035);
+  }
+
+  .promoted-card {
+    border-radius: 10px;
+    overflow: hidden;
+    transition:
+      transform 180ms ease,
+      box-shadow 180ms ease;
+    position: relative;
+  }
+
+  .promoted-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(18, 33, 28, 0.1);
+  }
+
+  .promoted-card::after {
+    content: "→";
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    width: 30px;
+    height: 30px;
+    border-radius: 999px;
+    background: #fff;
+    color: #1f5c4b;
+    border: 1px solid #dfe9e5;
+    display: grid;
+    place-items: center;
+    opacity: 0;
+    transition: opacity 160ms ease;
+    pointer-events: none;
+  }
+
+  .promoted-card:hover::after {
+    opacity: 1;
+  }
+
+  .gallery-thumb span {
+    position: absolute;
+    inset: auto 0 0;
+    display: grid;
+    place-items: center;
+    min-height: 42px;
+    background: rgba(23, 33, 31, 0.72);
+    color: #fff;
+    font-weight: 850;
+  }
+
+  .gallery-main {
+    position: relative;
+    overflow: hidden;
+    height: 430px;
+    border-radius: 8px;
+    background: #eaf1ee;
+  }
+
+  .gallery-main > div:not(.gallery-actions) {
+    display: grid;
+    height: 100%;
+    place-items: center;
+    color: #65736f;
+  }
+
+  .gallery-actions {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    display: flex;
+    gap: 10px;
+    z-index: 4;
+  }
+
+  .gallery-actions button {
+    min-height: 44px;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 0 18px;
+    font-weight: 850;
+    cursor: pointer;
+    box-shadow: 0 8px 22px rgba(22, 35, 32, 0.16);
+  }
+
+  .gallery-more {
+    position: absolute;
+    right: 18px;
+    bottom: 18px;
+    border-radius: 7px;
+    background: rgba(255, 255, 255, 0.94);
+    padding: 11px 15px;
+    text-decoration: none;
+    font-weight: 850;
+    box-shadow: 0 8px 22px rgba(22, 35, 32, 0.16);
+    z-index: 4;
+  }
+
+  .gallery-arrow {
+    position: absolute;
+    top: 50%;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.92);
+    cursor: pointer;
+    transform: translateY(-50%);
+    z-index: 5;
+  }
+
+  .gallery-arrow__glyph {
+    color: #17211f;
+    font-size: 1.6rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .gallery-arrow--left {
+    left: 18px;
+  }
+
+  .gallery-arrow--right {
+    right: 18px;
+  }
+
+  .gallery-modal-open {
+    overflow: hidden;
+  }
+
+  .gallery-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+  }
+
+  .gallery-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(7, 11, 10, 0.76);
+    backdrop-filter: blur(10px);
+  }
+
+  .gallery-modal__dialog {
+    position: relative;
+    z-index: 1;
+    width: min(1120px, calc(100% - 32px));
+    max-height: calc(100vh - 32px);
+    margin: 16px auto;
+    border-radius: 16px;
+    background: #08110e;
+    color: #fff;
+    padding: 18px;
+    display: grid;
+    gap: 16px;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.34);
+  }
+
+  .gallery-modal__close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 40px;
+    height: 40px;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+
+  .gallery-modal__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding-right: 52px;
+  }
+
+  .gallery-modal__top strong {
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+
+  .gallery-modal__top span {
+    color: rgba(255, 255, 255, 0.72);
+    white-space: nowrap;
+  }
+
+  .gallery-modal__stage {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #0f1b17;
+    min-height: 66vh;
+    display: grid;
+    place-items: center;
+  }
+
+  .gallery-modal__stage img {
+    width: 100%;
+    height: min(66vh, 760px);
+    object-fit: contain;
+    display: block;
+  }
+
+  .gallery-modal__arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.9);
+    color: #13211d;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+
+  .gallery-modal__arrow--left {
+    left: 18px;
+  }
+
+  .gallery-modal__arrow--right {
+    right: 18px;
+  }
+
+  .gallery-modal__thumbs {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 96px;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+
+  .gallery-modal__thumbs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .gallery-modal__thumb {
+    height: 72px;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    overflow: hidden;
+    padding: 0;
+    background: #15211d;
+    cursor: pointer;
+  }
+
+  .gallery-modal__thumb--active {
+    border-color: #7ce0be;
+  }
+
+  .gallery-modal__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .quick-facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    border-top: 1px solid #e3ebe8;
+    border-bottom: 1px solid #e3ebe8;
+    margin-bottom: 18px;
+    padding: 14px 0;
+  }
+
+  .quick-fact {
+    display: grid;
+    grid-template-columns: 20px minmax(0, 1fr);
+    gap: 8px;
+    align-items: start;
+    flex: 1 1 190px;
+    padding: 4px 18px 4px 0;
+  }
+
+  .quick-fact span {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #2f8c74;
+    border-radius: 999px;
+    margin-top: 2px;
+  }
+
+  .quick-fact strong {
+    display: block;
+    color: #17211f;
+    font-size: 0.94rem;
+    line-height: 1.28;
+  }
+
+  .quick-fact small {
+    display: block;
+    grid-column: 2;
+    color: #62716d;
+    font-size: 0.82rem;
+    font-weight: 720;
+    text-transform: uppercase;
+  }
+
+  .traveler-love {
+    border-bottom: 1px solid #e3ebe8;
+    padding: 8px 0 24px;
+    margin-bottom: 6px;
+  }
+
+  .traveler-love__heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+
+  .traveler-love__heading h2 {
+    margin: 0;
+    font-size: clamp(1.22rem, 1.7vw, 1.48rem);
+  }
+
+  .traveler-love__heading a {
+    color: #145c42;
+    font-size: 0.9rem;
+    font-weight: 780;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .traveler-love__chips {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scrollbar-width: none;
+  }
+
+  .traveler-love__chips::-webkit-scrollbar {
+    display: none;
+  }
+
+  .traveler-love__chip {
+    flex: 0 0 auto;
+    min-height: 34px;
+    border: 1px solid #d7e2de;
+    border-radius: 999px;
+    background: #fff;
+    color: #25342f;
+    padding: 0 13px;
+    font-size: 0.88rem;
+    font-weight: 780;
+    cursor: pointer;
+  }
+
+  .traveler-love__chip--active {
+    border-color: #17211f;
+    background: #17211f;
+    color: #fff;
+  }
+
+  .traveler-love__cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .traveler-love-card {
+    border: 1px solid #dce6e2;
+    border-radius: 8px;
+    background: #fff;
+    padding: 16px;
+    box-shadow: 0 8px 22px rgba(18, 33, 28, 0.05);
+  }
+
+  .traveler-love-card__stars {
+    color: #16896a;
+    letter-spacing: 0;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+  }
+
+  .traveler-love-card p {
+    margin-bottom: 10px;
+    color: #33413d;
+    line-height: 1.52;
+  }
+
+  .traveler-love-card small {
+    color: #687872;
+    font-size: 0.84rem;
+  }
+
+  .content-section {
+    border-bottom: 1px solid #e3ebe8;
+    padding: 26px 0;
+    scroll-margin-top: calc(var(--site-header-height) + var(--section-anchor-height) + 22px);
+  }
+
+  .booking-form p {
+    margin-top: 0;
+    margin-bottom: 16px;
+    color: #3f4f4b;
+    font-size: 1.01rem;
+    line-height: 1.5;
+  }
+
+  .booking-form__form {
+    display: grid;
+    gap: 12px;
+  }
+
+  .booking-form__form label {
+    display: grid;
+    gap: 7px;
+    font-weight: 700;
+  }
+
+  .booking-form__form input,
+  .booking-form__form textarea,
+  .booking-form__form select {
+    width: 100%;
+    border: 1px solid #cfdbd7;
+    border-radius: 10px;
+    background: #fff;
+    min-height: 45px;
+    padding: 10px 12px;
+    color: #17211f;
+    font-size: 0.98rem;
+  }
+
+  .booking-form__form input::placeholder,
+  .booking-form__form textarea::placeholder {
+    color: #86928e;
+  }
+
+  .booking-form__form button {
+    border: 0;
+    border-radius: 10px;
+    min-height: 46px;
+    margin-top: 2px;
+    background: #1f5c4b;
+    color: #fff;
+    font-weight: 870;
+    cursor: pointer;
+  }
+
+  .booking-form__form textarea {
+    min-height: 85px;
+    resize: vertical;
+  }
+
+  #lead-form-result {
+    min-height: 20px;
+    margin-top: 2px;
+    color: #4f5f5a;
+  }
+
+  .lead-result--success {
+    color: #14693e;
+  }
+
+  .lead-result--error {
+    color: #a72a2a;
+  }
+
+  .lead-contact-step {
+    margin-top: 14px;
+    border: 1px solid #dce7e3;
+    border-radius: 14px;
+    background: #f8fbfa;
+    padding: 16px;
+  }
+
+  .lead-contact-step strong {
+    display: block;
+    margin-bottom: 8px;
+    color: #17211f;
+  }
+
+  .lead-contact-step p {
+    margin: 0 0 14px;
+    color: #50615c;
+    font-size: 0.96rem;
+  }
+
+  .lead-contact-step__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .lead-contact-step__button {
+    border: 1px solid #cfdbd7;
+    border-radius: 999px;
+    background: #fff;
+    min-height: 42px;
+    padding: 0 16px;
+    color: #17211f;
+    font-weight: 760;
+    cursor: pointer;
+  }
+
+  .lead-contact-step__button[aria-pressed="true"] {
+    border-color: #1f5c4b;
+    background: #e8f3ef;
+    color: #154c3d;
+  }
+
+  .lead-contact-step__button:disabled {
+    opacity: 0.7;
+    cursor: wait;
+  }
+
+  .lead-contact-step__result {
+    min-height: 20px;
+    margin-top: 12px;
+    color: #4f5f5a;
+  }
+
+  .lead-contact-step__result--success {
+    color: #14693e;
+  }
+
+  .lead-contact-step__result--error {
+    color: #a72a2a;
+  }
+
+  .tour-content {
+    display: grid;
+  }
+
+  .content-section p,
+  .highlight-list li,
+  .included-list p,
+  .pickup-grid p,
+  .timeline__item p,
+  .accordion-list li,
+  .accordion-list p,
+  .help-section p,
+  .review-placeholder p {
+    color: #40514d;
+    font-size: 1.02rem;
+    line-height: 1.62;
+  }
+
+  .highlight-list {
+    display: grid;
+    gap: 10px;
+    margin: 18px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .highlight-list li {
+    position: relative;
+    padding-left: 24px;
+  }
+
+  .highlight-list li::before,
+  .included-list span {
+    position: absolute;
+    left: 0;
+    content: "";
+    width: 9px;
+    height: 9px;
+    border-radius: 999px;
+    background: #2f8c74;
+  }
+
+  .highlight-list li::before {
+    top: 0.75em;
+  }
+
+  .promoted h2 {
+    font-size: clamp(1.18rem, 1.6vw, 1.45rem);
+  }
+
+  .promoted-grid {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    padding: 2px 2px 8px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .promoted-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .promoted-card {
+    display: grid;
+    flex: 0 0 230px;
+    scroll-snap-align: start;
+    border: 1px solid #dce4e0;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 8px 20px rgba(18, 33, 28, 0.06);
+    color: inherit;
+    text-decoration: none;
+    overflow: hidden;
+  }
+
+  .promoted-card img {
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    border-radius: 0;
+    background: #eaf1ee;
+  }
+
+  .promoted-card span {
+    display: block;
+    padding: 11px 12px 0;
+    color: #687671;
+    font-size: 0.82rem;
+    font-weight: 780;
+  }
+
+  .promoted-card strong {
+    display: block;
+    padding: 6px 12px 0;
+    min-height: 54px;
+    line-height: 1.3;
+    font-size: 0.92rem;
+  }
+
+  .promoted-card small {
+    display: block;
+    padding: 10px 12px 12px;
+    color: #17211f;
+    font-size: 0.92rem;
+    font-weight: 850;
+  }
+
+  .promoted-card small em {
+    display: block;
+    margin-top: 3px;
+    color: #5e6b67;
+    font-size: 0.78rem;
+    font-style: normal;
+    font-weight: 640;
+  }
+
+  .included-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px 20px;
+  }
+
+  .included-list div {
+    position: relative;
+    padding-left: 26px;
+  }
+
+  .included-list span {
+    top: 0.72em;
+  }
+
+  .included-list span::before {
+    content: "✓";
+    position: absolute;
+    inset: -5px 0 0 -2px;
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .included-list p {
+    margin-bottom: 0;
+  }
+
+  .not-included-list {
+    margin-top: 22px;
+    border-top: 1px solid #e5ece9;
+    padding-top: 18px;
+  }
+
+  .not-included-list h3 {
+    margin-bottom: 12px;
+    font-size: 1rem;
+  }
+
+  .not-included-list ul {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 18px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .not-included-list li {
+    position: relative;
+    padding-left: 24px;
+    color: #465651;
+    line-height: 1.52;
+  }
+
+  .not-included-list li::before {
+    content: "×";
+    position: absolute;
+    left: 0;
+    top: 0.08em;
+    color: #7f3b36;
+    font-size: 1.18rem;
+    font-weight: 800;
+  }
+
+  .inline-details,
+  .accordion-list details {
+    margin-top: 20px;
+    border: 1px solid #dfe7e4;
+    border-radius: 8px;
+    background: #fff;
+    padding: 16px;
+  }
+
+  summary {
+    cursor: pointer;
+    font-weight: 850;
+  }
+
+  .inline-details ul,
+  .accordion-list ul {
+    display: grid;
+    gap: 8px;
+    margin: 14px 0 0;
+    padding-left: 20px;
+  }
+
+  .pickup-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+  }
+
+  .pickup-grid div,
+  .review-placeholder {
+    border: 1px solid #dfe7e4;
+    border-radius: 8px;
+    padding: 18px;
+  }
+
+  .timeline {
+    display: grid;
+  }
+
+  .timeline__item {
+    position: relative;
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr);
+    gap: 16px;
+    padding-bottom: 20px;
+  }
+
+  .timeline__item::before {
+    position: absolute;
+    top: 38px;
+    bottom: 0;
+    left: 19px;
+    width: 1px;
+    content: "";
+    background: #d7e2de;
+  }
+
+  .timeline__item:last-child::before {
+    display: none;
+  }
+
+  .timeline__item span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 999px;
+    background: #17211f;
+    color: #fff;
+    font-weight: 850;
+  }
+
+  .timeline__item p {
+    margin-bottom: 0;
+    padding-top: 5px;
+  }
+
+  .question-section {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 18px;
+    align-items: center;
+  }
+
+  .question-section h2,
+  .question-section p {
+    grid-column: 1;
+  }
+
+  .question-section h2 {
+    margin-bottom: 2px;
+  }
+
+  .question-section p {
+    margin-bottom: 0;
+  }
+
+  .question-section a {
+    grid-row: 1 / span 2;
+    grid-column: 2;
+    min-height: 44px;
+    border-radius: 8px;
+    background: #17211f;
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 18px;
+    font-weight: 850;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .accordion-list {
+    display: grid;
+    gap: 10px;
+  }
+
+  .accordion-list details {
+    margin-top: 0;
+  }
+
+  .accordion-list p {
+    margin: 14px 0 0;
+  }
+
+  .photo-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 8px;
+  }
+
+  .photo-strip img {
+    aspect-ratio: 4 / 3;
+    border-radius: 8px;
+    background: #eaf1ee;
+  }
+
+  .booking-stack {
+    position: sticky;
+    top: 86px;
+    display: grid;
+    gap: 16px;
+  }
+
+  .booking-card,
+  .booking-note {
+    border: 1px solid #d9e2df;
+    border-radius: 8px;
+    background: #fff;
+    padding: 24px;
+    box-shadow: 0 14px 34px rgba(21, 37, 33, 0.09);
+  }
+
+  .booking-card__price {
+    display: grid;
+    gap: 4px;
+    margin-bottom: 14px;
+  }
+
+  .booking-card__price strong {
+    color: #111c19;
+    font-size: 1.8rem;
+    line-height: 1.1;
+  }
+
+  .booking-card__price small {
+    color: #4e5e5a;
+  }
+
+  .booking-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .booking-card__meta span {
+    min-height: 28px;
+    border-radius: 999px;
+    border: 1px solid #d8e2de;
+    background: #f6faf8;
+    padding: 0 10px;
+    color: #24443b;
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.78rem;
+    font-weight: 780;
+  }
+
+  .booking-card__selectors {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    overflow: hidden;
+    border: 1px solid #cfd9d5;
+    border-radius: 8px;
+  }
+
+  .booking-card__selectors button {
+    display: grid;
+    gap: 4px;
+    min-height: 66px;
+    border: 0;
+    background: #fff;
+    padding: 12px 15px;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .booking-card__selectors button + button {
+    border-left: 1px solid #cfd9d5;
+  }
+
+  .booking-card__selectors span {
+    color: #4f5f5b;
+    font-size: 0.84rem;
+    font-weight: 780;
+  }
+
+  .booking-card__selectors strong {
+    color: #15221d;
+    font-size: 1rem;
+    line-height: 1.25;
+  }
+
+  .booking-card__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 52px;
+    border-radius: 8px;
+    background: #348c71;
+    color: #fff;
+    margin-top: 16px;
+    text-decoration: none;
+    font-weight: 900;
+  }
+
+  .booking-card__benefits {
+    display: grid;
+    gap: 12px;
+    border-radius: 8px;
+    background: #ecfaf5;
+    margin-top: 18px;
+    padding: 18px;
+  }
+
+  .booking-card__benefits p,
+  .booking-note p {
+    margin: 0;
+    color: #33423f;
+    line-height: 1.48;
+  }
+
+  .booking-note strong {
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .detail-discovery {
+    margin-top: 44px;
+    display: grid;
+    gap: 34px;
+  }
+
+  .discovery-block {
+    display: grid;
+    gap: 18px;
+  }
+
+  .discovery-block__heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .discovery-block__heading h2 {
+    margin-bottom: 0;
+    font-size: clamp(1.45rem, 2vw, 1.95rem);
+  }
+
+  .discovery-block__heading a {
+    color: #215543;
+    text-decoration: none;
+    font-weight: 780;
+    white-space: nowrap;
+  }
+
+  .experience-carousel {
+    display: grid;
+    gap: 12px;
+  }
+
+  .experience-carousel__meta {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+  }
+
+  .experience-carousel__count {
+    color: #53635d;
+    font-size: 0.9rem;
+    font-weight: 760;
+  }
+
+  .experience-carousel__controls {
+    display: inline-flex;
+    gap: 8px;
+  }
+
+  .experience-carousel__control {
+    width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    border: 1px solid #d7e1de;
+    background: #fff;
+    color: #16221f;
+    font-size: 1.15rem;
+    cursor: pointer;
+  }
+
+  .experience-carousel__control:disabled {
+    opacity: 0.38;
+    cursor: default;
+  }
+
+  .experience-carousel__viewport {
+    overflow-x: auto;
+    scrollbar-width: none;
+    scroll-behavior: smooth;
+  }
+
+  .experience-carousel__viewport::-webkit-scrollbar {
+    display: none;
+  }
+
+  .experience-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .experience-grid--compact {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .experience-carousel__track {
+    display: flex;
+    gap: 16px;
+    width: max-content;
+    min-width: 100%;
+  }
+
+  .experience-carousel__track > .experience-card {
+    width: 280px;
+    flex: 0 0 280px;
+  }
+
+  .experience-card {
+    display: grid;
+    gap: 0;
+    border: 1px solid #dce4e0;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+    color: inherit;
+    text-decoration: none;
+    box-shadow: 0 14px 30px rgba(18, 33, 28, 0.07);
+    transition:
+      transform 180ms ease,
+      box-shadow 180ms ease;
+  }
+
+  .experience-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 32px rgba(18, 33, 28, 0.11);
+  }
+
+  .experience-card--current {
+    border-color: #c9d7d1;
+  }
+
+  .experience-card__media {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: #eaf1ee;
+  }
+
+  .experience-card__media img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    transition: transform 180ms ease;
+  }
+
+  .experience-card__placeholder {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    place-items: center;
+    color: #6b7a75;
+    font-weight: 700;
+  }
+
+  .experience-card__badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.94);
+    padding: 6px 10px;
+    color: #23312d;
+    font-size: 0.72rem;
+    font-weight: 820;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .experience-card__favorite {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 2;
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    background: rgba(255, 255, 255, 0.94);
+    color: #22312c;
+    font-size: 1rem;
+    box-shadow: 0 6px 16px rgba(21, 35, 30, 0.12);
+  }
+
+  .experience-card__body {
+    display: grid;
+    gap: 10px;
+    padding: 14px;
+  }
+
+  .experience-card__body small {
+    color: #697773;
+    font-size: 0.74rem;
+  }
+
+  .experience-card__body strong {
+    font-size: 0.98rem;
+    line-height: 1.38;
+    color: #16211e;
+  }
+
+  .experience-card__rating,
+  .experience-card__facts,
+  .experience-card__price {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .experience-card__rating {
+    padding-top: 10px;
+    border-top: 1px solid #ebf0ee;
+    color: #52605b;
+    font-size: 0.82rem;
+  }
+
+  .experience-card__stars {
+    color: #1e8a71;
+    font-size: 0.84rem;
+    letter-spacing: 0;
+  }
+
+  .experience-card__facts {
+    display: grid;
+    gap: 6px;
+    color: #4e5f5a;
+    font-size: 0.82rem;
+  }
+
+  .experience-card__price {
+    padding-top: 10px;
+    border-top: 1px solid #ebf0ee;
+    justify-content: space-between;
+    color: #1a2622;
+  }
+
+  .experience-card__price span {
+    font-weight: 900;
+    font-size: 0.96rem;
+  }
+
+  .experience-card__price small {
+    color: #4f5d59;
+    font-size: 0.8rem;
+  }
+
+  .discovery-links {
+    display: grid;
+    gap: 16px;
+    border-top: 1px solid #e2e9e5;
+    border-bottom: 1px solid #e2e9e5;
+    padding: 22px 0;
+  }
+
+  .discovery-links__group {
+    display: grid;
+    gap: 10px;
+  }
+
+  .discovery-links__group h2 {
+    margin: 0;
+    font-size: 0.96rem;
+    color: #1e2a26;
+  }
+
+  .discovery-links__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 16px;
+  }
+
+  .discovery-links__row a {
+    color: #54635f;
+    text-decoration: none;
+    font-size: 0.88rem;
+  }
+
+  .recently-viewed-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 260px);
+    gap: 16px;
+  }
+
+  .recently-viewed-grid.experience-carousel__track {
+    width: max-content;
+    min-width: 100%;
+  }
+
+  .site-footer {
+    margin-top: 64px;
+    background: #090c0b;
+    color: #f3f5f4;
+    padding: 38px max(24px, calc((100vw - 1180px) / 2)) 24px;
+  }
+
+  .site-footer a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .site-footer__socials {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    margin-bottom: 30px;
+  }
+
+  .site-footer__socials a {
+    width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    display: grid;
+    place-items: center;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+  }
+
+  .site-footer__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+  }
+
+  .site-footer__column {
+    display: grid;
+    gap: 12px;
+  }
+
+  .site-footer__column strong {
+    font-size: 0.92rem;
+  }
+
+  .site-footer__links {
+    display: grid;
+    gap: 8px;
+  }
+
+  .site-footer__links a {
+    color: rgba(255, 255, 255, 0.76);
+    font-size: 0.88rem;
+  }
+
+  .site-footer__bottom {
+    margin-top: 26px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .site-footer__apps {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .site-footer__apps a {
+    min-height: 36px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    padding: 0 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.82rem;
+    font-weight: 760;
+  }
+
+  .site-footer__bottom small {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.8rem;
+  }
+
+  @media (min-width: 1040px) {
+    .product-shell {
+      grid-template-columns: minmax(0, 1fr) 360px;
+    }
+
+    .section-anchor-bar {
+      display: block;
+    }
+  }
+
+  @media (max-width: 1039px) {
+    .site-header {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .site-header nav {
+      justify-content: flex-start;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    .product-shell {
+      grid-template-columns: 1fr;
+    }
+
+    .booking-stack {
+      position: static;
+    }
+
+    .section-anchor-bar {
+      display: none;
+    }
+
+    .experience-grid,
+    .experience-grid--compact,
+    .recently-viewed-grid,
+    .site-footer__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .discovery-block__heading,
+    .site-footer__bottom {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .review-tools__controls {
+      grid-template-columns: 1fr;
+    }
+
+    .experience-carousel__track {
+      display: flex;
+    }
+
+    .experience-carousel__track > .experience-card {
+      width: 280px;
+      flex-basis: 280px;
+    }
+  }
+
+  @media (max-width: 1039px) and (orientation: portrait) {
+    .tour-page {
+      width: min(100% - 28px, 1180px);
+      padding-top: 18px;
+    }
+
+    .badge-row {
+      gap: 8px;
+    }
+
+    .trust-row > span:not(.rating) {
+      display: none;
+    }
+
+    .trust-row {
+      gap: 10px;
+    }
+
+    .rating-link-wrap {
+      width: 100%;
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .rating-link-wrap .divider,
+    .divider,
+    .trust-row__meta {
+      display: none;
+    }
+
+    .gallery-mobile-strip {
+      display: grid;
+      gap: 8px;
+      grid-auto-flow: column;
+      grid-auto-columns: 76%;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding: 0 14px 12px;
+      margin-bottom: 12px;
+      scrollbar-width: none;
+    }
+
+    .gallery-mobile-strip::-webkit-scrollbar {
+      display: none;
+    }
+
+    .gallery-mobile-strip .gallery-thumb--mobile {
+      height: 160px;
+      scroll-snap-align: start;
+      border-radius: 10px;
+    }
+
+    .viator-gallery {
+      display: block;
+      margin-right: -14px;
+      margin-left: -14px;
+    }
+
+    .gallery-rail {
+      display: none;
+    }
+
+    .gallery-main {
+      height: 330px;
+      border-radius: 0;
+    }
+
+    .gallery-actions {
+      top: 12px;
+      right: 12px;
+    }
+
+    .gallery-actions button {
+      min-height: 38px;
+      padding: 0 12px;
+      font-size: 0.9rem;
+    }
+
+    .gallery-arrow {
+      display: none;
+    }
+
+    .gallery-modal__dialog {
+      width: calc(100% - 16px);
+      max-height: calc(100vh - 16px);
+      margin: 8px auto;
+      padding: 14px;
+      border-radius: 12px;
+    }
+
+    .gallery-modal__stage {
+      min-height: 48vh;
+    }
+
+    .gallery-modal__stage img {
+      height: min(48vh, 420px);
+    }
+
+    .gallery-modal__thumbs {
+      grid-auto-columns: 72px;
+    }
+
+    .quick-facts,
+    .promoted-grid,
+    .included-list,
+    .not-included-list ul,
+    .traveler-love__cards,
+    .pickup-grid,
+    .booking-card__selectors {
+      grid-template-columns: 1fr;
+    }
+
+    .quick-facts {
+      display: grid;
+      gap: 12px;
+    }
+
+    .traveler-love__heading,
+    .question-section {
+      grid-template-columns: 1fr;
+      align-items: start;
+    }
+
+    .question-section h2,
+    .question-section p,
+    .question-section a {
+      grid-column: auto;
+      grid-row: auto;
+    }
+
+    .booking-card__selectors button + button {
+      border-top: 1px solid #cfd9d5;
+      border-left: 0;
+    }
+
+    .bottom-funnel-menu {
+      display: grid;
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 30;
+      margin: 0;
+      transform: translateY(calc(100% + 12px));
+      opacity: 0;
+      pointer-events: none;
+      transition:
+        transform 220ms ease,
+        opacity 180ms ease;
+      border-top: 1px solid #dce3e0;
+      border-bottom: 0;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      background: #fff;
+      box-shadow: 0 -4px 18px rgba(22, 38, 33, 0.08);
+    }
+
+    .bottom-funnel-menu--visible {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .bottom-funnel-menu__item {
+      min-height: 92px;
+      padding: 10px 8px;
+      border-right: 1px solid #e8efec;
+      justify-items: center;
+      text-align: center;
+      gap: 4px;
+      font-size: 0.82rem;
+    }
+
+    .bottom-funnel-menu__item strong {
+      font-size: 0.78rem;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .bottom-funnel-menu__item span:last-child {
+      display: none;
+    }
+
+    .bottom-funnel-menu__icon {
+      width: 28px;
+      height: 28px;
+      font-size: 14px;
+    }
+
+    .experience-carousel__meta {
+      justify-content: space-between;
+    }
+
+    .experience-carousel__track {
+      display: flex;
+    }
+
+    .experience-carousel__track > .experience-card {
+      width: 84vw;
+      flex-basis: 84vw;
+    }
+
+    .tour-page {
+      padding-bottom: 122px;
+    }
+
+    .reviews-summary,
+    .reviews-summary__stats span,
+    .tripadvisor-link,
+    .review-card p {
+      word-break: break-word;
+    }
+  }
+
+  @media (max-width: 1039px) and (orientation: landscape) {
+    .tour-page {
+      width: min(100% - 18px, 1180px);
+      padding-top: 18px;
+      padding-bottom: 110px;
+    }
+
+    .gallery-main {
+      height: 270px;
+      border-radius: 0;
+    }
+
+    .gallery-rail {
+      margin-bottom: 12px;
+    }
+
+    .gallery-thumb--mobile {
+      height: 110px;
+    }
+
+    .gallery-mobile-strip {
+      grid-auto-columns: 52%;
+      margin-bottom: 8px;
+    }
+
+    .gallery-actions {
+      top: 12px;
+      right: 12px;
+    }
+
+    .gallery-actions button {
+      min-height: 34px;
+      padding: 0 10px;
+      font-size: 0.84rem;
+    }
+
+    .bottom-funnel-menu {
+      display: grid;
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 30;
+      margin: 0;
+      transform: translateY(calc(100% + 12px));
+      opacity: 0;
+      pointer-events: none;
+      transition:
+        transform 220ms ease,
+        opacity 180ms ease;
+      border-top: 1px solid #dce3e0;
+      border-bottom: 0;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      background: #fff;
+      box-shadow: 0 -4px 18px rgba(22, 38, 33, 0.08);
+    }
+
+    .bottom-funnel-menu--visible {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .bottom-funnel-menu__item {
+      min-height: 84px;
+      padding-top: 8px;
+      padding-bottom: 8px;
+    }
+
+    .bottom-funnel-menu__item strong {
+      font-size: 0.76rem;
+      line-height: 1.2;
+    }
+
+    .bottom-funnel-menu__item span:last-child {
+      display: none;
+    }
+
+    .bottom-funnel-menu__icon {
+      width: 24px;
+      height: 24px;
+    }
+
+    .experience-carousel__track {
+      display: flex;
+    }
+
+    .experience-carousel__track > .experience-card {
+      width: 58vw;
+      flex-basis: 58vw;
+    }
+
+    .quick-facts,
+    .promoted-grid,
+    .included-list,
+    .not-included-list ul,
+    .traveler-love__cards,
+    .pickup-grid,
+    .booking-card__selectors,
+    .gallery-mobile-strip,
+    .gallery-rail {
+      grid-template-columns: 1fr;
+    }
+
+    .booking-card__selectors button + button {
+      border-top: 1px solid #cfd9d5;
+      border-left: 0;
+    }
+
+    .tour-content {
+      gap: 10px;
+    }
+
+    .content-section {
+      padding: 20px 0;
+    }
+
+    .booking-form p {
+      margin-bottom: 10px;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .tour-page {
+      width: calc(100% - 20px);
+    }
+
+    .booking-card__button,
+    .booking-card__selectors,
+    .booking-form__form button {
+      min-height: 44px;
+    }
+
+    .content-section {
+      padding-top: 22px;
+      padding-bottom: 22px;
+    }
+  }
+</style>

@@ -2,7 +2,7 @@ import type {
   LoginRequest,
   RegisterPayload,
   UserDto,
-} from '@web-app-demo/contracts'
+} from '@phuket-go/contracts'
 
 import type { DbClient } from '../db'
 import type { AppEnv } from '../env'

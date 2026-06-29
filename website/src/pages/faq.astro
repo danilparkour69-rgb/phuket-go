@@ -1,0 +1,483 @@
+---
+const pageTitle = 'Частые вопросы - Phuket Go'
+const pageDescription =
+  'Ответы на частые вопросы Phuket Go: как проходит бронирование, как считается цена, что с трансфером, погодой, детьми и статусом заявки.'
+
+const faqItems = [
+  {
+    question: 'Как оставить заявку на экскурсию?',
+    answer: [
+      'Откройте нужную экскурсию и нажмите кнопку бронирования. В форме достаточно указать имя и телефон.',
+      'Если хотите, можно сразу добавить дату, количество человек, Telegram и комментарий. Чем точнее ввод, тем быстрее мы подтверждаем подходящий вариант.',
+    ],
+  },
+  {
+    question: 'Нужно ли регистрироваться, чтобы оставить заявку?',
+    answer: [
+      'Нет. Смотреть каталог и отправлять заявку можно без регистрации.',
+      'Личный кабинет нужен уже для истории заявок, статусов и бонусов, но для первого обращения он не обязателен.',
+    ],
+  },
+  {
+    question: 'Заявка уже означает, что экскурсия подтверждена?',
+    answer: [
+      'Пока нет. Заявка — это запрос на бронь и уточнение деталей.',
+      'Экскурсия считается подтвержденной только после того, как согласованы дата, места, итоговая цена, трансфер и условия конкретной программы.',
+    ],
+  },
+  {
+    question: 'Почему цена указана в батах, а рядом есть рубли?',
+    answer: [
+      'Основную стоимость партнёры считают в тайских батах, поэтому именно THB показываем как главную цену.',
+      'Рубли даём как ориентир, чтобы быстрее понять порядок суммы перед поездкой.',
+    ],
+  },
+  {
+    question: 'Итоговая цена всегда совпадает с карточкой?',
+    answer: [
+      'Карточка показывает базовый ориентир по стоимости.',
+      'Финальная сумма может зависеть от даты, состава группы, детских тарифов, курса и конкретного варианта программы. Перед подтверждением это всегда уточняется.',
+    ],
+  },
+  {
+    question: 'Есть ли трансфер?',
+    answer: [
+      'Во многих программах трансфер предусмотрен, но всё зависит от экскурсии и района вашего отеля.',
+      'Перед подтверждением мы уточняем, входит ли трансфер в стоимость, откуда именно забирают и есть ли доплата из удалённых районов.',
+    ],
+  },
+  {
+    question: 'Русский гид есть на всех экскурсиях?',
+    answer: [
+      'Для текущей базы Phuket Go мы используем программы с русским гидом.',
+      'Перед подтверждением даты всё равно сверяем актуальное сопровождение по конкретному выезду.',
+    ],
+  },
+  {
+    question: 'Можно ли ехать с детьми, беременным или людям с ограничениями по здоровью?',
+    answer: [
+      'Это зависит от конкретного маршрута. Морские выезды, квадроциклы, рафтинг, зиплайн и другие активные программы могут иметь ограничения.',
+      'Если есть дети, беременность или особенности здоровья, лучше сразу написать это в комментарии к заявке.',
+    ],
+  },
+  {
+    question: 'Что происходит, если в день экскурсии плохая погода?',
+    answer: [
+      'Если погода мешает безопасному проведению программы, оператор может перенести выезд или предложить возврат по правилам конкретной экскурсии.',
+      'Финальное решение зависит от маршрута и условий партнёра, поэтому мы всегда подтверждаем это отдельно.',
+    ],
+  },
+  {
+    question: 'Как я узнаю статус своей заявки?',
+    answer: [
+      'После отправки вы получите подтверждение, а дальше менеджер свяжется с вами по выбранному каналу.',
+      'Позже статус можно будет смотреть ещё и в личном кабинете и через Telegram-бота пользователя.',
+    ],
+  },
+]
+
+const quickPoints = [
+  'Бронирование начинается с заявки, а не с мгновенной оплаты.',
+  'Главная цена показывается в THB, рубли идут как ориентир.',
+  'Русский гид — базовое правило текущего каталога Phuket Go.',
+]
+---
+
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="Phuket Go">
+        <span class="brand__mark">PG</span>
+        <span>Phuket Go</span>
+      </a>
+      <nav class="site-nav" aria-label="Основная навигация">
+        <a href="/">Каталог</a>
+        <a href="/faq" aria-current="page">FAQ</a>
+      </nav>
+    </header>
+
+    <main class="faq-page">
+      <section class="faq-hero">
+        <nav class="breadcrumbs" aria-label="Хлебные крошки">
+          <a href="/">Главная</a>
+          <span>/</span>
+          <span>FAQ</span>
+        </nav>
+        <p class="eyebrow">Phuket Go</p>
+        <h1>Частые вопросы</h1>
+        <p class="lead">
+          Всё самое важное про заявку, цену, трансфер, сопровождение и подтверждение экскурсии —
+          коротко и без путаницы.
+        </p>
+      </section>
+
+      <section class="quick-points" aria-label="Коротко">
+        {quickPoints.map((item) => (
+          <article class="quick-point">
+            <span class="quick-point__icon" aria-hidden="true">•</span>
+            <p>{item}</p>
+          </article>
+        ))}
+      </section>
+
+      <section class="faq-list" aria-labelledby="faq-list-title">
+        <div class="section-heading">
+          <h2 id="faq-list-title">Ответы до отправки заявки</h2>
+          <a href="/">Перейти в каталог</a>
+        </div>
+
+        <div class="faq-accordion">
+          {faqItems.map((item, index) => (
+            <details class="faq-item" open={index === 0}>
+              <summary>{item.question}</summary>
+              <div class="faq-item__body">
+                {item.answer.map((paragraph) => (
+                  <p>{paragraph}</p>
+                ))}
+              </div>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      <section class="cta-panel" aria-labelledby="cta-title">
+        <div>
+          <p class="eyebrow">Нужен быстрый ответ</p>
+          <h2 id="cta-title">Выберите экскурсию и отправьте заявку</h2>
+          <p>
+            Если вопрос завязан на дату, район отеля, детей или конкретную программу, быстрее всего
+            открыть карточку экскурсии и оставить запрос прямо там.
+          </p>
+        </div>
+        <div class="cta-panel__actions">
+          <a class="cta-primary" href="/">Открыть каталог</a>
+          <a class="cta-secondary" href="mailto:phuketgoall@gmail.com">Написать на email</a>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
+
+<style>
+  :root {
+    color-scheme: light;
+    --page-bg: #f7f6f2;
+    --surface: #ffffff;
+    --surface-muted: #f0ede5;
+    --text: #1f1f1c;
+    --text-soft: #5e5a52;
+    --line: rgba(31, 31, 28, 0.12);
+    --accent: #1f1f1c;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family:
+      Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--page-bg);
+    color: var(--text);
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 24px;
+    background: color-mix(in srgb, var(--page-bg) 88%, white 12%);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+  }
+
+  .brand__mark {
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: var(--accent);
+    color: white;
+    font-size: 12px;
+    letter-spacing: 0;
+  }
+
+  .site-nav {
+    display: inline-flex;
+    align-items: center;
+    gap: 18px;
+    font-size: 14px;
+  }
+
+  .site-nav a[aria-current='page'] {
+    font-weight: 700;
+  }
+
+  .faq-page {
+    width: min(1120px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 28px 0 72px;
+  }
+
+  .faq-hero {
+    padding: 10px 0 20px;
+  }
+
+  .breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text-soft);
+    margin-bottom: 18px;
+  }
+
+  .eyebrow {
+    margin: 0 0 8px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-soft);
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(34px, 5vw, 56px);
+    line-height: 1;
+  }
+
+  .lead {
+    max-width: 760px;
+    margin: 18px 0 0;
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--text-soft);
+  }
+
+  .quick-points {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin: 28px 0 40px;
+  }
+
+  .quick-point,
+  .cta-panel,
+  .faq-item {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+  }
+
+  .quick-point {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 18px;
+  }
+
+  .quick-point__icon {
+    flex: 0 0 auto;
+    width: 24px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: var(--surface-muted);
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  .quick-point p {
+    margin: 0;
+    line-height: 1.55;
+  }
+
+  .section-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 18px;
+  }
+
+  .section-heading h2 {
+    margin: 0;
+    font-size: 28px;
+  }
+
+  .section-heading a {
+    font-size: 14px;
+    color: var(--text-soft);
+  }
+
+  .faq-accordion {
+    display: grid;
+    gap: 12px;
+  }
+
+  .faq-item {
+    padding: 0 20px;
+  }
+
+  .faq-item summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 22px 0;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .faq-item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-item__body {
+    padding: 0 0 20px;
+    color: var(--text-soft);
+  }
+
+  .faq-item__body p {
+    margin: 0;
+    line-height: 1.65;
+  }
+
+  .faq-item__body p + p {
+    margin-top: 12px;
+  }
+
+  .cta-panel {
+    margin-top: 40px;
+    padding: 28px;
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .cta-panel h2 {
+    margin: 0 0 12px;
+    font-size: 30px;
+  }
+
+  .cta-panel p:last-child {
+    margin: 0;
+    max-width: 700px;
+    color: var(--text-soft);
+    line-height: 1.65;
+  }
+
+  .cta-panel__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 12px;
+  }
+
+  .cta-primary,
+  .cta-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0 18px;
+    border-radius: 999px;
+    font-weight: 600;
+  }
+
+  .cta-primary {
+    background: var(--accent);
+    color: white;
+  }
+
+  .cta-secondary {
+    border: 1px solid var(--line);
+    background: var(--surface);
+  }
+
+  @media (max-width: 960px) {
+    .quick-points {
+      grid-template-columns: 1fr;
+    }
+
+    .cta-panel {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .cta-panel__actions {
+      justify-content: flex-start;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .site-header {
+      padding: 16px;
+      flex-wrap: wrap;
+    }
+
+    .faq-page {
+      width: min(100% - 24px, 1120px);
+      padding-bottom: 56px;
+    }
+
+    h1 {
+      font-size: 34px;
+    }
+
+    .lead {
+      font-size: 16px;
+    }
+
+    .section-heading {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .faq-item {
+      padding: 0 16px;
+    }
+
+    .faq-item summary {
+      font-size: 17px;
+      padding: 18px 0;
+    }
+
+    .cta-panel {
+      padding: 22px;
+    }
+
+    .cta-panel h2 {
+      font-size: 24px;
+    }
+  }
+</style>

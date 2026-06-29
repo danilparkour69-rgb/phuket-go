@@ -4,7 +4,7 @@ import {
   registerRequestSchema,
   type LoginRequest,
   type RegisterRequest,
-} from '@web-app-demo/contracts'
+} from '@phuket-go/contracts'
 import type { z } from 'zod'
 import { useId, useState } from 'react'
 

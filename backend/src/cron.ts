@@ -1,4 +1,5 @@
 import { createBackendRuntime, type BackendRuntime } from './runtime'
+import { syncTripadvisorRatings } from './tripadvisor/sync'
 
 type CronTask = (runtime: BackendRuntime) => Promise<void>
 
@@ -9,6 +10,10 @@ const cronTasks = {
   'db:ping': async ({ prisma }) => {
     await prisma.$queryRaw`SELECT 1`
     console.log('Cron db:ping task completed.')
+  },
+  'tripadvisor:sync-ratings': async ({ prisma, env }) => {
+    const result = await syncTripadvisorRatings(prisma, env)
+    console.log('Cron tripadvisor:sync-ratings completed:', JSON.stringify(result))
   },
 } satisfies Record<string, CronTask>
 

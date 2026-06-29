@@ -21,6 +21,12 @@ maybeDescribe('auth API integration', () => {
     SPACES_UPLOAD_URL_TTL_SECONDS: 900,
     SPACES_DOWNLOAD_URL_TTL_SECONDS: 300,
     SPACES_PUBLIC_CACHE_CONTROL: 'public, max-age=31536000, immutable',
+    TRIPADVISOR_ALLOW_REFRESH: false,
+    TRIPADVISOR_API_BASE_URL: 'https://api.content.tripadvisor.com/api/v1',
+    TRIPADVISOR_SYNC_STALE_HOURS: 24,
+    TRIPADVISOR_MAX_REQUESTS_PER_RUN: 10,
+    TRIPADVISOR_DAILY_MAX_REQUESTS: 200,
+    TRIPADVISOR_REQUEST_TIMEOUT_MS: 8000,
   }
   const prisma = createPrisma(databaseUrl!)
   const app = createApp({ env, prisma })
@@ -169,7 +175,7 @@ maybeDescribe('auth API integration', () => {
 
     expect(register.status).toBe(201)
     expect(registerBody.refreshToken).toBeUndefined()
-    expect(setCookie).toContain('web_app_demo_refresh=')
+    expect(setCookie).toContain('phuket_go_refresh=')
     expect(setCookie).toContain('HttpOnly')
     expect(setCookie).toContain('SameSite=Lax')
 
@@ -217,7 +223,7 @@ maybeDescribe('auth API integration', () => {
     expect(register.headers.get('access-control-allow-origin')).toBe('https://web.example.com')
     expect(register.headers.get('access-control-allow-credentials')).toBe('true')
     expect(registerBody.refreshToken).toBeUndefined()
-    expect(setCookie).toContain('web_app_demo_refresh=')
+    expect(setCookie).toContain('phuket_go_refresh=')
     expect(setCookie).toContain('HttpOnly')
     expect(setCookie).toContain('Secure')
     expect(setCookie).toContain('SameSite=None')

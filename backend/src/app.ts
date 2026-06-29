@@ -6,12 +6,17 @@ import type { DbClient } from './db'
 import type { AppEnv } from './env'
 import { createAuthRoutes } from './auth/routes'
 import { AuthService } from './auth/service'
+import { createCatalogRoutes } from './catalog/routes'
+import { CatalogService } from './catalog/service'
 import { errorResponse, handleError, validationErrorHook } from './http/errors'
+import { createMediaRoutes } from './media/routes'
 import { createStorageServiceFromEnv, type StorageService } from './storage/service'
+import { TripAdvisorClient } from './tripadvisor/client'
 
 type AppBindings = {
   Variables: {
     authService: AuthService
+    catalogService: CatalogService
     env: AppEnv
     storageService: StorageService | null
   }
@@ -24,12 +29,21 @@ type CreateAppOptions = {
 
 export function createApp({ env, prisma }: CreateAppOptions) {
   const authService = new AuthService(prisma, env)
+  const tripAdvisorClient = env.TRIPADVISOR_API_KEY
+    ? new TripAdvisorClient({
+        apiKey: env.TRIPADVISOR_API_KEY,
+        timeoutMs: env.TRIPADVISOR_REQUEST_TIMEOUT_MS,
+        baseUrl: env.TRIPADVISOR_API_BASE_URL,
+      })
+    : null
+
+  const catalogService = new CatalogService(prisma, tripAdvisorClient)
   const storageService = createStorageServiceFromEnv(env)
   const app = new OpenAPIHono<AppBindings>({
     defaultHook: validationErrorHook,
   })
 
-  app.use(secureHeaders())
+  app.use(secureHeaders({ crossOriginResourcePolicy: 'cross-origin' }))
   app.use(
     '*',
     cors({
@@ -45,6 +59,7 @@ export function createApp({ env, prisma }: CreateAppOptions) {
   )
   app.use('*', async (c, next) => {
     c.set('authService', authService)
+    c.set('catalogService', catalogService)
     c.set('env', env)
     c.set('storageService', storageService)
     await next()
@@ -52,7 +67,7 @@ export function createApp({ env, prisma }: CreateAppOptions) {
 
   app.get('/', (c) => {
     return c.json({
-      name: 'web_app_demo backend',
+      name: 'Phuket Go backend',
       status: 'ok',
     })
   })
@@ -64,11 +79,13 @@ export function createApp({ env, prisma }: CreateAppOptions) {
   })
 
   app.route('/api/auth', createAuthRoutes())
+  app.route('/api/catalog', createCatalogRoutes())
+  app.route('/media', createMediaRoutes())
 
   app.doc('/openapi.json', {
     openapi: '3.0.0',
     info: {
-      title: 'web_app_demo API',
+      title: 'Phuket Go API',
       version: '1.0.0',
     },
   })

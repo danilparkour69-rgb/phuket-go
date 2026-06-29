@@ -29,7 +29,7 @@ test('registers, restores the session, opens protected UI, and logs out', async 
   await expect
     .poll(async () =>
       (await page.context().cookies()).some(
-        (cookie) => cookie.name === 'web_app_demo_refresh' && cookie.httpOnly,
+        (cookie) => cookie.name === 'phuket_go_refresh' && cookie.httpOnly,
       ),
     )
     .toBe(true)

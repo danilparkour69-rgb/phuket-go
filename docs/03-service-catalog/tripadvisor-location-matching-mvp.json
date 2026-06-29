@@ -1,0 +1,1650 @@
+{
+  "status": "tripadvisor_location_matching_working_file",
+  "updated_at": "2026-06-29",
+  "warning": "No Tripadvisor API key, live rating, or location_id is stored here yet. This file prepares manual matching only.",
+  "official_docs": {
+    "overview": "https://tripadvisor-content-api.readme.io/reference/overview",
+    "authentication": "https://tripadvisor-content-api.readme.io/reference/authentication",
+    "location_search": "https://tripadvisor-content-api.readme.io/reference/searchforlocations",
+    "location_details": "https://tripadvisor-content-api.readme.io/reference/getlocationdetails",
+    "display_requirements": "https://tripadvisor-content-api.readme.io/reference/display-requirements"
+  },
+  "matching_rules": {
+    "default_category": "attractions",
+    "manual_approval_required": true,
+    "do_not_use_frontend_api_calls": true,
+    "do_not_display_until_approved_and_synced": true,
+    "note": "Сначала получить location_id через Location Search, затем проверить рейтинг через Location Details. Для маршрутов с несколькими локациями выбирать главный объект маршрута или не показывать рейтинг, если сопоставление нечестное."
+  },
+  "counts": {
+    "items": 54,
+    "not_matched": 54,
+    "approved": 0
+  },
+  "items": [
+    {
+      "id": "001",
+      "slug": "slon-mantra-spa-samet-nangshe",
+      "title": "Слоны / Mantra Spa / Самет Нангше",
+      "h1": "Слоны, Mantra Spa и Самет Нангше",
+      "public_url": "/excursions/slony-mantra-spa-samet-nangshe",
+      "source_url": "https://telegra.ph/Plyazh-slonov-Mantra-Spa-i-Samet-Nangshe-steklyannyj-most-02-12",
+      "category": "attractions",
+      "search_queries": [
+        "Слоны, Mantra Spa и Самет Нангше Phuket",
+        "Слоны   Mantra Spa   Самет Нангше Phuket",
+        "Наземная экскурсия Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "002",
+      "slug": "avatar-plus",
+      "title": "AVATAR PLUS",
+      "h1": "AVATAR PLUS: Самет Нангше, Пханг Нга и горячие источники",
+      "public_url": "/excursions/avatar-plus-phang-nga",
+      "source_url": "https://telegra.ph/AVATAR-PLUS-01-16-3",
+      "category": "attractions",
+      "search_queries": [
+        "AVATAR PLUS  Самет Нангше, Пханг Нга и горячие источники Phuket",
+        "AVATAR PLUS Phuket",
+        "Наземная экскурсия Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "003",
+      "slug": "avatar-world",
+      "title": "AVATAR WORLD",
+      "h1": "AVATAR WORLD: джунгли, слоны, ATV и горячие источники",
+      "public_url": "/excursions/avatar-world-phang-nga",
+      "source_url": "https://telegra.ph/AVATAR-WORLD-Zakat-dzhungli-slony-i-nastoyashchie-goryachie-istochniki-04-03",
+      "category": "attractions",
+      "search_queries": [
+        "AVATAR WORLD  джунгли, слоны, ATV и горячие источники Phuket",
+        "AVATAR WORLD Phuket",
+        "Наземная экскурсия   активная экскурсия Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "004",
+      "slug": "siyanie-planktona",
+      "title": "Сияние планктона",
+      "h1": "Сияние планктона, Пханг Нга и виды Джеймса Бонда",
+      "public_url": "/excursions/siyanie-planktona-phang-nga",
+      "source_url": "https://telegra.ph/Siyanie-planktona-smotrovaya-ploshchadka-Phang-Nga-Spa-i-vidy-Dzhejmsa-Bonda-02-17",
+      "category": "attractions",
+      "search_queries": [
+        "Сияние планктона, Пханг Нга и виды Джеймса Бонда Phuket",
+        "Сияние планктона Phuket",
+        "Комбинированная экскурсия   Пханг Нга   вечерняя программа Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "005",
+      "slug": "siyanie-planktona-2",
+      "title": "Сияние планктона 2",
+      "h1": "Сияние планктона 2",
+      "public_url": "/excursions/siyanie-planktona-2",
+      "source_url": "https://telegra.ph/Siyanie-planktona--Samet-Nangshesteklyannyj-most-Belyj-hram-i-vidy-Dzhejmsa-Bonda-02-12",
+      "category": "attractions",
+      "search_queries": [
+        "Сияние планктона 2 Phuket",
+        "Морская экскурсия   премиум Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "006",
+      "slug": "rassvetnoe-puteshestvie",
+      "title": "Рассветное путешествие",
+      "h1": "Рассветное путешествие",
+      "public_url": "/excursions/rassvetnoe-puteshestvie",
+      "source_url": "https://telegra.ph/Rassvetnoe-priklyuchenie-Smotrovaya-ploshchadka-Samet-Nangshe-o-Dzhejmsa-Bonda-plyazh-s-samolyotami-i-kuvshinki-Ma-Doo-Bua-04-03",
+      "category": "attractions",
+      "search_queries": [
+        "Рассветное путешествие Phuket",
+        "Морская экскурсия   премиум Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "007",
+      "slug": "racha-koral-rassvet-privatnyy-plyazh-rybalka",
+      "title": "Рача Корал: рассвет / приватный пляж / рыбалка",
+      "h1": "Рача Корал: рассвет / приватный пляж / рыбалка",
+      "public_url": "/excursions/racha-koral-rassvet-privatnyy-plyazh-rybalka",
+      "source_url": "https://telegra.ph/Racha-Koral-RassvetPrivatnyj-plyazhRybalka-03-31",
+      "category": "attractions",
+      "search_queries": [
+        "Рача Корал  рассвет   приватный пляж   рыбалка Phuket",
+        "Морская экскурсия   премиум Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "008",
+      "slug": "cirkovoe-shou",
+      "title": "Цирковое шоу",
+      "h1": "Цирковое шоу",
+      "public_url": "/excursions/cirkovoe-shou",
+      "source_url": "https://telegra.ph/Cirkovoe-shou-02-25",
+      "category": "attractions",
+      "search_queries": [
+        "Цирковое шоу Phuket",
+        "Шоу   развлечение Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "009",
+      "slug": "rayskie-ostrova",
+      "title": "Райские острова",
+      "h1": "Райские острова",
+      "public_url": "/excursions/rayskie-ostrova",
+      "source_url": "https://telegra.ph/Puteshestvie-na-rajskie-ostrova-04-03",
+      "category": "attractions",
+      "search_queries": [
+        "Райские острова Phuket",
+        "Морская экскурсия   премиум Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "010",
+      "slug": "parom-na-phi-phi",
+      "title": "Паром на Пхи-Пхи",
+      "h1": "Паром на Пхи-Пхи",
+      "public_url": "/excursions/parom-na-phi-phi",
+      "source_url": "https://telegra.ph/Pereprava-do-Phi-Phi-11-18",
+      "category": "attractions",
+      "search_queries": [
+        "Паром на Пхи-Пхи Phuket",
+        "Водный транспорт   трансфер Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "011",
+      "slug": "phangna",
+      "title": "ПхангНа",
+      "h1": "ПхангНа",
+      "public_url": "/excursions/phangna",
+      "source_url": "https://telegra.ph/Zaliv-Phang-Nga--Krabi-LA-04-07",
+      "category": "attractions",
+      "search_queries": [
+        "ПхангНа Phuket",
+        "Морская экскурсия Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "012",
+      "slug": "similany",
+      "title": "Симиланы",
+      "h1": "Симиланы",
+      "public_url": "/excursions/similany",
+      "source_url": "https://telegra.ph/Similanskie-ostrova-04-03",
+      "category": "attractions",
+      "search_queries": [
+        "Симиланы Phuket",
+        "Морская экскурсия   премиум Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "013",
+      "slug": "similany-premium",
+      "title": "Симиланы Премиум",
+      "h1": "Симиланы Премиум",
+      "public_url": "/excursions/similany-premium",
+      "source_url": "https://telegra.ph/EHkskursiya-na-Similanskie-ostrova-na-skorostnom-katere-02-24",
+      "category": "attractions",
+      "search_queries": [
+        "Симиланы Премиум Phuket",
+        "Морская экскурсия   премиум Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "014",
+      "slug": "similany-2-dnya",
+      "title": "Симиланы 2 дня",
+      "h1": "Симиланы 2 дня",
+      "public_url": "/excursions/similany-2-dnya",
+      "source_url": "https://telegra.ph/Similany-2-Dnya--Dajving-S-11-18",
+      "category": "attractions",
+      "search_queries": [
+        "Симиланы 2 дня Phuket",
+        "Морская экскурсия   премиум Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "015",
+      "slug": "surin",
+      "title": "Сурин",
+      "h1": "Сурин",
+      "public_url": "/excursions/surin",
+      "source_url": "https://telegra.ph/Surinskie-ostrova-11-18",
+      "category": "attractions",
+      "search_queries": [
+        "Сурин Phuket",
+        "Морская экскурсия   премиум Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "016",
+      "slug": "11-ostrovov",
+      "title": "11 Островов",
+      "h1": "11 Островов",
+      "public_url": "/excursions/11-ostrovov",
+      "source_url": "https://telegra.ph/11-Ostrovov-04-29-2",
+      "category": "attractions",
+      "search_queries": [
+        "11 Островов Phuket",
+        "Морская экскурсия   премиум Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "017",
+      "slug": "ranniy-phi-phi",
+      "title": "Ранний Пхи-Пхи",
+      "h1": "Ранний Пхи-Пхи",
+      "public_url": "/excursions/ranniy-phi-phi",
+      "source_url": "https://telegra.ph/Rassvetnoe-puteshestvie-na-Phi-Phi-Utro-bez-tolp-04-03",
+      "category": "attractions",
+      "search_queries": [
+        "Ранний Пхи-Пхи Phuket",
+        "Морская экскурсия   премиум Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "018",
+      "slug": "phi-phi",
+      "title": "Пхи-Пхи",
+      "h1": "Пхи-Пхи",
+      "public_url": "/excursions/phi-phi",
+      "source_url": "https://telegra.ph/Tury-na-ostrova-Phi-Phi-01-11",
+      "category": "attractions",
+      "search_queries": [
+        "Пхи-Пхи Phuket",
+        "Морская экскурсия   премиум Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "019",
+      "slug": "phi-phi-premium",
+      "title": "Пхи-Пхи Премиум",
+      "h1": "Пхи-Пхи Премиум",
+      "public_url": "/excursions/phi-phi-premium",
+      "source_url": "https://telegra.ph/EHkskursiya-na-ostrova-Phi-Phi-02-24",
+      "category": "attractions",
+      "search_queries": [
+        "Пхи-Пхи Премиум Phuket",
+        "Морская экскурсия   премиум Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "020",
+      "slug": "phi-phi-2-dnya",
+      "title": "Пхи-Пхи 2 дня",
+      "h1": "Пхи-Пхи 2 дня",
+      "public_url": "/excursions/phi-phi-2-dnya",
+      "source_url": "https://telegra.ph/Tury-na-Phi-Phi-s-nochevkoj-2-dnya-03-30",
+      "category": "attractions",
+      "search_queries": [
+        "Пхи-Пхи 2 дня Phuket",
+        "Морская экскурсия   премиум Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "021",
+      "slug": "4-zhemchuzhiny",
+      "title": "4 Жемчужины",
+      "h1": "4 Жемчужины",
+      "public_url": "/excursions/4-zhemchuzhiny",
+      "source_url": "https://telegra.ph/4-ZHemchuzhiny-Andamanda-03-30",
+      "category": "attractions",
+      "search_queries": [
+        "4 Жемчужины Phuket",
+        "Морская экскурсия   премиум Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "022",
+      "slug": "5-zhemchuzhin",
+      "title": "5 Жемчужин",
+      "h1": "5 Жемчужин",
+      "public_url": "/excursions/5-zhemchuzhin",
+      "source_url": "https://telegra.ph/5-ZHemchuzhin-Andamanskogo-morya-2-dlya-1-noch-04-03",
+      "category": "attractions",
+      "search_queries": [
+        "5 Жемчужин Phuket",
+        "Морская экскурсия   премиум Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "023",
+      "slug": "dzheyms-bond",
+      "title": "Джеймс Бонд",
+      "h1": "Джеймс Бонд",
+      "public_url": "/excursions/dzheyms-bond",
+      "source_url": "https://telegra.ph/Ostrova-Dzhejmsa-Bonda-02-28",
+      "category": "attractions",
+      "search_queries": [
+        "Джеймс Бонд Phuket",
+        "Морская экскурсия   премиум Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "024",
+      "slug": "racha-koral",
+      "title": "Рача-Корал",
+      "h1": "Рача-Корал",
+      "public_url": "/excursions/racha-koral",
+      "source_url": "https://telegra.ph/RACHA--KORAL-B-02-15",
+      "category": "attractions",
+      "search_queries": [
+        "Рача-Корал Phuket",
+        "Морская экскурсия   премиум Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "025",
+      "slug": "rok-ha",
+      "title": "Рок-Ха",
+      "h1": "Рок-Ха",
+      "public_url": "/excursions/rok-ha",
+      "source_url": "https://telegra.ph/Ostrova-Rok-Ha-S-11-18",
+      "category": "attractions",
+      "search_queries": [
+        "Рок-Ха Phuket",
+        "Морская экскурсия   премиум Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "026",
+      "slug": "racha-koral-mayton",
+      "title": "Рача-Корал Майтон",
+      "h1": "Рача-Корал Майтон",
+      "public_url": "/excursions/racha-koral-mayton",
+      "source_url": "https://telegra.ph/Racha-Raya---Koral-Majton-11-18",
+      "category": "attractions",
+      "search_queries": [
+        "Рача-Корал Майтон Phuket",
+        "Морская экскурсия   премиум Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "027",
+      "slug": "koral-1-den",
+      "title": "Корал 1 день",
+      "h1": "Корал 1 день",
+      "public_url": "/excursions/koral-1-den",
+      "source_url": "https://telegra.ph/Ostrov-Koral-1-den-s-russkim-gidom-01-12",
+      "category": "attractions",
+      "search_queries": [
+        "Корал 1 день Phuket",
+        "Морская экскурсия Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "028",
+      "slug": "krabi-ostrova-bez-voln-i-zakat",
+      "title": "Краби: острова без волн и закат",
+      "h1": "Краби: острова без волн и закат",
+      "public_url": "/excursions/krabi-ostrova-bez-voln-i-zakat",
+      "source_url": "https://telegra.ph/Krabi-morskayaostrova-bez-voln-i-zakat-01-12",
+      "category": "attractions",
+      "search_queries": [
+        "Краби  острова без волн и закат Phuket",
+        "Морская экскурсия   премиум Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "029",
+      "slug": "phi-phi-bambu-rang-yay-s-rybalkoy",
+      "title": "Пхи-Пхи / Бамбу / Ранг Яй с рыбалкой",
+      "h1": "Пхи-Пхи / Бамбу / Ранг Яй с рыбалкой",
+      "public_url": "/excursions/phi-phi-bambu-rang-yay-s-rybalkoy",
+      "source_url": "https://telegra.ph/Phi-Phi--o-Bambu--o-Rang-YAj-s-rybalkoj---1-Den-01-12",
+      "category": "attractions",
+      "search_queries": [
+        "Пхи-Пхи   Бамбу   Ранг Яй с рыбалкой Phuket",
+        "Морская экскурсия   премиум Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "030",
+      "slug": "gidrocikly",
+      "title": "Гидроциклы",
+      "h1": "Гидроциклы",
+      "public_url": "/excursions/gidrocikly",
+      "source_url": "https://telegra.ph/EHkskursiya-na-gidrociklah-01-12",
+      "category": "attractions",
+      "search_queries": [
+        "Гидроциклы Phuket",
+        "Морская экскурсия   премиум Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "031",
+      "slug": "rybalka",
+      "title": "Рыбалка",
+      "h1": "Рыбалка",
+      "public_url": "/excursions/rybalka",
+      "source_url": "https://telegra.ph/Morskaya-rybalka-04-03",
+      "category": "attractions",
+      "search_queries": [
+        "Рыбалка Phuket",
+        "Морская экскурсия   премиум Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "032",
+      "slug": "dayving",
+      "title": "Дайвинг",
+      "h1": "Дайвинг",
+      "public_url": "/excursions/dayving",
+      "source_url": "https://telegra.ph/Dejli-Dajving-11-18",
+      "category": "attractions",
+      "search_queries": [
+        "Дайвинг Phuket",
+        "Водный транспорт   трансфер Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "033",
+      "slug": "premium-katamaran-phi-phi-racha-i-zakatnaya-vecherinka",
+      "title": "Премиум катамаран: Пхи-Пхи / Рача и закатная вечеринка",
+      "h1": "Премиум катамаран: Пхи-Пхи / Рача и закатная вечеринка",
+      "public_url": "/excursions/premium-katamaran-phi-phi-racha-i-zakatnaya-vecherinka",
+      "source_url": "https://telegra.ph/Phi-Phi-Racha-YAj-i-zakatnaya-vecherinka-u-o-Majton---Premialnoe-puteshestvie-na-katamarane-01-30",
+      "category": "attractions",
+      "search_queries": [
+        "Премиум катамаран  Пхи-Пхи   Рача и закатная вечеринка Phuket",
+        "Морская экскурсия   премиум Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "034",
+      "slug": "ozernaya-rybalka",
+      "title": "Озерная рыбалка",
+      "h1": "Озерная рыбалка",
+      "public_url": "/excursions/ozernaya-rybalka",
+      "source_url": "https://telegra.ph/Ozernaya-rybalka-03-11",
+      "category": "attractions",
+      "search_queries": [
+        "Озерная рыбалка Phuket",
+        "Активность Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "035",
+      "slug": "park-slonov",
+      "title": "Парк слонов",
+      "h1": "Парк слонов",
+      "public_url": "/excursions/park-slonov",
+      "source_url": "https://telegra.ph/Park-slonov--bez-kataniya-11-18",
+      "category": "attractions",
+      "search_queries": [
+        "Парк слонов Phuket",
+        "Наземная экскурсия Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "036",
+      "slug": "tury-v-drugie-goroda-i-strany",
+      "title": "Туры в другие города и страны",
+      "h1": "Туры в другие города и страны",
+      "public_url": "/excursions/tury-v-drugie-goroda-i-strany",
+      "source_url": "https://telegra.ph/SINGAPUR-2-DNYA-1-NOCH-07-09",
+      "category": "attractions",
+      "search_queries": [
+        "Туры в другие города и страны Phuket",
+        "Морская экскурсия Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "037",
+      "slug": "kaolak",
+      "title": "Каолак",
+      "h1": "Каолак",
+      "public_url": "/excursions/kaolak",
+      "source_url": "https://telegra.ph/Kaolak-02-16",
+      "category": "attractions",
+      "search_queries": [
+        "Каолак Phuket",
+        "Морская экскурсия Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "038",
+      "slug": "phan-nga-put-avatara",
+      "title": "Пхан-Нга: путь Аватара",
+      "h1": "Пхан-Нга: путь Аватара",
+      "public_url": "/excursions/phan-nga-put-avatara",
+      "source_url": "https://telegra.ph/Udivitelnaya-Phanga-04-29",
+      "category": "attractions",
+      "search_queries": [
+        "Пхан-Нга  путь Аватара Phuket",
+        "Морская экскурсия   премиум Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "039",
+      "slug": "rafting",
+      "title": "Рафтинг",
+      "h1": "Рафтинг",
+      "public_url": "/excursions/rafting",
+      "source_url": "https://telegra.ph/Rafting-04-29-6",
+      "category": "attractions",
+      "search_queries": [
+        "Рафтинг Phuket",
+        "Активная наземная экскурсия Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "040",
+      "slug": "cheolan-1-den",
+      "title": "Чеолан 1 день",
+      "h1": "Чеолан 1 день",
+      "public_url": "/excursions/cheolan-1-den",
+      "source_url": "https://telegra.ph/Ozero-CHeolan-01-16",
+      "category": "attractions",
+      "search_queries": [
+        "Чеолан 1 день Phuket",
+        "Морская экскурсия   премиум Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "041",
+      "slug": "krabi",
+      "title": "Краби",
+      "h1": "Краби",
+      "public_url": "/excursions/krabi",
+      "source_url": "https://telegra.ph/Krabi-01-24",
+      "category": "attractions",
+      "search_queries": [
+        "Краби Phuket",
+        "Морская экскурсия   премиум Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "042",
+      "slug": "cheolan-2-dnya-standart",
+      "title": "Чеолан 2 дня Стандарт",
+      "h1": "Чеолан 2 дня Стандарт",
+      "public_url": "/excursions/cheolan-2-dnya-standart",
+      "source_url": "https://telegra.ph/CHeolan-2-dnya-standart-04-30",
+      "category": "attractions",
+      "search_queries": [
+        "Чеолан 2 дня Стандарт Phuket",
+        "Морская экскурсия   премиум Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "043",
+      "slug": "cheolan-2-dnya-deluxe",
+      "title": "Чеолан 2 дня Deluxe",
+      "h1": "Чеолан 2 дня Deluxe",
+      "public_url": "/excursions/cheolan-2-dnya-deluxe",
+      "source_url": "https://telegra.ph/Kao-Sok-CHeolan-Delyuks-2-dnya-1-noch-04-30",
+      "category": "attractions",
+      "search_queries": [
+        "Чеолан 2 дня Deluxe Phuket",
+        "Морская экскурсия   премиум Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "044",
+      "slug": "vechernie-shou",
+      "title": "Вечерние шоу",
+      "h1": "Вечерние шоу",
+      "public_url": "/excursions/vechernie-shou",
+      "source_url": "https://telegra.ph/Vechernie-shou-na-Phukete-04-30",
+      "category": "attractions",
+      "search_queries": [
+        "Вечерние шоу Phuket",
+        "Морская экскурсия Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "045",
+      "slug": "kvadrocikly",
+      "title": "Квадроциклы",
+      "h1": "Квадроциклы",
+      "public_url": "/excursions/kvadrocikly",
+      "source_url": "https://telegra.ph/Kvadrocikly-04-01",
+      "category": "attractions",
+      "search_queries": [
+        "Квадроциклы Phuket",
+        "Активность Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "046",
+      "slug": "siti-tur",
+      "title": "Сити Тур",
+      "h1": "Сити Тур",
+      "public_url": "/excursions/siti-tur",
+      "source_url": "https://telegra.ph/Siti-turObzornaya-ehkskursiya-po-Phuketu-04-30",
+      "category": "attractions",
+      "search_queries": [
+        "Сити Тур Phuket",
+        "Морская экскурсия Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "047",
+      "slug": "polet-hanumana",
+      "title": "Полет Ханумана",
+      "h1": "Полет Ханумана",
+      "public_url": "/excursions/polet-hanumana",
+      "source_url": "https://telegra.ph/Hanuman-World-04-30",
+      "category": "attractions",
+      "search_queries": [
+        "Полет Ханумана Phuket",
+        "Морская экскурсия Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "048",
+      "slug": "akvapark",
+      "title": "Аквапарк",
+      "h1": "Аквапарк",
+      "public_url": "/excursions/akvapark",
+      "source_url": "https://telegra.ph/Akvapark-Andamanda-04-22",
+      "category": "attractions",
+      "search_queries": [
+        "Аквапарк Phuket",
+        "Морская экскурсия Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "049",
+      "slug": "delfinariy",
+      "title": "Дельфинарий",
+      "h1": "Дельфинарий",
+      "public_url": "/excursions/delfinariy",
+      "source_url": "https://telegra.ph/Delfinarij-05-02",
+      "category": "attractions",
+      "search_queries": [
+        "Дельфинарий Phuket",
+        "Морская экскурсия Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "050",
+      "slug": "bangla-boxing",
+      "title": "Bangla Boxing",
+      "h1": "Bangla Boxing",
+      "public_url": "/excursions/bangla-boxing",
+      "source_url": "https://telegra.ph/Bangla-Boxing-05-01",
+      "category": "attractions",
+      "search_queries": [
+        "Bangla Boxing Phuket",
+        "Шоу   развлечение Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "051",
+      "slug": "katamarany",
+      "title": "Катамараны",
+      "h1": "Катамараны",
+      "public_url": "/excursions/katamarany",
+      "source_url": "https://telegra.ph/PREMIUM-Arenda-yaht-12-29",
+      "category": "attractions",
+      "search_queries": [
+        "Катамараны Phuket",
+        "Морская экскурсия   премиум Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "052",
+      "slug": "yahty-lodki-katera",
+      "title": "Яхты, лодки, катера",
+      "h1": "Яхты, лодки, катера",
+      "public_url": "/excursions/yahty-lodki-katera",
+      "source_url": "https://telegra.ph/PREMIUM-Arenda-YAhty-katera-i-lodki-01-30",
+      "category": "attractions",
+      "search_queries": [
+        "Яхты, лодки, катера Phuket",
+        "Морская экскурсия   премиум Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "053",
+      "slug": "hype-yacht",
+      "title": "HYPE YACHT",
+      "h1": "HYPE YACHT",
+      "public_url": "/excursions/hype-yacht",
+      "source_url": "https://telegra.ph/HYPE-Yacht-05-10",
+      "category": "attractions",
+      "search_queries": [
+        "HYPE YACHT Phuket",
+        "Морская экскурсия   премиум Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    },
+    {
+      "id": "054",
+      "slug": "yona-beach-club",
+      "title": "YONA Beach Club",
+      "h1": "YONA Beach Club",
+      "public_url": "/excursions/yona-beach-club",
+      "source_url": "https://telegra.ph/Plyazhnyj-klub-YONA-05-19",
+      "category": "attractions",
+      "search_queries": [
+        "YONA Beach Club Phuket",
+        "Морская экскурсия   премиум Phuket"
+      ],
+      "match_status": "not_matched",
+      "match_confidence": null,
+      "candidate_locations": [],
+      "selected_location": {
+        "location_id": null,
+        "name": null,
+        "web_url": null,
+        "rating": null,
+        "review_count": null,
+        "ranking": null
+      },
+      "manual_decision": {
+        "approved": false,
+        "approved_by": null,
+        "approved_at": null,
+        "note": "Заполнить после поиска через Tripadvisor Location Search и ручной проверки совпадения."
+      }
+    }
+  ]
+}
