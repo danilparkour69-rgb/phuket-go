@@ -134,7 +134,7 @@ Phuket Go.
 
 ## Что нужно будет передать Codex перед разработкой
 
-- Development Handoff Map.
+- Development Handoff Map: `docs/10-mvp-roadmap/development-handoff-map.md`.
 - Product Vision.
 - MVP Scope.
 - User Roles.

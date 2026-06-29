@@ -8,21 +8,26 @@
 
 До этого код проекта не писать.
 
+Даже после команды на разработку сначала нужно запросить файл с инструкцией у владельца проекта, прочитать его и только потом писать код.
+
 ## Промпт
 
 ```text
 Продолжаем Phuket Go. Начинаем локальную разработку MVP.
 
+Перед кодингом запроси у меня файл с инструкцией. Не пиши код, пока я не дам файл и пока ты его не прочитаешь.
+
 Сначала не пиши фичи вслепую. Прочитай документы:
 
-1. docs/10-mvp-roadmap/development-handoff-map.md
-2. docs/10-mvp-roadmap/immediate-pre-coding-actions.md
-3. docs/10-mvp-roadmap/technical-requirements-mvp.md
-4. docs/09-platforms-and-architecture/data-structure-mvp.md
-5. docs/09-platforms-and-architecture/api-map-mvp.md
-6. docs/10-mvp-roadmap/page-blocks-map-mvp.md
-7. docs/03-service-catalog/excursions-site-data-mvp.json
-8. docs/03-service-catalog/media/excursions/media-developer-handoff-map.md
+1. файл-инструкцию, который я дам отдельно
+2. docs/10-mvp-roadmap/development-handoff-map.md
+3. docs/10-mvp-roadmap/immediate-pre-coding-actions.md
+4. docs/10-mvp-roadmap/technical-requirements-mvp.md
+5. docs/09-platforms-and-architecture/data-structure-mvp.md
+6. docs/09-platforms-and-architecture/api-map-mvp.md
+7. docs/10-mvp-roadmap/page-blocks-map-mvp.md
+8. docs/03-service-catalog/excursions-site-data-mvp.json
+9. docs/03-service-catalog/media/excursions/media-developer-handoff-map.md
 
 Главные правила:
 
@@ -53,4 +58,5 @@
 ## Следующий шаг
 
 - [ ] Когда владелец проекта скажет начинать разработку, использовать этот промпт.
+- [ ] Перед кодингом запросить и прочитать файл-инструкцию владельца проекта.
 - [ ] Пока команды на разработку нет, продолжать только документацию и подготовку.
