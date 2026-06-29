@@ -26,8 +26,9 @@
 - Старый фотослой удален из актуального процесса.
 - Актуальная медиабаза лежит в папках направлений, `final/carousel` и `media-manifest.json`.
 - Pre-coding документы синхронизированы.
+- Инструкция Codex от владельца проекта сохранена в `docs/00-project-control/project-instructions-for-codex.md`.
 - ASO зафиксировано как будущая задача мобильного приложения, не MVP.
-- Commit/push после последних документальных правок еще не делался.
+- Последние документальные правки до сохранения инструкции были отправлены в GitHub.
 
 ## Ключевые решения Phuket Go
 
@@ -55,6 +56,8 @@
 - Будущий партнерский доступ закладываем архитектурно, но не реализуем в MVP.
 - В будущем партнер не сможет удалить карточку, только скрыть или отправить на модерацию.
 - Если решения шаблона `vibe` конфликтуют с ранними техническими решениями Phuket Go, за основу берем `vibe`.
+- Если сохраненная инструкция Codex конфликтует с `AGENTS.md`, README шаблона `vibe` или актуальными документами Phuket Go, приоритет такой: системные/developer-инструкции, `AGENTS.md`, актуальные `docs/`, затем `project-instructions-for-codex.md`.
+- В сохраненной инструкции Codex общие названия `web/landing` адаптируются под шаблон `vibe`: публичный сайт и SEO-каталог - `website`, закрытые кабинеты - `webapp`, API - `backend`.
 - Масштабирование закладываем сразу: Phuket Go -> Bangkok Go -> Pattaya Go -> Thailand Go -> Vietnam Go -> Asia Go -> World Go.
 
 ## Контент и позиционирование
@@ -129,6 +132,7 @@
 - `docs/00-project-control/NEXT_SESSION.md`
 - `docs/00-project-control/master-plan.md`
 - `docs/00-project-control/decision-log.md`
+- `docs/00-project-control/project-instructions-for-codex.md`
 - `docs/10-mvp-roadmap/development-handoff-map.md`
 - `docs/10-mvp-roadmap/immediate-pre-coding-actions.md`
 - `docs/10-mvp-roadmap/final-pre-coding-checklist.md`
@@ -150,8 +154,7 @@
 
 Если начинаем разработку:
 
-1. Запросить файл-инструкцию владельца проекта.
-2. Прочитать файл-инструкцию.
-3. Открыть `docs/10-mvp-roadmap/start-development-prompt.md`.
+1. Открыть сохраненную инструкцию: `docs/00-project-control/project-instructions-for-codex.md`.
+2. Открыть `docs/10-mvp-roadmap/start-development-prompt.md`.
+3. Применять инструкцию с учетом приоритета `AGENTS.md`, шаблона `vibe` и актуальных документов `docs/`.
 4. Только после этого начинать технический старт по шаблону `vibe`.
-

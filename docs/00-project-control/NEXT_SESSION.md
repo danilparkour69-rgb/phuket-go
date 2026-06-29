@@ -47,6 +47,7 @@
 
 - Главный план: `docs/00-project-control/master-plan.md`
 - Решения: `docs/00-project-control/decision-log.md`
+- Инструкция Codex от владельца проекта: `docs/00-project-control/project-instructions-for-codex.md`
 - Product Vision: `docs/01-product-vision/product-vision.md`
 - Каталог: `docs/03-service-catalog/`
 - Карточки будущих услуг: `docs/03-service-catalog/future-service-card-spec.md`
@@ -150,6 +151,7 @@
 - промпт для будущего старта разработки сохранен в `docs/10-mvp-roadmap/start-development-prompt.md`;
 - финальная сверка pre-coding документов сохранена в `docs/10-mvp-roadmap/pre-coding-docs-consistency-review.md`;
 - сжатый контекст для переноса в новое окно сохранен в `docs/00-project-control/context-compression.md`;
+- инструкция Codex от владельца проекта сохранена в `docs/00-project-control/project-instructions-for-codex.md`;
 - ASO для будущего мобильного приложения зафиксировано как задача не-MVP этапа;
 - устаревший промпт продолжения про ручной выбор фото `012/023` заменен;
 - правило карусели обновлено: используем все подходящие фото направления;
@@ -327,8 +329,9 @@ https://t.me/marusyatravel/2206
 4. Фото больше не блокируют работу: берем доступные фото из папки направления, финальную чистку делаем перед публикацией.
 5. Финальная сверка pre-coding документов выполнена: `docs/10-mvp-roadmap/pre-coding-docs-consistency-review.md`.
 6. Сжатый контекст для нового окна: `docs/00-project-control/context-compression.md`.
-7. Если пользователь просит разработку, сначала запросить файл-инструкцию владельца проекта.
-8. Код проекта пока не писать без файла-инструкции.
+7. Инструкция Codex от владельца проекта сохранена: `docs/00-project-control/project-instructions-for-codex.md`.
+8. Если пользователь просит разработку, сначала прочитать сохраненную инструкцию и применить ее с учетом приоритета `AGENTS.md`, шаблона `vibe` и актуальных документов `docs/`.
+9. Код проекта пока не писать без учета сохраненной инструкции.
 
 ## Что важно помнить
 
@@ -349,4 +352,4 @@ https://t.me/marusyatravel/2206
 
 Начать новую сессию с фразы:
 
-`Продолжаем Phuket Go. Код проекта не писать. Сначала открой docs/00-project-control/context-compression.md, затем docs/00-project-control/NEXT_SESSION.md, docs/00-project-control/master-plan.md, docs/10-mvp-roadmap/development-handoff-map.md, docs/10-mvp-roadmap/immediate-pre-coding-actions.md и docs/10-mvp-roadmap/pre-coding-docs-consistency-review.md. Финальная сверка pre-coding документов выполнена. Фото не блокируют локальную разработку. ASO зафиксировано как будущая задача мобильного приложения. Если я прошу начать разработку, сначала запроси у меня файл-инструкцию и не пиши код, пока файл не будет получен и прочитан.`
+`Продолжаем Phuket Go. Код проекта не писать. Сначала открой docs/00-project-control/context-compression.md, затем docs/00-project-control/project-instructions-for-codex.md, docs/00-project-control/NEXT_SESSION.md, docs/00-project-control/master-plan.md, docs/10-mvp-roadmap/development-handoff-map.md, docs/10-mvp-roadmap/immediate-pre-coding-actions.md и docs/10-mvp-roadmap/pre-coding-docs-consistency-review.md. Финальная сверка pre-coding документов выполнена. Фото не блокируют локальную разработку. ASO зафиксировано как будущая задача мобильного приложения. При разработке используй сохраненную инструкцию Codex с учетом приоритета AGENTS.md, шаблона vibe и актуальных документов docs/.`
