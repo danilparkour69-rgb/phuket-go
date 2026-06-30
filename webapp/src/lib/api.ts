@@ -1,4 +1,12 @@
 import {
+  adminLeadAdminNoteRequestSchema,
+  adminLeadBulkStatusActionRequestSchema,
+  adminLeadBulkStatusActionResponseSchema,
+  adminLeadDetailResponseSchema,
+  adminLeadExportQuerySchema,
+  adminLeadListQuerySchema,
+  adminLeadListResponseSchema,
+  adminLeadStatusActionRequestSchema,
   apiErrorSchema,
   authResponseSchema,
   loginRequestSchema,
@@ -7,6 +15,14 @@ import {
   refreshRequestSchema,
   refreshResponseSchema,
   registerRequestSchema,
+  type AdminLeadAdminNoteRequest,
+  type AdminLeadBulkStatusActionRequest,
+  type AdminLeadBulkStatusActionResponse,
+  type AdminLeadDetailResponse,
+  type AdminLeadExportQuery,
+  type AdminLeadListQuery,
+  type AdminLeadListResponse,
+  type AdminLeadStatusActionRequest,
   type AuthResponse,
   type LoginRequest,
   type LogoutRequest,
@@ -26,7 +42,7 @@ type ApiClientOptions = {
 }
 
 type RequestOptions = {
-  method?: 'GET' | 'POST'
+  method?: 'GET' | 'POST' | 'PATCH'
   body?: unknown
   auth?: boolean
   retryOnUnauthorized?: boolean
@@ -84,6 +100,75 @@ export class ApiClient {
     return this.request('/api/auth/me', meResponseSchema, {
       auth: true,
     })
+  }
+
+  listAdminLeads(query: Partial<AdminLeadListQuery> = {}): Promise<AdminLeadListResponse> {
+    const payload = adminLeadListQuerySchema.parse(query)
+    return this.request(`/api/admin/leads${queryString(payload)}`, adminLeadListResponseSchema, {
+      auth: true,
+    })
+  }
+
+  async exportAdminLeadsCsv(query: Partial<AdminLeadExportQuery> = {}): Promise<Blob> {
+    const payload = adminLeadExportQuerySchema.parse(query)
+    const response = await this.rawRequest(`/api/admin/leads/export.csv${queryString(payload)}`, {
+      auth: true,
+    })
+
+    return response.blob()
+  }
+
+  getAdminLead(id: string): Promise<AdminLeadDetailResponse> {
+    return this.request(
+      `/api/admin/leads/${encodeURIComponent(id)}`,
+      adminLeadDetailResponseSchema,
+      {
+        auth: true,
+      },
+    )
+  }
+
+  updateAdminLeadStatus(
+    id: string,
+    input: AdminLeadStatusActionRequest,
+  ): Promise<AdminLeadDetailResponse> {
+    const payload = adminLeadStatusActionRequestSchema.parse(input)
+    return this.request(
+      `/api/admin/leads/${encodeURIComponent(id)}/status`,
+      adminLeadDetailResponseSchema,
+      {
+        method: 'PATCH',
+        body: payload,
+        auth: true,
+      },
+    )
+  }
+
+  bulkUpdateAdminLeadStatus(
+    input: AdminLeadBulkStatusActionRequest,
+  ): Promise<AdminLeadBulkStatusActionResponse> {
+    const payload = adminLeadBulkStatusActionRequestSchema.parse(input)
+    return this.request('/api/admin/leads/bulk/status', adminLeadBulkStatusActionResponseSchema, {
+      method: 'PATCH',
+      body: payload,
+      auth: true,
+    })
+  }
+
+  updateAdminLeadAdminNote(
+    id: string,
+    input: AdminLeadAdminNoteRequest,
+  ): Promise<AdminLeadDetailResponse> {
+    const payload = adminLeadAdminNoteRequestSchema.parse(input)
+    return this.request(
+      `/api/admin/leads/${encodeURIComponent(id)}/admin-note`,
+      adminLeadDetailResponseSchema,
+      {
+        method: 'PATCH',
+        body: payload,
+        auth: true,
+      },
+    )
   }
 
   async logout(input: LogoutRequest = {}) {
@@ -171,6 +256,19 @@ export class ApiClient {
 
     return headers
   }
+}
+
+function queryString(query: Record<string, unknown>) {
+  const search = new URLSearchParams()
+
+  for (const [key, value] of Object.entries(query)) {
+    if (value !== undefined) {
+      search.set(key, String(value))
+    }
+  }
+
+  const serialized = search.toString()
+  return serialized ? `?${serialized}` : ''
 }
 
 async function toApiError(response: Response) {

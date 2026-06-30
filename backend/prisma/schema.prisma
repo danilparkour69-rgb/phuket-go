@@ -117,6 +117,7 @@ model User {
   updatedAt        DateTime      @updatedAt @map("updated_at")
   sessions         AuthSession[]
   leads            Lead[]
+  adminNoteLeads   Lead[]        @relation("LeadAdminNoteUpdatedBy")
 
   @@map("users")
 }
@@ -248,38 +249,43 @@ model ExcursionPhoto {
 }
 
 model Lead {
-  id               String              @id @default(dbgenerated("uuidv7()")) @db.Uuid
-  publicNumber     String              @unique @map("public_number")
-  source           LeadSource          @default(WEBSITE)
-  status           LeadStatus          @default(NEW)
-  customerName     String              @map("customer_name")
-  customerPhone    String              @map("customer_phone")
-  customerTelegram String?             @map("customer_telegram")
-  contactChannel   LeadContactChannel? @map("contact_channel")
-  requestedDate    DateTime?           @map("requested_date")
-  peopleCount      Int?                @map("people_count")
-  comment          String?
-  sourcePage       String?             @map("source_page")
-  userId           String?             @map("user_id") @db.Uuid
-  excursionId      String              @map("excursion_id") @db.Uuid
-  excursionTitle   String              @map("excursion_title_snapshot")
-  partnerId        String              @map("partner_id") @db.Uuid
-  priceRub         Int?                @map("price_rub_snapshot")
-  priceThb         Int?                @map("price_thb_snapshot")
-  commissionThb    Int                 @default(100) @map("commission_per_person_thb")
-  commissionTotal  Int?                @map("commission_total_thb")
-  adminNote        String?             @map("admin_note")
-  createdAt        DateTime            @default(now()) @map("created_at")
-  updatedAt        DateTime            @updatedAt @map("updated_at")
-  user             User?               @relation(fields: [userId], references: [id], onDelete: SetNull, map: "leads_user_id_fkey")
-  excursion        Excursion           @relation(fields: [excursionId], references: [id], onDelete: Restrict, map: "leads_excursion_id_fkey")
-  partner          Partner             @relation(fields: [partnerId], references: [id], onDelete: Restrict, map: "leads_partner_id_fkey")
-  statusHistory    LeadStatusHistory[]
+  id                   String              @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  publicNumber         String              @unique @map("public_number")
+  source               LeadSource          @default(WEBSITE)
+  status               LeadStatus          @default(NEW)
+  customerName         String              @map("customer_name")
+  customerPhone        String              @map("customer_phone")
+  customerTelegram     String?             @map("customer_telegram")
+  contactChannel       LeadContactChannel? @map("contact_channel")
+  requestedDate        DateTime?           @map("requested_date")
+  peopleCount          Int?                @map("people_count")
+  comment              String?
+  sourcePage           String?             @map("source_page")
+  userId               String?             @map("user_id") @db.Uuid
+  excursionId          String              @map("excursion_id") @db.Uuid
+  excursionTitle       String              @map("excursion_title_snapshot")
+  partnerId            String              @map("partner_id") @db.Uuid
+  priceRub             Int?                @map("price_rub_snapshot")
+  priceThb             Int?                @map("price_thb_snapshot")
+  commissionThb        Int                 @default(100) @map("commission_per_person_thb")
+  commissionTotal      Int?                @map("commission_total_thb")
+  adminNote            String?             @map("admin_note")
+  adminNoteUpdatedAt   DateTime?           @map("admin_note_updated_at")
+  adminNoteUpdatedById String?             @map("admin_note_updated_by_id") @db.Uuid
+  partnerNote          String?             @map("partner_note")
+  createdAt            DateTime            @default(now()) @map("created_at")
+  updatedAt            DateTime            @updatedAt @map("updated_at")
+  user                 User?               @relation(fields: [userId], references: [id], onDelete: SetNull, map: "leads_user_id_fkey")
+  adminNoteUpdatedBy   User?               @relation("LeadAdminNoteUpdatedBy", fields: [adminNoteUpdatedById], references: [id], onDelete: SetNull, map: "leads_admin_note_updated_by_id_fkey")
+  excursion            Excursion           @relation(fields: [excursionId], references: [id], onDelete: Restrict, map: "leads_excursion_id_fkey")
+  partner              Partner             @relation(fields: [partnerId], references: [id], onDelete: Restrict, map: "leads_partner_id_fkey")
+  statusHistory        LeadStatusHistory[]
 
   @@index([status, createdAt], map: "leads_status_created_at_idx")
   @@index([userId, createdAt], map: "leads_user_id_created_at_idx")
   @@index([excursionId], map: "leads_excursion_id_idx")
   @@index([partnerId], map: "leads_partner_id_idx")
+  @@index([adminNoteUpdatedById], map: "leads_admin_note_updated_by_id_idx")
   @@map("leads")
 }
 

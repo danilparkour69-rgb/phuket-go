@@ -786,7 +786,7 @@ function discoveryLocationLabel(_categorySlug: string) {
               >
                 <input type="hidden" name="excursionId" value={excursion.id} />
                 <input type="hidden" name="source" value="website" />
-                <input type="hidden" name="sourcePage" value={slug} />
+                <input type="hidden" name="sourcePage" value={`/excursions/${slug}`} />
 
                 <label>
                   <span>Дата</span>
@@ -794,7 +794,6 @@ function discoveryLocationLabel(_categorySlug: string) {
                     type="date"
                     name="requestedDate"
                     min={new Date().toISOString().slice(0, 10)}
-                    required
                   />
                 </label>
                 <label>
@@ -2147,7 +2146,7 @@ function discoveryLocationLabel(_categorySlug: string) {
             peopleCount: Number.isFinite(peopleCount) ? peopleCount : undefined,
             comment: safeText(formData.get('comment')).trim() || undefined,
             source: 'website',
-            sourcePage: safeText(formData.get('sourcePage')).trim() || undefined,
+            sourcePage: safeText(formData.get('sourcePage')).trim() || window.location.pathname,
           }
 
           resetLeadContactStep()
@@ -2181,7 +2180,10 @@ function discoveryLocationLabel(_categorySlug: string) {
             }
 
             latestLeadId = createdLeadId
-            setLeadFormResult('Спасибо за обращение! Теперь выберите удобный канал связи.', 'success')
+            setLeadFormResult(
+              'Спасибо за обращение! Менеджер свяжется с вами в ближайшее время.',
+              'success',
+            )
             setLeadContactStepVisible(true)
             leadForm.reset()
             syncBookingSelectorState()

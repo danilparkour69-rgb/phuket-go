@@ -27,6 +27,9 @@ maybeDescribe('auth API integration', () => {
     TRIPADVISOR_MAX_REQUESTS_PER_RUN: 10,
     TRIPADVISOR_DAILY_MAX_REQUESTS: 200,
     TRIPADVISOR_REQUEST_TIMEOUT_MS: 8000,
+    GOOGLE_SHEETS_ENABLED: false,
+    GOOGLE_SHEETS_LEADS_SHEET_NAME: 'Заявки',
+    TELEGRAM_NOTIFICATIONS_ENABLED: false,
   }
   const prisma = createPrisma(databaseUrl!)
   const app = createApp({ env, prisma })

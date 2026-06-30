@@ -60,6 +60,39 @@ Keep an explicit username and password in Prisma connection URLs even on local n
 
 DigitalOcean Spaces env is optional. Leave `SPACES_*` blank until the product needs uploads, media, exports, or downloads. When storage is active, configure the complete Spaces group in `backend/.env` and follow [../docs/STORAGE.md](../docs/STORAGE.md).
 
+Google Sheets lead export is optional and disabled by default. Leave
+`GOOGLE_SHEETS_ENABLED=false` for local development without Google credentials. When
+MVP lead export is needed, create a Google service account with access to the
+spreadsheet, set `GOOGLE_SHEETS_ENABLED=true`, and configure
+`GOOGLE_SHEETS_SPREADSHEET_ID`, `GOOGLE_SHEETS_LEADS_SHEET_NAME`,
+`GOOGLE_SERVICE_ACCOUNT_EMAIL`, and `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY`.
+Private keys may use escaped `\n` newlines in `.env`; the backend normalizes
+them before signing OAuth JWTs. Lead creation appends a row, and partner Telegram
+callbacks update status columns in the existing row when it can be found by
+`lead_id`. Do not commit service account credentials.
+
+Telegram lead notifications are optional and disabled by default. Leave
+`TELEGRAM_NOTIFICATIONS_ENABLED=false` for local development without a bot token.
+When MVP notifications are needed, set `TELEGRAM_NOTIFICATIONS_ENABLED=true`,
+`TELEGRAM_BOT_TOKEN`, and `TELEGRAM_ADMIN_CHAT_ID`. The admin chat receives every
+new lead. Partner notifications are sent only when the selected partner has a
+stored `telegram_chat_id`; `telegram_username` is informational and is not enough
+for a direct bot message. Do not commit bot tokens or chat identifiers from real
+accounts.
+
+Telegram partner callbacks are accepted at `POST /api/telegram/webhook`. Configure
+Telegram's webhook secret token and set the same value in `TELEGRAM_WEBHOOK_SECRET`;
+the backend checks it through the `X-Telegram-Bot-Api-Secret-Token` header before
+processing callback buttons. The MVP callback handler supports partner
+`lead:<id>:accept`, `lead:<id>:decline`, `lead:<id>:complete`, and
+`lead:<id>:problem` actions. Status callbacks update lead status and write lead
+status history. `complete` is accepted only after the lead is already `accepted`.
+The `problem` action shows partner reason buttons; choosing a reason stores
+`partner_note`, writes a partner history entry without changing status, updates
+the Google Sheets partner note column, and notifies the admin. After a successful
+callback, the bot answers the partner, sends a short confirmation message, and
+updates the original inline keyboard.
+
 ## Runtime Entrypoints
 
 The backend is one workspace with one Prisma schema and one Dockerfile, but it has separate runtime entrypoints:
@@ -99,6 +132,33 @@ Production deployment for the backend uses DigitalOcean App Platform with Digita
 - `POST /api/catalog/leads`
 - `PATCH /api/catalog/leads/{id}/contact-channel`
 - `GET /media/excursions/*`
+
+## Admin API
+
+- `GET /api/admin/leads`
+- `GET /api/admin/leads/{id}`
+- `PATCH /api/admin/leads/{id}/status`
+- `PATCH /api/admin/leads/{id}/admin-note`
+
+Admin API routes require a valid bearer access token for a user with `is_admin=true`.
+The lead list supports filters by `status`, `search`, `partnerId`,
+`createdFrom`, and `createdTo`, plus `limit` and `offset` pagination. Responses include lead
+snapshots for admin operations, including `partnerNote`. The lead detail endpoint
+returns the same lead snapshot plus chronological status history. The status
+quick action updates the lead status, can save an `adminNote`, and writes an
+admin status-history entry with an optional comment. The admin note endpoint
+updates only `adminNote` and does not write status history.
+
+For local development, create or promote an admin user without manual SQL:
+
+```bash
+bun run --cwd backend seed:admin
+```
+
+The command reads `LOCAL_ADMIN_EMAIL`, `LOCAL_ADMIN_PASSWORD`,
+`LOCAL_ADMIN_DISPLAY_NAME`, and `LOCAL_ADMIN_RESET_PASSWORD` from `.env`. If the
+user already exists, the command sets `is_admin=true` and preserves the existing
+password unless `LOCAL_ADMIN_RESET_PASSWORD=true`.
 
 The public lead flow is two-step: first the customer sends name and phone through the form, then chooses where to continue communication: Telegram, WhatsApp, or Max. The lead stores excursion title, prices, commission, and selected contact channel snapshots so later catalog edits do not rewrite historical requests.
 

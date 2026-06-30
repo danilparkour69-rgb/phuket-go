@@ -1,0 +1,1350 @@
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query'
+import type {
+  AdminLeadBulkStatusActionRequest,
+  AdminLeadDetailResponse,
+  AdminLeadDto,
+  AdminLeadExportQuery,
+  AdminLeadListResponse,
+  AdminLeadStatusActionRequest,
+} from '@phuket-go/contracts'
+import { useMemo, useState } from 'react'
+
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Separator } from '@/components/ui/separator'
+import { Spinner } from '@/components/ui/spinner'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { Textarea } from '@/components/ui/textarea'
+import { Typography } from '@/components/ui/typography'
+import { ApiRequestError } from '@/lib/api'
+import { getLeadSlaInfo } from '@/lib/admin-leads'
+import { useAuth } from '@/lib/use-auth'
+
+const leadStatuses = [
+  'new',
+  'waiting_partner',
+  'accepted',
+  'declined',
+  'completed',
+  'cancelled',
+] as const
+
+const statusLabels: Record<(typeof leadStatuses)[number], string> = {
+  new: 'Новая',
+  waiting_partner: 'Ждет партнера',
+  accepted: 'Принята',
+  declined: 'Отклонена',
+  completed: 'Оказана',
+  cancelled: 'Отменена',
+}
+
+const statusBadgeVariant: Record<
+  (typeof leadStatuses)[number],
+  'default' | 'secondary' | 'destructive' | 'outline'
+> = {
+  new: 'outline',
+  waiting_partner: 'secondary',
+  accepted: 'default',
+  declined: 'destructive',
+  completed: 'secondary',
+  cancelled: 'outline',
+}
+
+const quickActions = [
+  { status: 'accepted', label: 'Принять' },
+  { status: 'declined', label: 'Отклонить' },
+  { status: 'completed', label: 'Оказана' },
+  { status: 'cancelled', label: 'Отменить' },
+] as const
+
+const actionCommentTemplates = [
+  {
+    label: 'Клиент подтвердил',
+    comment: 'Клиент подтвердил детали, передали партнеру.',
+  },
+  {
+    label: 'Партнер подтвердил',
+    comment: 'Партнер подтвердил наличие мест.',
+  },
+  {
+    label: 'Нет ответа',
+    comment: 'Клиент не отвечает, нужен повторный контакт.',
+  },
+  {
+    label: 'Отмена клиента',
+    comment: 'Клиент попросил отменить заявку.',
+  },
+] as const
+
+const contactChannelLabels: Record<NonNullable<AdminLeadDto['contactChannel']>, string> = {
+  telegram: 'Telegram',
+  whatsapp: 'WhatsApp',
+  max: 'MAX',
+}
+
+const adminLeadsQueryKey = ['admin', 'leads'] as const
+type SummaryFilter = 'total' | 'new' | 'requires_attention' | 'waiting_partner'
+type AdminLeadFilters = {
+  status: 'all' | (typeof leadStatuses)[number]
+  focus: 'all' | 'requires_attention'
+  search: string
+  partnerId: string
+  createdFrom: string
+  createdTo: string
+  sortBy: 'created_at' | 'updated_at'
+  sortDirection: 'asc' | 'desc'
+}
+
+const emptyFilters: AdminLeadFilters = {
+  status: 'all',
+  focus: 'all',
+  search: '',
+  partnerId: '',
+  createdFrom: '',
+  createdTo: '',
+  sortBy: 'created_at',
+  sortDirection: 'desc',
+}
+const pageSizeOptions = [10, 25, 50, 100] as const
+
+export function AdminLeadsPage() {
+  const auth = useAuth()
+  const queryClient = useQueryClient()
+  const [draftFilters, setDraftFilters] = useState<AdminLeadFilters>(emptyFilters)
+  const [appliedFilters, setAppliedFilters] = useState<AdminLeadFilters>(emptyFilters)
+  const [pageSize, setPageSize] = useState<(typeof pageSizeOptions)[number]>(25)
+  const [offset, setOffset] = useState(0)
+  const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null)
+  const [selectedBulkLeadIds, setSelectedBulkLeadIds] = useState<string[]>([])
+
+  const listQuery = useQuery({
+    queryKey: [adminLeadsQueryKey[0], adminLeadsQueryKey[1], appliedFilters, pageSize, offset],
+    enabled: auth.isAuthenticated,
+    queryFn: () =>
+      auth.api.listAdminLeads({
+        status: appliedFilters.status === 'all' ? undefined : appliedFilters.status,
+        search: appliedFilters.search,
+        partnerId: appliedFilters.partnerId,
+        createdFrom: appliedFilters.createdFrom,
+        createdTo: appliedFilters.createdTo,
+        requiresAttention: appliedFilters.focus === 'requires_attention' ? true : undefined,
+        sortBy: appliedFilters.sortBy,
+        sortDirection: appliedFilters.sortDirection,
+        limit: pageSize,
+        offset,
+      }),
+  })
+
+  const leads = useMemo(() => listQuery.data?.leads ?? [], [listQuery.data?.leads])
+  const visibleLeadIds = useMemo(() => leads.map((lead) => lead.id), [leads])
+  const selectedBulkLeadIdsSet = useMemo(
+    () => new Set(selectedBulkLeadIds),
+    [selectedBulkLeadIds],
+  )
+  const selectedVisibleLeadCount = visibleLeadIds.filter((leadId) =>
+    selectedBulkLeadIdsSet.has(leadId),
+  ).length
+  const allVisibleLeadsSelected = leads.length > 0 && selectedVisibleLeadCount === leads.length
+  const effectiveSelectedLeadId =
+    leads.find((lead) => lead.id === selectedLeadId)?.id ?? leads[0]?.id ?? null
+  const appliedExportQuery = useMemo(
+    () => adminLeadExportQueryFromFilters(appliedFilters),
+    [appliedFilters],
+  )
+
+  const detailQuery = useQuery({
+    queryKey: ['admin', 'lead', effectiveSelectedLeadId],
+    enabled: auth.isAuthenticated && Boolean(effectiveSelectedLeadId),
+    queryFn: () => auth.api.getAdminLead(effectiveSelectedLeadId ?? ''),
+  })
+
+  const updateStatusMutation = useMutation({
+    mutationFn: ({ leadId, input }: { leadId: string | null; input: AdminLeadStatusActionRequest }) => {
+      if (!leadId) {
+        throw new Error('Lead is not selected')
+      }
+
+      return auth.api.updateAdminLeadStatus(leadId, input)
+    },
+    onSuccess: (detail) => {
+      queryClient.setQueryData(['admin', 'lead', detail.lead.id], detail)
+      void queryClient.invalidateQueries({ queryKey: adminLeadsQueryKey })
+    },
+  })
+  const updateAdminNoteMutation = useMutation({
+    mutationFn: ({ leadId, adminNote }: { leadId: string | null; adminNote: string }) => {
+      if (!leadId) {
+        throw new Error('Lead is not selected')
+      }
+
+      return auth.api.updateAdminLeadAdminNote(leadId, { adminNote })
+    },
+    onSuccess: (detail) => {
+      queryClient.setQueryData(['admin', 'lead', detail.lead.id], detail)
+      void queryClient.invalidateQueries({ queryKey: adminLeadsQueryKey })
+    },
+  })
+  const bulkUpdateStatusMutation = useMutation({
+    mutationFn: (input: AdminLeadBulkStatusActionRequest) =>
+      auth.api.bulkUpdateAdminLeadStatus(input),
+    onSuccess: () => {
+      setSelectedBulkLeadIds([])
+      void queryClient.invalidateQueries({ queryKey: adminLeadsQueryKey })
+      if (effectiveSelectedLeadId) {
+        void queryClient.invalidateQueries({ queryKey: ['admin', 'lead', effectiveSelectedLeadId] })
+      }
+    },
+  })
+  const exportCsvMutation = useMutation({
+    mutationFn: () => auth.api.exportAdminLeadsCsv(appliedExportQuery),
+    onSuccess: (csv) => {
+      downloadBlob(csv, adminLeadCsvFilename())
+    },
+  })
+
+  const accessError = listQuery.error instanceof ApiRequestError ? listQuery.error : null
+  const clearBulkSelection = () => setSelectedBulkLeadIds([])
+  const toggleBulkLead = (leadId: string) => {
+    setSelectedBulkLeadIds((current) =>
+      current.includes(leadId)
+        ? current.filter((selectedLeadId) => selectedLeadId !== leadId)
+        : [...current, leadId],
+    )
+  }
+  const toggleVisibleBulkLeads = () => {
+    setSelectedBulkLeadIds((current) => {
+      const visibleSet = new Set(visibleLeadIds)
+
+      if (allVisibleLeadsSelected) {
+        return current.filter((leadId) => !visibleSet.has(leadId))
+      }
+
+      return [...new Set([...current, ...visibleLeadIds])]
+    })
+  }
+  const applySummaryFilter = (summaryFilter: SummaryFilter) => {
+    const nextFilters: AdminLeadFilters = {
+      ...draftFilters,
+      status:
+        summaryFilter === 'new'
+          ? 'new'
+          : summaryFilter === 'waiting_partner'
+            ? 'waiting_partner'
+            : 'all',
+      focus: summaryFilter === 'requires_attention' ? 'requires_attention' : 'all',
+    }
+
+    setDraftFilters(nextFilters)
+    setAppliedFilters(nextFilters)
+    setOffset(0)
+    setSelectedLeadId(null)
+    clearBulkSelection()
+  }
+
+  if (auth.isBootstrapping) {
+    return <AdminLoadingState />
+  }
+
+  if (!auth.user) {
+    return <AdminLoginRequired />
+  }
+
+  return (
+    <section className="mx-auto grid w-full max-w-7xl gap-6 px-5 py-8">
+      <div className="grid gap-4">
+        <div className="grid gap-2">
+          <Badge variant="outline" className="w-fit">
+            Admin
+          </Badge>
+          <Typography variant="h1">Заявки</Typography>
+          <Typography tone="muted">
+            Операционная очередь: фильтр, карточка, история и быстрые действия по статусу.
+          </Typography>
+        </div>
+      </div>
+
+      <LeadFilters
+        filters={draftFilters}
+        onFiltersChange={setDraftFilters}
+        onApply={() => {
+          setAppliedFilters(draftFilters)
+          setOffset(0)
+          setSelectedLeadId(null)
+          clearBulkSelection()
+        }}
+        onReset={() => {
+          setDraftFilters(emptyFilters)
+          setAppliedFilters(emptyFilters)
+          setOffset(0)
+          setSelectedLeadId(null)
+          clearBulkSelection()
+        }}
+      />
+
+      {accessError?.status === 403 && (
+        <Alert variant="destructive">
+          <AlertTitle>Нет доступа</AlertTitle>
+          <AlertDescription>
+            Этот экран доступен только пользователям с правами администратора.
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {accessError && accessError.status !== 403 && (
+        <Alert variant="destructive">
+          <AlertTitle>Не удалось загрузить заявки</AlertTitle>
+          <AlertDescription>{accessError.message}</AlertDescription>
+        </Alert>
+      )}
+
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,1.35fr)_minmax(360px,0.65fr)]">
+        <Card className="overflow-hidden">
+          <CardHeader className="gap-2">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <CardTitle>Очередь</CardTitle>
+                <CardDescription>
+                  {listQuery.isFetching ? 'Обновляем...' : `${listQuery.data?.total ?? 0} заявок`}
+                </CardDescription>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                {listQuery.isFetching && <Spinner />}
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={exportCsvMutation.isPending}
+                  onClick={() => exportCsvMutation.mutate()}
+                >
+                  {exportCsvMutation.isPending ? 'Готовим CSV...' : 'Экспорт CSV'}
+                </Button>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="p-0">
+            {exportCsvMutation.error && (
+              <Alert variant="destructive" className="m-4">
+                <AlertTitle>CSV не выгружен</AlertTitle>
+                <AlertDescription>{exportCsvMutation.error.message}</AlertDescription>
+              </Alert>
+            )}
+            <LeadQueueSummary
+              activeFilter={summaryFilterFromFilters(appliedFilters)}
+              summary={listQuery.data?.summary}
+              onSelectFilter={applySummaryFilter}
+            />
+            <BulkStatusActions
+              selectedCount={selectedBulkLeadIds.length}
+              isSubmitting={bulkUpdateStatusMutation.isPending}
+              error={bulkUpdateStatusMutation.error}
+              onClear={clearBulkSelection}
+              onSubmit={(input) => {
+                bulkUpdateStatusMutation.mutate({
+                  ...input,
+                  leadIds: selectedBulkLeadIds,
+                })
+              }}
+            />
+            <LeadTable
+              leads={leads}
+              selectedLeadId={effectiveSelectedLeadId}
+              selectedBulkLeadIds={selectedBulkLeadIdsSet}
+              allVisibleLeadsSelected={allVisibleLeadsSelected}
+              selectedVisibleLeadCount={selectedVisibleLeadCount}
+              onSelectLead={setSelectedLeadId}
+              onToggleBulkLead={toggleBulkLead}
+              onToggleVisibleBulkLeads={toggleVisibleBulkLeads}
+              isLoading={listQuery.isLoading}
+              hasFilters={hasActiveFilters(appliedFilters)}
+            />
+            <LeadPagination
+              total={listQuery.data?.total ?? 0}
+              limit={pageSize}
+              offset={offset}
+              isFetching={listQuery.isFetching}
+              onRefresh={() => {
+                void listQuery.refetch()
+              }}
+              onPrevious={() => {
+                setOffset(Math.max(0, offset - pageSize))
+                setSelectedLeadId(null)
+                clearBulkSelection()
+              }}
+              onNext={() => {
+                setOffset(offset + pageSize)
+                setSelectedLeadId(null)
+                clearBulkSelection()
+              }}
+              onPageSizeChange={(nextPageSize) => {
+                setPageSize(nextPageSize)
+                setOffset(0)
+                setSelectedLeadId(null)
+                clearBulkSelection()
+              }}
+            />
+          </CardContent>
+        </Card>
+
+        <LeadDetailPanel
+          key={
+            detailQuery.data?.lead
+              ? `${detailQuery.data.lead.id}:${detailQuery.data.lead.updatedAt}`
+              : 'empty'
+          }
+          detail={detailQuery.data}
+          isLoading={detailQuery.isLoading || detailQuery.isFetching}
+          error={detailQuery.error}
+          isUpdating={updateStatusMutation.isPending}
+          isSavingNote={updateAdminNoteMutation.isPending}
+          onSaveNote={(adminNote) => {
+            updateAdminNoteMutation.mutate({
+              leadId: effectiveSelectedLeadId,
+              adminNote,
+            })
+          }}
+          onAction={(input) => {
+            updateStatusMutation.mutate({
+              leadId: effectiveSelectedLeadId,
+              input,
+            })
+          }}
+          mutationError={updateStatusMutation.error}
+          noteMutationError={updateAdminNoteMutation.error}
+        />
+      </div>
+    </section>
+  )
+}
+
+function LeadQueueSummary({
+  activeFilter,
+  summary,
+  onSelectFilter,
+}: {
+  activeFilter: SummaryFilter
+  summary: AdminLeadListResponse['summary'] | undefined
+  onSelectFilter: (filter: SummaryFilter) => void
+}) {
+  const items: Array<{ key: SummaryFilter; label: string; value: number | undefined }> = [
+    { key: 'total', label: 'Всего', value: summary?.total },
+    { key: 'new', label: 'Новые', value: summary?.new },
+    { key: 'requires_attention', label: 'Требуют внимания', value: summary?.requiresAttention },
+    { key: 'waiting_partner', label: 'Ждут партнера', value: summary?.waitingPartner },
+  ]
+
+  return (
+    <div className="grid gap-2 border-t px-4 py-3 sm:grid-cols-2 lg:grid-cols-4">
+      {items.map((item) => (
+        <button
+          key={item.label}
+          type="button"
+          className="grid gap-1 rounded-lg border bg-muted/20 p-3 text-left transition-colors hover:bg-muted/40 data-[active=true]:border-primary data-[active=true]:bg-primary/10"
+          data-active={activeFilter === item.key}
+          aria-label={`${item.label}: ${item.value ?? '...'}`}
+          aria-pressed={activeFilter === item.key}
+          onClick={() => onSelectFilter(item.key)}
+        >
+          <Typography variant="caption" tone="muted">
+            {item.label}
+          </Typography>
+          <Typography variant="h5">{item.value ?? '...'}</Typography>
+        </button>
+      ))}
+    </div>
+  )
+}
+
+function summaryFilterFromFilters(
+  filters: AdminLeadFilters,
+): SummaryFilter {
+  if (filters.focus === 'requires_attention') return 'requires_attention'
+  if (filters.status === 'new') return 'new'
+  if (filters.status === 'waiting_partner') return 'waiting_partner'
+  return 'total'
+}
+
+function LeadFilters({
+  filters,
+  onFiltersChange,
+  onApply,
+  onReset,
+}: {
+  filters: AdminLeadFilters
+  onFiltersChange: (filters: AdminLeadFilters) => void
+  onApply: () => void
+  onReset: () => void
+}) {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Фильтры</CardTitle>
+        <CardDescription>Поиск работает по номеру, клиенту, телефону, Telegram, экскурсии и партнеру.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="grid gap-4 lg:grid-cols-[minmax(220px,1fr)_170px_180px_220px_150px_150px_180px_170px_auto] lg:items-end">
+          <div className="grid gap-2">
+            <Label htmlFor="admin-lead-search">Поиск</Label>
+            <Input
+              id="admin-lead-search"
+              value={filters.search}
+              onChange={(event) => onFiltersChange({ ...filters, search: event.target.value })}
+              placeholder="Номер, клиент, телефон"
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="admin-lead-status-filter">Статус</Label>
+            <Select
+              value={filters.status}
+              onValueChange={(value) =>
+                onFiltersChange({ ...filters, status: value as AdminLeadFilters['status'] })
+              }
+            >
+              <SelectTrigger id="admin-lead-status-filter" className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Все статусы</SelectItem>
+                {leadStatuses.map((status) => (
+                  <SelectItem key={status} value={status}>
+                    {statusLabels[status]}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="admin-lead-focus-filter">Фокус</Label>
+            <Select
+              value={filters.focus}
+              onValueChange={(value) =>
+                onFiltersChange({ ...filters, focus: value as AdminLeadFilters['focus'] })
+              }
+            >
+              <SelectTrigger id="admin-lead-focus-filter" className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Все заявки</SelectItem>
+                <SelectItem value="requires_attention">Требуют внимания</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="admin-lead-partner-id">Partner ID</Label>
+            <Input
+              id="admin-lead-partner-id"
+              value={filters.partnerId}
+              onChange={(event) => onFiltersChange({ ...filters, partnerId: event.target.value })}
+              placeholder="UUID партнера"
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="admin-lead-created-from">С даты</Label>
+            <Input
+              id="admin-lead-created-from"
+              type="date"
+              value={filters.createdFrom}
+              onChange={(event) => onFiltersChange({ ...filters, createdFrom: event.target.value })}
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="admin-lead-created-to">По дату</Label>
+            <Input
+              id="admin-lead-created-to"
+              type="date"
+              value={filters.createdTo}
+              onChange={(event) => onFiltersChange({ ...filters, createdTo: event.target.value })}
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="admin-lead-sort-by">Сортировать</Label>
+            <Select
+              value={filters.sortBy}
+              onValueChange={(value) =>
+                onFiltersChange({ ...filters, sortBy: value as AdminLeadFilters['sortBy'] })
+              }
+            >
+              <SelectTrigger id="admin-lead-sort-by" className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="created_at">По созданию</SelectItem>
+                <SelectItem value="updated_at">По обновлению</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="admin-lead-sort-direction">Порядок</Label>
+            <Select
+              value={filters.sortDirection}
+              onValueChange={(value) =>
+                onFiltersChange({
+                  ...filters,
+                  sortDirection: value as AdminLeadFilters['sortDirection'],
+                })
+              }
+            >
+              <SelectTrigger id="admin-lead-sort-direction" className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="desc">Сначала новые</SelectItem>
+                <SelectItem value="asc">Сначала старые</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button type="button" onClick={onApply}>
+              Применить
+            </Button>
+            <Button type="button" variant="outline" onClick={onReset}>
+              Сбросить
+            </Button>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+function BulkStatusActions({
+  selectedCount,
+  isSubmitting,
+  error,
+  onClear,
+  onSubmit,
+}: {
+  selectedCount: number
+  isSubmitting: boolean
+  error: Error | null
+  onClear: () => void
+  onSubmit: (input: Omit<AdminLeadBulkStatusActionRequest, 'leadIds'>) => void
+}) {
+  const [status, setStatus] = useState<AdminLeadBulkStatusActionRequest['status']>('waiting_partner')
+  const [comment, setComment] = useState('')
+
+  if (selectedCount === 0) {
+    return null
+  }
+
+  return (
+    <div className="grid gap-3 border-t bg-muted/20 px-4 py-3 lg:grid-cols-[auto_180px_minmax(220px,1fr)_auto] lg:items-end">
+      <div className="grid gap-1">
+        <Typography variant="caption" tone="muted">
+          Массовое действие
+        </Typography>
+        <Typography variant="bodySmMedium">Выбрано: {selectedCount}</Typography>
+      </div>
+      <div className="grid gap-2">
+        <Label htmlFor="admin-lead-bulk-status">Массовый статус</Label>
+        <Select
+          value={status}
+          onValueChange={(value) =>
+            setStatus(value as AdminLeadBulkStatusActionRequest['status'])
+          }
+        >
+          <SelectTrigger id="admin-lead-bulk-status" className="w-full">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {leadStatuses.map((leadStatus) => (
+              <SelectItem key={leadStatus} value={leadStatus}>
+                {statusLabels[leadStatus]}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="grid gap-2">
+        <Label htmlFor="admin-lead-bulk-comment">Комментарий</Label>
+        <Input
+          id="admin-lead-bulk-comment"
+          value={comment}
+          onChange={(event) => setComment(event.target.value)}
+          placeholder="Комментарий для истории"
+        />
+      </div>
+      <div className="flex flex-wrap gap-2">
+        <Button
+          type="button"
+          disabled={isSubmitting}
+          onClick={() =>
+            onSubmit({
+              status,
+              comment,
+            })
+          }
+        >
+          {isSubmitting ? 'Применяем...' : 'Применить к выбранным'}
+        </Button>
+        <Button type="button" variant="outline" disabled={isSubmitting} onClick={onClear}>
+          Очистить
+        </Button>
+      </div>
+      {error && (
+        <Alert variant="destructive" className="lg:col-span-4">
+          <AlertTitle>Массовое действие не выполнено</AlertTitle>
+          <AlertDescription>{error.message}</AlertDescription>
+        </Alert>
+      )}
+    </div>
+  )
+}
+
+function LeadTable({
+  leads,
+  selectedLeadId,
+  selectedBulkLeadIds,
+  allVisibleLeadsSelected,
+  selectedVisibleLeadCount,
+  onSelectLead,
+  onToggleBulkLead,
+  onToggleVisibleBulkLeads,
+  isLoading,
+  hasFilters,
+}: {
+  leads: AdminLeadDto[]
+  selectedLeadId: string | null
+  selectedBulkLeadIds: Set<string>
+  allVisibleLeadsSelected: boolean
+  selectedVisibleLeadCount: number
+  onSelectLead: (leadId: string) => void
+  onToggleBulkLead: (leadId: string) => void
+  onToggleVisibleBulkLeads: () => void
+  isLoading: boolean
+  hasFilters: boolean
+}) {
+  if (isLoading) {
+    return (
+      <div className="flex min-h-72 items-center justify-center gap-3">
+        <Spinner />
+        <Typography variant="bodySm" tone="muted">
+          Загружаем заявки...
+        </Typography>
+      </div>
+    )
+  }
+
+  if (leads.length === 0) {
+    return (
+      <div className="grid min-h-72 place-items-center px-4">
+        <Typography variant="bodySm" tone="muted" align="center">
+          {hasFilters ? 'По этим фильтрам заявок нет.' : 'Заявок пока нет.'}
+        </Typography>
+      </div>
+    )
+  }
+
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead className="w-12">
+            <Checkbox
+              aria-label="Выбрать все видимые заявки"
+              checked={
+                allVisibleLeadsSelected
+                  ? true
+                  : selectedVisibleLeadCount > 0
+                    ? 'indeterminate'
+                    : false
+              }
+              onCheckedChange={onToggleVisibleBulkLeads}
+            />
+          </TableHead>
+          <TableHead>Номер</TableHead>
+          <TableHead>Статус</TableHead>
+          <TableHead>Клиент</TableHead>
+          <TableHead>SLA</TableHead>
+          <TableHead>Экскурсия</TableHead>
+          <TableHead>Партнер</TableHead>
+          <TableHead align="right">Комиссия</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {leads.map((lead) => (
+          <TableRow
+            key={lead.id}
+            data-state={selectedLeadId === lead.id ? 'selected' : undefined}
+            className="cursor-pointer"
+            aria-label={`Заявка ${lead.publicNumber}`}
+            onClick={() => onSelectLead(lead.id)}
+          >
+            <TableCell onClick={(event) => event.stopPropagation()}>
+              <Checkbox
+                aria-label={`Выбрать заявку ${lead.publicNumber}`}
+                checked={selectedBulkLeadIds.has(lead.id)}
+                onCheckedChange={() => onToggleBulkLead(lead.id)}
+              />
+            </TableCell>
+            <TableCell>
+              <div className="grid gap-1">
+                <Typography variant="bodySmMedium">{lead.publicNumber}</Typography>
+                <Typography variant="caption" tone="muted">
+                  {formatDateTime(lead.createdAt)}
+                </Typography>
+              </div>
+            </TableCell>
+            <TableCell>
+              <StatusBadge status={lead.status} />
+            </TableCell>
+            <TableCell>
+              <div className="grid gap-1">
+                <Typography variant="bodySmMedium">{lead.customerName}</Typography>
+                <Typography variant="caption" tone="muted">
+                  {lead.customerPhone}
+                </Typography>
+              </div>
+            </TableCell>
+            <TableCell>
+              <LeadSlaBadge lead={lead} />
+            </TableCell>
+            <TableCell className="max-w-64">
+              <Typography variant="bodySm" truncate>
+                {lead.excursionTitle}
+              </Typography>
+            </TableCell>
+            <TableCell>
+              <Typography variant="bodySm">{lead.partnerName}</Typography>
+            </TableCell>
+            <TableCell align="right">
+              <Typography variant="bodySmMedium">
+                {formatMoney(lead.commissionTotal ?? lead.commissionThb, 'THB')}
+              </Typography>
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  )
+}
+
+function LeadPagination({
+  total,
+  limit,
+  offset,
+  isFetching,
+  onRefresh,
+  onPrevious,
+  onNext,
+  onPageSizeChange,
+}: {
+  total: number
+  limit: (typeof pageSizeOptions)[number]
+  offset: number
+  isFetching: boolean
+  onRefresh: () => void
+  onPrevious: () => void
+  onNext: () => void
+  onPageSizeChange: (limit: (typeof pageSizeOptions)[number]) => void
+}) {
+  const pageStart = total === 0 ? 0 : offset + 1
+  const pageEnd = Math.min(offset + limit, total)
+  const canGoPrevious = offset > 0
+  const canGoNext = offset + limit < total
+
+  return (
+    <div className="grid gap-3 border-t p-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
+      <Typography variant="bodySm" tone="muted">
+        {total === 0 ? 'Нет записей' : `${pageStart}-${pageEnd} из ${total}`}
+      </Typography>
+      <div className="flex flex-wrap items-center gap-2">
+        <div className="flex items-center gap-2">
+          <Label htmlFor="admin-lead-page-size">На странице</Label>
+          <Select
+            value={String(limit)}
+            onValueChange={(value) =>
+              onPageSizeChange(Number(value) as (typeof pageSizeOptions)[number])
+            }
+          >
+            <SelectTrigger id="admin-lead-page-size" className="w-24">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {pageSizeOptions.map((option) => (
+                <SelectItem key={option} value={String(option)}>
+                  {option}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <Button type="button" variant="outline" onClick={onRefresh} disabled={isFetching}>
+          {isFetching ? 'Обновляем...' : 'Обновить'}
+        </Button>
+        <Button type="button" variant="outline" onClick={onPrevious} disabled={!canGoPrevious}>
+          Назад
+        </Button>
+        <Button type="button" variant="outline" onClick={onNext} disabled={!canGoNext}>
+          Вперед
+        </Button>
+      </div>
+    </div>
+  )
+}
+
+function LeadDetailPanel({
+  detail,
+  isLoading,
+  error,
+  isUpdating,
+  isSavingNote,
+  onSaveNote,
+  onAction,
+  mutationError,
+  noteMutationError,
+}: {
+  detail: AdminLeadDetailResponse | undefined
+  isLoading: boolean
+  error: Error | null
+  isUpdating: boolean
+  isSavingNote: boolean
+  onSaveNote: (adminNote: string) => void
+  onAction: (input: AdminLeadStatusActionRequest) => void
+  mutationError: Error | null
+  noteMutationError: Error | null
+}) {
+  const lead = detail?.lead
+  const facts = useMemo(() => (lead ? leadFacts(lead) : []), [lead])
+  const [adminNote, setAdminNote] = useState(lead?.adminNote ?? '')
+  const [actionComment, setActionComment] = useState('')
+
+  if (!lead) {
+    return (
+      <Card className="min-h-96">
+        <CardHeader>
+          <CardTitle>Карточка заявки</CardTitle>
+          <CardDescription>
+            {isLoading ? 'Загружаем детали...' : 'Выберите заявку из очереди.'}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {isLoading && (
+            <div className="flex items-center gap-3">
+              <Spinner />
+              <Typography variant="bodySm" tone="muted">
+                Загружаем карточку...
+              </Typography>
+            </div>
+          )}
+          {error && (
+            <Alert variant="destructive">
+              <AlertTitle>Не удалось открыть карточку</AlertTitle>
+              <AlertDescription>{error.message}</AlertDescription>
+            </Alert>
+          )}
+        </CardContent>
+      </Card>
+    )
+  }
+
+  return (
+    <Card className="min-h-96">
+      <CardHeader className="gap-3">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="grid gap-1">
+            <CardTitle>{lead.publicNumber}</CardTitle>
+            <CardDescription>{lead.excursionTitle}</CardDescription>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <LeadSlaBadge lead={lead} />
+            <StatusBadge status={lead.status} />
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="grid gap-5">
+        <ContactDetails lead={lead} />
+
+        <div className="grid gap-3 sm:grid-cols-2">
+          {facts.map((fact) => (
+            <div key={fact.label} className="grid gap-1 rounded-lg border bg-muted/20 p-3">
+              <Typography variant="caption" tone="muted">
+                {fact.label}
+              </Typography>
+              <Typography variant="bodySmMedium" wrap="break">
+                {fact.value}
+              </Typography>
+            </div>
+          ))}
+        </div>
+
+        <Separator />
+
+        <div className="grid gap-3">
+          <Typography variant="h5">Быстрые действия</Typography>
+          <div className="grid gap-2">
+            <Label htmlFor="admin-note">Заметка админа</Label>
+            <Typography variant="caption" tone="muted">
+              {adminNoteAuditText(lead)}
+            </Typography>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <Input
+                id="admin-note"
+                value={adminNote}
+                onChange={(event) => setAdminNote(event.target.value)}
+                placeholder="Например: клиент просит перенос"
+              />
+              <Button
+                type="button"
+                variant="outline"
+                disabled={isSavingNote}
+                onClick={() => onSaveNote(adminNote)}
+              >
+                {isSavingNote ? 'Сохраняем...' : 'Сохранить заметку'}
+              </Button>
+            </div>
+          </div>
+          {noteMutationError && (
+            <Alert variant="destructive">
+              <AlertTitle>Заметка не сохранена</AlertTitle>
+              <AlertDescription>{noteMutationError.message}</AlertDescription>
+            </Alert>
+          )}
+          <div className="grid gap-2">
+            <Label htmlFor="admin-action-comment">Комментарий в историю</Label>
+            <div className="grid gap-2">
+              <Typography variant="caption" tone="muted">
+                Шаблоны комментариев
+              </Typography>
+              <div className="flex flex-wrap gap-2">
+                {actionCommentTemplates.map((template) => (
+                  <Button
+                    key={template.label}
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setActionComment(template.comment)}
+                  >
+                    {template.label}
+                  </Button>
+                ))}
+              </div>
+            </div>
+            <Textarea
+              id="admin-action-comment"
+              value={actionComment}
+              onChange={(event) => setActionComment(event.target.value)}
+              placeholder="Причина изменения статуса"
+            />
+          </div>
+          {mutationError && (
+            <Alert variant="destructive">
+              <AlertTitle>Действие не выполнено</AlertTitle>
+              <AlertDescription>{mutationError.message}</AlertDescription>
+            </Alert>
+          )}
+          <div className="grid grid-cols-2 gap-2">
+            {quickActions.map((action) => (
+              <Button
+                key={action.status}
+                type="button"
+                variant={action.status === 'declined' || action.status === 'cancelled' ? 'outline' : 'default'}
+                disabled={isUpdating}
+                onClick={() =>
+                  onAction({
+                    status: action.status,
+                    adminNote,
+                    comment: actionComment,
+                  })
+                }
+              >
+                {isUpdating ? 'Сохраняем...' : action.label}
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        <Separator />
+
+        <div className="grid gap-3">
+          <Typography variant="h5">История статусов</Typography>
+          <div className="grid gap-3">
+            {detail.statusHistory.map((history) => (
+              <div key={history.id} className="grid gap-1 border-l-2 border-border pl-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  {history.fromStatus && <StatusBadge status={history.fromStatus} />}
+                  <Typography variant="caption" tone="muted">
+                    {history.fromStatus ? '→' : 'Создано'}
+                  </Typography>
+                  <StatusBadge status={history.toStatus} />
+                </div>
+                <Typography variant="bodySmMedium">
+                  {actorLabel(history.actorType)}
+                  {history.actorId ? ` · ${history.actorId}` : ''}
+                </Typography>
+                {history.comment && (
+                  <Typography variant="bodySm" tone="muted">
+                    {history.comment}
+                  </Typography>
+                )}
+                <Typography variant="caption" tone="muted">
+                  {formatDateTime(history.createdAt)}
+                </Typography>
+              </div>
+            ))}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+function ContactDetails({ lead }: { lead: AdminLeadDto }) {
+  const phoneHref = phoneLink(lead.customerPhone)
+  const whatsappHref = whatsappLink(lead.customerPhone)
+  const telegramHref = telegramLink(lead.customerTelegram)
+  const preferredChannel = lead.contactChannel
+    ? contactChannelLabels[lead.contactChannel]
+    : 'Не выбран'
+
+  return (
+    <div className="grid gap-3 rounded-lg border bg-muted/20 p-4">
+      <div className="grid gap-1">
+        <Typography variant="h5">Контакты клиента</Typography>
+        <Typography variant="bodySm" tone="muted">
+          Предпочтительно: {preferredChannel}
+        </Typography>
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid gap-1">
+          <Typography variant="caption" tone="muted">
+            Имя
+          </Typography>
+          <Typography variant="bodySmMedium" wrap="break">
+            {lead.customerName}
+          </Typography>
+        </div>
+        <div className="grid gap-1">
+          <Typography variant="caption" tone="muted">
+            Телефон
+          </Typography>
+          <Typography variant="bodySmMedium" wrap="break">
+            {lead.customerPhone}
+          </Typography>
+        </div>
+        <div className="grid gap-1 sm:col-span-2">
+          <Typography variant="caption" tone="muted">
+            Telegram
+          </Typography>
+          <Typography variant="bodySmMedium" wrap="break">
+            {lead.customerTelegram ?? 'Не указан'}
+          </Typography>
+        </div>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        <ContactButton href={phoneHref} label="Позвонить" />
+        <ContactButton href={whatsappHref} label="WhatsApp" external />
+        <ContactButton href={telegramHref} label="Telegram" external />
+      </div>
+    </div>
+  )
+}
+
+function ContactButton({
+  href,
+  label,
+  external = false,
+}: {
+  href: string | null
+  label: string
+  external?: boolean
+}) {
+  if (!href) {
+    return (
+      <Button type="button" variant="outline" size="sm" disabled>
+        {label}
+      </Button>
+    )
+  }
+
+  return (
+    <Button asChild variant="outline" size="sm">
+      <a href={href} target={external ? '_blank' : undefined} rel={external ? 'noreferrer' : undefined}>
+        <Typography as="span" variant="control">
+          {label}
+        </Typography>
+      </a>
+    </Button>
+  )
+}
+
+function AdminLoadingState() {
+  return (
+    <section className="mx-auto w-full max-w-6xl px-5 py-16">
+      <Card className="w-fit">
+        <CardContent className="flex items-center gap-3">
+          <Spinner />
+          <Typography variant="bodySm" tone="muted">
+            Проверяем сессию...
+          </Typography>
+        </CardContent>
+      </Card>
+    </section>
+  )
+}
+
+function AdminLoginRequired() {
+  return (
+    <section className="mx-auto grid w-full max-w-6xl gap-5 px-5 py-16">
+      <Badge variant="outline" className="w-fit">
+        Admin
+      </Badge>
+      <Typography variant="h1">Нужен вход</Typography>
+      <Typography className="max-w-2xl" tone="muted">
+        Войдите в аккаунт администратора, чтобы открыть заявки.
+      </Typography>
+    </section>
+  )
+}
+
+function StatusBadge({ status }: { status: AdminLeadDto['status'] }) {
+  return <Badge variant={statusBadgeVariant[status]}>{statusLabels[status]}</Badge>
+}
+
+function LeadSlaBadge({ lead }: { lead: AdminLeadDto }) {
+  const sla = getLeadSlaInfo(lead)
+
+  return (
+    <Badge variant={sla.variant} title={sla.title}>
+      {sla.label}
+    </Badge>
+  )
+}
+
+function hasActiveFilters(filters: AdminLeadFilters) {
+  return (
+    filters.status !== 'all' ||
+    filters.focus !== 'all' ||
+    Boolean(filters.search.trim()) ||
+    Boolean(filters.partnerId.trim()) ||
+    Boolean(filters.createdFrom) ||
+    Boolean(filters.createdTo)
+  )
+}
+
+function adminLeadExportQueryFromFilters(filters: AdminLeadFilters): AdminLeadExportQuery {
+  return {
+    status: filters.status === 'all' ? undefined : filters.status,
+    search: filters.search,
+    partnerId: filters.partnerId,
+    createdFrom: filters.createdFrom,
+    createdTo: filters.createdTo,
+    requiresAttention: filters.focus === 'requires_attention' ? true : undefined,
+    sortBy: filters.sortBy,
+    sortDirection: filters.sortDirection,
+  }
+}
+
+function adminLeadCsvFilename() {
+  return `admin-leads-${new Date().toISOString().slice(0, 10)}.csv`
+}
+
+function downloadBlob(blob: Blob, filename: string) {
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+
+  link.href = url
+  link.download = filename
+  document.body.append(link)
+  link.click()
+  link.remove()
+  URL.revokeObjectURL(url)
+}
+
+function leadFacts(lead: AdminLeadDto) {
+  return [
+    { label: 'Партнер', value: `${lead.partnerName}${lead.partnerTelegram ? ` · ${lead.partnerTelegram}` : ''}` },
+    { label: 'Дата', value: lead.requestedDate ? formatDateTime(lead.requestedDate) : 'Не выбрана' },
+    { label: 'Людей', value: lead.peopleCount ? String(lead.peopleCount) : 'Не указано' },
+    { label: 'Комиссия', value: formatMoney(lead.commissionTotal ?? lead.commissionThb, 'THB') },
+    { label: 'Комментарий клиента', value: lead.comment ?? 'Нет комментария' },
+    { label: 'Заметка партнера', value: lead.partnerNote ?? 'Нет заметки' },
+  ]
+}
+
+function adminNoteAuditText(lead: AdminLeadDto) {
+  if (!lead.adminNoteUpdatedAt) {
+    return 'Заметку админа еще не меняли.'
+  }
+
+  const actor =
+    lead.adminNoteUpdatedByDisplayName ??
+    lead.adminNoteUpdatedByEmail ??
+    lead.adminNoteUpdatedById ??
+    'администратор'
+
+  return `Последнее изменение: ${actor} · ${formatDateTime(lead.adminNoteUpdatedAt)}`
+}
+
+function phoneLink(phone: string) {
+  const compactPhone = phone.replace(/\s+/g, '')
+
+  return compactPhone ? `tel:${compactPhone}` : null
+}
+
+function whatsappLink(phone: string) {
+  const digits = phone.replace(/\D/g, '')
+
+  return digits ? `https://wa.me/${digits}` : null
+}
+
+function telegramLink(telegram: string | null) {
+  if (!telegram) return null
+
+  const trimmed = telegram.trim()
+  if (!trimmed) return null
+  if (/^https?:\/\//i.test(trimmed)) return trimmed
+  if (/^t\.me\//i.test(trimmed)) return `https://${trimmed}`
+
+  return `https://t.me/${trimmed.replace(/^@/, '')}`
+}
+
+function actorLabel(actorType: AdminLeadDetailResponse['statusHistory'][number]['actorType']) {
+  if (actorType === 'admin') return 'Администратор'
+  if (actorType === 'partner') return 'Партнер'
+  if (actorType === 'user') return 'Пользователь'
+  return 'Система'
+}
+
+function formatDateTime(value: string) {
+  return new Intl.DateTimeFormat('ru-RU', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  }).format(new Date(value))
+}
+
+function formatMoney(value: number, currency: 'THB') {
+  return new Intl.NumberFormat('ru-RU', {
+    style: 'currency',
+    currency,
+    maximumFractionDigits: 0,
+  }).format(value)
+}

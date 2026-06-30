@@ -8,6 +8,19 @@ const optionalTrimmedString = z
     if (value === '' || value === undefined) return undefined
     return value
   })
+const optionalDateString = z
+  .union([
+    trimmedString.regex(/^\d{4}-\d{2}-\d{2}$/).refine((value) => {
+      const parsed = new Date(`${value}T00:00:00.000Z`)
+      return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value
+    }, 'Expected a valid YYYY-MM-DD date'),
+    z.literal(''),
+  ])
+  .optional()
+  .transform((value) => {
+    if (value === '' || value === undefined) return undefined
+    return value
+  })
 
 export const excursionStatusSchema = z.enum(['draft', 'published', 'hidden'])
 export const leadStatusSchema = z.enum([
@@ -118,7 +131,7 @@ export const createLeadRequestSchema = z.object({
   customerPhone: trimmedString.min(5).max(40),
   customerTelegram: optionalTrimmedString,
   contactChannel: leadContactChannelSchema.optional(),
-  requestedDate: optionalTrimmedString,
+  requestedDate: optionalDateString,
   peopleCount: z.number().int().positive().max(100).optional(),
   comment: optionalTrimmedString,
   source: leadSourceSchema.default('website'),

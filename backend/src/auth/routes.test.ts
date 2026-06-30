@@ -22,9 +22,29 @@ const env: AppEnv = {
   TRIPADVISOR_MAX_REQUESTS_PER_RUN: 10,
   TRIPADVISOR_DAILY_MAX_REQUESTS: 200,
   TRIPADVISOR_REQUEST_TIMEOUT_MS: 8000,
+  GOOGLE_SHEETS_ENABLED: false,
+  GOOGLE_SHEETS_LEADS_SHEET_NAME: 'Заявки',
+  TELEGRAM_NOTIFICATIONS_ENABLED: false,
 }
 
 describe('auth routes', () => {
+  test('allows browser preflight for authenticated PATCH routes', async () => {
+    const app = createApp({ env, prisma: {} as DbClient })
+
+    const response = await app.request('/api/admin/leads/lead-1/status', {
+      method: 'OPTIONS',
+      headers: {
+        Origin: 'https://web.example.com',
+        'Access-Control-Request-Method': 'PATCH',
+        'Access-Control-Request-Headers': 'content-type,authorization,x-client-platform',
+      },
+    })
+
+    expect(response.status).toBe(204)
+    expect(response.headers.get('access-control-allow-methods')).toContain('PATCH')
+    expect(response.headers.get('access-control-allow-origin')).toBe('https://web.example.com')
+  })
+
   test('rejects secure cookie refresh and logout requests from untrusted origins before auth service work', async () => {
     const app = createApp({ env, prisma: {} as DbClient })
     const refreshCookie = `phuket_go_refresh=${'r'.repeat(32)}`

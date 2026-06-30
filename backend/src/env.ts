@@ -19,6 +19,12 @@ const optionalUrlSchema = z.preprocess((value) => {
   return trimmed === '' ? undefined : trimmed
 }, z.string().url().optional())
 
+const optionalPrivateKeySchema = z.preprocess((value) => {
+  if (typeof value !== 'string') return value
+  const trimmed = value.trim()
+  return trimmed === '' ? undefined : trimmed.replaceAll('\\n', '\n')
+}, z.string().min(1).optional())
+
 const stringWithDefault = (defaultValue: string) =>
   z.preprocess((value) => {
     if (typeof value !== 'string') return value
@@ -60,10 +66,21 @@ const envSchema = z.object({
   TRIPADVISOR_MAX_REQUESTS_PER_RUN: z.coerce.number().int().positive().default(10),
   TRIPADVISOR_DAILY_MAX_REQUESTS: z.coerce.number().int().positive().default(200),
   TRIPADVISOR_REQUEST_TIMEOUT_MS: z.coerce.number().int().positive().default(8000),
+  GOOGLE_SHEETS_ENABLED: booleanStringSchema,
+  GOOGLE_SHEETS_SPREADSHEET_ID: optionalStringSchema,
+  GOOGLE_SHEETS_LEADS_SHEET_NAME: stringWithDefault('Заявки'),
+  GOOGLE_SERVICE_ACCOUNT_EMAIL: optionalStringSchema,
+  GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: optionalPrivateKeySchema,
+  TELEGRAM_NOTIFICATIONS_ENABLED: booleanStringSchema,
+  TELEGRAM_BOT_TOKEN: optionalStringSchema,
+  TELEGRAM_ADMIN_CHAT_ID: optionalStringSchema,
+  TELEGRAM_WEBHOOK_SECRET: optionalStringSchema,
 }).superRefine((env, ctx) => {
   validateJwtSecret(env, ctx)
   validateCorsOrigins(env, ctx)
   validateStorageEnv(env, ctx)
+  validateGoogleSheetsEnv(env, ctx)
+  validateTelegramEnv(env, ctx)
 })
 
 export type AppEnv = z.infer<typeof envSchema>
@@ -174,6 +191,42 @@ function validateStorageEnv(env: z.infer<typeof envSchema>, ctx: z.RefinementCtx
         code: 'custom',
         path: [key],
         message: `${key} is required when DigitalOcean Spaces storage is configured`,
+      })
+    }
+  }
+}
+
+function validateGoogleSheetsEnv(env: z.infer<typeof envSchema>, ctx: z.RefinementCtx) {
+  if (!env.GOOGLE_SHEETS_ENABLED) return
+
+  const requiredGoogleSheetsKeys = [
+    'GOOGLE_SHEETS_SPREADSHEET_ID',
+    'GOOGLE_SERVICE_ACCOUNT_EMAIL',
+    'GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY',
+  ] as const
+
+  for (const key of requiredGoogleSheetsKeys) {
+    if (env[key] === undefined) {
+      ctx.addIssue({
+        code: 'custom',
+        path: [key],
+        message: `${key} is required when Google Sheets integration is enabled`,
+      })
+    }
+  }
+}
+
+function validateTelegramEnv(env: z.infer<typeof envSchema>, ctx: z.RefinementCtx) {
+  if (!env.TELEGRAM_NOTIFICATIONS_ENABLED) return
+
+  const requiredTelegramKeys = ['TELEGRAM_BOT_TOKEN', 'TELEGRAM_ADMIN_CHAT_ID'] as const
+
+  for (const key of requiredTelegramKeys) {
+    if (env[key] === undefined) {
+      ctx.addIssue({
+        code: 'custom',
+        path: [key],
+        message: `${key} is required when Telegram notifications are enabled`,
       })
     }
   }

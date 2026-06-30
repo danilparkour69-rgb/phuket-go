@@ -1,4 +1,5 @@
 import { afterEach, expect, test } from 'bun:test'
+import type { AdminLeadDto } from '@phuket-go/contracts'
 
 import { ApiClient } from '../src/lib/api'
 import { bootstrapAuthSession } from '../src/lib/bootstrap-auth'
@@ -238,6 +239,232 @@ test('ApiClient expireSession clears stale web session cookie through logout', a
   expect(calls).toEqual([{ path: '/api/auth/logout', method: 'POST' }])
 })
 
+test('ApiClient calls admin lead list and detail endpoints with auth', async () => {
+  const calls: Array<{ path: string; search: string; authorization: string | null }> = []
+
+  globalThis.fetch = async (input, init) => {
+    const url = new URL(String(input))
+    const headers = new Headers(init?.headers)
+    calls.push({
+      path: url.pathname,
+      search: url.search,
+      authorization: headers.get('Authorization'),
+    })
+
+    if (url.pathname === '/api/admin/leads') {
+      return json(
+        {
+          leads: [adminLeadFixture()],
+          summary: {
+            total: 4,
+            new: 2,
+            requiresAttention: 1,
+            waitingPartner: 1,
+          },
+          total: 1,
+          limit: 50,
+          offset: 0,
+        },
+        200,
+      )
+    }
+
+    if (url.pathname === '/api/admin/leads/lead-1') {
+      return json(adminLeadDetailFixture(), 200)
+    }
+
+    return json({ error: { code: 'NOT_FOUND', message: 'Unexpected request' } }, 404)
+  }
+
+  const client = new ApiClient({
+    getAccessToken: () => 'admin-access-token',
+    setAccessToken: () => undefined,
+  })
+
+  const list = await client.listAdminLeads({
+    status: 'accepted',
+    search: '  Даниил  ',
+    partnerId: 'partner-1',
+    createdFrom: '2026-06-30',
+    requiresAttention: true,
+  })
+  const detail = await client.getAdminLead('lead-1')
+
+  expect(list.leads[0]?.publicNumber).toBe('PG-20260630-ABC12345')
+  expect(detail.statusHistory[0]?.actorType).toBe('system')
+  expect(calls).toEqual([
+    {
+      path: '/api/admin/leads',
+      search:
+        '?status=accepted&search=%D0%94%D0%B0%D0%BD%D0%B8%D0%B8%D0%BB&partnerId=partner-1&createdFrom=2026-06-30&requiresAttention=true&sortBy=created_at&sortDirection=desc&limit=50&offset=0',
+      authorization: 'Bearer admin-access-token',
+    },
+    {
+      path: '/api/admin/leads/lead-1',
+      search: '',
+      authorization: 'Bearer admin-access-token',
+    },
+  ])
+})
+
+test('ApiClient sends admin lead status quick action payload', async () => {
+  let body: unknown
+
+  globalThis.fetch = async (input, init) => {
+    const url = new URL(String(input))
+    body = init?.body ? JSON.parse(String(init.body)) : undefined
+
+    if (url.pathname === '/api/admin/leads/lead-1/status') {
+      return json(adminLeadDetailFixture({ status: 'cancelled', adminNote: 'Вернули деньги' }), 200)
+    }
+
+    return json({ error: { code: 'NOT_FOUND', message: 'Unexpected request' } }, 404)
+  }
+
+  const client = new ApiClient({
+    getAccessToken: () => 'admin-access-token',
+    setAccessToken: () => undefined,
+  })
+
+  const response = await client.updateAdminLeadStatus('lead-1', {
+    status: 'cancelled',
+    adminNote: '  Вернули деньги  ',
+    comment: 'Клиент отменил',
+  })
+
+  expect(response.lead.status).toBe('cancelled')
+  expect(body).toEqual({
+    status: 'cancelled',
+    adminNote: 'Вернули деньги',
+    comment: 'Клиент отменил',
+  })
+})
+
+test('ApiClient downloads admin lead CSV export with filters', async () => {
+  const calls: Array<{ path: string; search: string; authorization: string | null }> = []
+
+  globalThis.fetch = async (input, init) => {
+    const url = new URL(String(input))
+    const headers = new Headers(init?.headers)
+    calls.push({
+      path: url.pathname,
+      search: url.search,
+      authorization: headers.get('Authorization'),
+    })
+
+    if (url.pathname === '/api/admin/leads/export.csv') {
+      return new Response('public_number,status\r\nPG-1,new\r\n', {
+        status: 200,
+        headers: {
+          'Content-Type': 'text/csv; charset=utf-8',
+        },
+      })
+    }
+
+    return json({ error: { code: 'NOT_FOUND', message: 'Unexpected request' } }, 404)
+  }
+
+  const client = new ApiClient({
+    getAccessToken: () => 'admin-access-token',
+    setAccessToken: () => undefined,
+  })
+
+  const csv = await client.exportAdminLeadsCsv({
+    search: '  Marusya  ',
+    requiresAttention: true,
+    sortBy: 'updated_at',
+    sortDirection: 'asc',
+  })
+
+  expect(await csv.text()).toBe('public_number,status\r\nPG-1,new\r\n')
+  expect(calls).toEqual([
+    {
+      path: '/api/admin/leads/export.csv',
+      search: '?search=Marusya&requiresAttention=true&sortBy=updated_at&sortDirection=asc',
+      authorization: 'Bearer admin-access-token',
+    },
+  ])
+})
+
+test('ApiClient sends admin lead bulk status payload', async () => {
+  let body: unknown
+  let path: string | undefined
+
+  globalThis.fetch = async (input, init) => {
+    const url = new URL(String(input))
+    path = url.pathname
+    body = init?.body ? JSON.parse(String(init.body)) : undefined
+
+    if (url.pathname === '/api/admin/leads/bulk/status') {
+      return json(
+        {
+          requestedCount: 2,
+          updatedCount: 2,
+          historyCount: 2,
+        },
+        200,
+      )
+    }
+
+    return json({ error: { code: 'NOT_FOUND', message: 'Unexpected request' } }, 404)
+  }
+
+  const client = new ApiClient({
+    getAccessToken: () => 'admin-access-token',
+    setAccessToken: () => undefined,
+  })
+
+  const response = await client.bulkUpdateAdminLeadStatus({
+    leadIds: [' lead-1 ', 'lead-2'],
+    status: 'waiting_partner',
+    comment: '  Передали партнеру  ',
+  })
+
+  expect(response).toEqual({
+    requestedCount: 2,
+    updatedCount: 2,
+    historyCount: 2,
+  })
+  expect(path).toBe('/api/admin/leads/bulk/status')
+  expect(body).toEqual({
+    leadIds: ['lead-1', 'lead-2'],
+    status: 'waiting_partner',
+    comment: 'Передали партнеру',
+  })
+})
+
+test('ApiClient sends admin lead note payload without status action', async () => {
+  let body: unknown
+  let path: string | undefined
+
+  globalThis.fetch = async (input, init) => {
+    const url = new URL(String(input))
+    path = url.pathname
+    body = init?.body ? JSON.parse(String(init.body)) : undefined
+
+    if (url.pathname === '/api/admin/leads/lead-1/admin-note') {
+      return json(adminLeadDetailFixture({ adminNote: 'Проверить оплату' }), 200)
+    }
+
+    return json({ error: { code: 'NOT_FOUND', message: 'Unexpected request' } }, 404)
+  }
+
+  const client = new ApiClient({
+    getAccessToken: () => 'admin-access-token',
+    setAccessToken: () => undefined,
+  })
+
+  const response = await client.updateAdminLeadAdminNote('lead-1', {
+    adminNote: '  Проверить оплату  ',
+  })
+
+  expect(response.lead.adminNote).toBe('Проверить оплату')
+  expect(path).toBe('/api/admin/leads/lead-1/admin-note')
+  expect(body).toEqual({
+    adminNote: 'Проверить оплату',
+  })
+})
+
 test('bootstrapAuthSession waits for stale-cookie cleanup before completing', async () => {
   const events: string[] = []
   let completed = false
@@ -294,4 +521,57 @@ function json(body: unknown, status: number) {
       'Content-Type': 'application/json',
     },
   })
+}
+
+function adminLeadFixture(overrides: Partial<AdminLeadDto> = {}): AdminLeadDto {
+  return {
+    id: 'lead-1',
+    publicNumber: 'PG-20260630-ABC12345',
+    status: 'accepted',
+    source: 'website',
+    sourcePage: '/excursions/phi-phi',
+    excursionId: 'excursion-1',
+    excursionTitle: 'Острова Пхи-Пхи',
+    partnerId: 'partner-1',
+    partnerName: 'Marusya Travel',
+    partnerTelegram: '@partner',
+    userId: null,
+    customerName: 'Даниил',
+    customerPhone: '+79990000000',
+    customerTelegram: '@danil',
+    contactChannel: 'telegram',
+    requestedDate: null,
+    peopleCount: 2,
+    comment: 'Хочу утром',
+    partnerNote: null,
+    adminNote: null,
+    adminNoteUpdatedAt: null,
+    adminNoteUpdatedById: null,
+    adminNoteUpdatedByEmail: null,
+    adminNoteUpdatedByDisplayName: null,
+    priceRub: 3900,
+    priceThb: 1500,
+    commissionThb: 100,
+    commissionTotal: 200,
+    createdAt: '2026-06-30T07:00:00.000Z',
+    updatedAt: '2026-06-30T08:00:00.000Z',
+    ...overrides,
+  }
+}
+
+function adminLeadDetailFixture(overrides: Partial<ReturnType<typeof adminLeadFixture>> = {}) {
+  return {
+    lead: adminLeadFixture(overrides),
+    statusHistory: [
+      {
+        id: 'history-1',
+        fromStatus: null,
+        toStatus: 'new',
+        actorType: 'system',
+        actorId: null,
+        comment: 'Lead created',
+        createdAt: '2026-06-30T07:00:00.000Z',
+      },
+    ],
+  }
 }

@@ -68,7 +68,7 @@ describe('catalog contracts', () => {
         customerPhone: ' +79990000000 ',
         customerTelegram: '',
         contactChannel: 'whatsapp',
-        requestedDate: '',
+        requestedDate: '2026-07-10',
         peopleCount: 2,
         comment: ' Хочу утром ',
         sourcePage: '/excursions/phi-phi',
@@ -79,12 +79,34 @@ describe('catalog contracts', () => {
       customerPhone: '+79990000000',
       customerTelegram: undefined,
       contactChannel: 'whatsapp',
-      requestedDate: undefined,
+      requestedDate: '2026-07-10',
       peopleCount: 2,
       comment: 'Хочу утром',
       source: 'website',
       sourcePage: '/excursions/phi-phi',
     })
+  })
+
+  test('keeps requested date optional but rejects malformed dates', () => {
+    expect(
+      createLeadRequestSchema.parse({
+        excursionId: 'excursion_1',
+        customerName: 'Даниил',
+        customerPhone: '+79990000000',
+        requestedDate: '',
+      }),
+    ).toMatchObject({
+      requestedDate: undefined,
+    })
+
+    expect(() =>
+      createLeadRequestSchema.parse({
+        excursionId: 'excursion_1',
+        customerName: 'Даниил',
+        customerPhone: '+79990000000',
+        requestedDate: 'скоро',
+      }),
+    ).toThrow()
   })
 
   test('rejects lead requests without required customer fields', () => {

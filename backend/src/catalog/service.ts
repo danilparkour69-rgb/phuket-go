@@ -21,6 +21,11 @@ import {
   Prisma,
 } from '../generated/prisma/client'
 import { AppError } from '../http/errors'
+import { NoopLeadSheetsSink, type LeadSheetsSink } from '../leads/google-sheets-sink'
+import {
+  NoopLeadTelegramNotifier,
+  type LeadTelegramNotifier,
+} from '../leads/telegram-notifier'
 import { TripAdvisorClient } from '../tripadvisor/client'
 import type { TripAdvisorRatingSnapshot, TripAdvisorReviewItemSnapshot } from '../tripadvisor/client'
 
@@ -28,6 +33,8 @@ export class CatalogService {
   constructor(
     private readonly db: DbClient,
     private readonly tripAdvisorClient: TripAdvisorClient | null,
+    private readonly leadSheetsSink: LeadSheetsSink = new NoopLeadSheetsSink(),
+    private readonly leadTelegramNotifier: LeadTelegramNotifier = new NoopLeadTelegramNotifier(),
   ) {}
 
   async listExcursions(query: ExcursionListQuery): Promise<ExcursionCardDto[]> {
@@ -81,6 +88,7 @@ export class CatalogService {
         status: ExcursionStatus.PUBLISHED,
       },
       include: {
+        category: true,
         partner: true,
       },
     })
@@ -133,7 +141,51 @@ export class CatalogService {
       return createdLead
     })
 
+    await this.appendLeadToSheets({
+      lead,
+      excursion: {
+        slug: excursion.slug,
+        categoryTitle: excursion.category.title,
+        rubRate: Number(excursion.rubRate),
+        rateDate: excursion.rateDate,
+      },
+      partner: {
+        name: excursion.partner.name,
+        telegramUsername: excursion.partner.telegramUsername,
+      },
+    })
+    await this.notifyLeadCreated({
+      lead,
+      partner: {
+        name: excursion.partner.name,
+        telegramUsername: excursion.partner.telegramUsername,
+        telegramChatId: excursion.partner.telegramChatId,
+      },
+    })
+
     return toLeadDto(lead)
+  }
+
+  private async appendLeadToSheets(input: Parameters<LeadSheetsSink['appendLead']>[0]) {
+    try {
+      await this.leadSheetsSink.appendLead(input)
+    } catch (error) {
+      console.error('Google Sheets lead sync failed', {
+        leadId: input.lead.id,
+        message: error instanceof Error ? error.message : 'Unknown Google Sheets error',
+      })
+    }
+  }
+
+  private async notifyLeadCreated(input: Parameters<LeadTelegramNotifier['notifyLeadCreated']>[0]) {
+    try {
+      await this.leadTelegramNotifier.notifyLeadCreated(input)
+    } catch (error) {
+      console.error('Telegram lead notification failed', {
+        leadId: input.lead.id,
+        message: error instanceof Error ? error.message : 'Unknown Telegram notification error',
+      })
+    }
   }
 
   async updateLeadContactChannel(
@@ -156,6 +208,301 @@ export class CatalogService {
       })
 
     return toLeadDto(lead)
+  }
+
+  async handleTelegramLeadCallback(input: {
+    leadId: string
+    action: 'accept' | 'decline' | 'complete'
+    partnerTelegramChatId: string
+  }) {
+    const toStatus = toLeadStatusFromTelegramAction(input.action)
+    const comment = telegramLeadStatusHistoryComment(input.action)
+
+    const result = await this.db.$transaction(async (tx) => {
+      const currentLead = await tx.lead.findUnique({
+        where: { id: input.leadId },
+        include: {
+          partner: {
+            select: {
+              name: true,
+              telegramUsername: true,
+              telegramChatId: true,
+            },
+          },
+        },
+      })
+
+      if (!currentLead) {
+        throw new AppError(404, 'NOT_FOUND', 'Lead not found')
+      }
+
+      if (!currentLead.partner.telegramChatId) {
+        throw new AppError(403, 'FORBIDDEN', 'Lead partner is not linked to Telegram')
+      }
+
+      if (currentLead.partner.telegramChatId !== input.partnerTelegramChatId) {
+        throw new AppError(403, 'FORBIDDEN', 'Telegram user cannot update this lead')
+      }
+
+      if (currentLead.status === toStatus) {
+        return {
+          leadId: currentLead.id,
+          publicNumber: currentLead.publicNumber,
+          status: toLeadStatus(currentLead.status),
+          changed: false,
+          sheetsUpdate: null,
+          adminNotification: null,
+        }
+      }
+
+      if (input.action === 'complete' && currentLead.status !== LeadStatus.ACCEPTED) {
+        throw new AppError(409, 'CONFLICT', 'Lead must be accepted before completion')
+      }
+
+      const updatedLead = await tx.lead.update({
+        where: { id: currentLead.id },
+        data: {
+          status: toStatus,
+        },
+      })
+
+      await tx.leadStatusHistory.create({
+        data: {
+          leadId: currentLead.id,
+          fromStatus: currentLead.status,
+          toStatus,
+          actorType: LeadActorType.PARTNER,
+          actorId: currentLead.partnerId,
+          comment,
+        },
+      })
+
+      return {
+        leadId: updatedLead.id,
+        publicNumber: updatedLead.publicNumber,
+        status: toLeadStatus(updatedLead.status),
+        changed: true,
+        sheetsUpdate: {
+          leadId: updatedLead.id,
+          status: updatedLead.status,
+          updatedAt: updatedLead.updatedAt,
+          changedAt: updatedLead.updatedAt,
+          actorType: 'partner' as const,
+          actorId: currentLead.partnerId,
+        },
+        adminNotification: {
+          lead: {
+            id: updatedLead.id,
+            publicNumber: updatedLead.publicNumber,
+            status: updatedLead.status,
+            excursionTitle: updatedLead.excursionTitle,
+          },
+          partner: {
+            name: currentLead.partner.name,
+            telegramUsername: currentLead.partner.telegramUsername,
+          },
+        },
+      }
+    })
+
+    if (result.sheetsUpdate) {
+      await this.updateLeadStatusInSheets(result.sheetsUpdate)
+    }
+
+    if (result.adminNotification) {
+      await this.notifyLeadStatusChanged(result.adminNotification)
+    }
+
+    return {
+      leadId: result.leadId,
+      publicNumber: result.publicNumber,
+      status: result.status,
+      changed: result.changed,
+    }
+  }
+
+  async handleTelegramLeadProblemPrompt(input: {
+    leadId: string
+    partnerTelegramChatId: string
+  }) {
+    const lead = await this.findTelegramPartnerLead(input)
+
+    if (lead.status !== LeadStatus.ACCEPTED) {
+      throw new AppError(409, 'CONFLICT', 'Lead must be accepted before reporting a problem')
+    }
+
+    return {
+      leadId: lead.id,
+      publicNumber: lead.publicNumber,
+      status: toLeadStatus(lead.status),
+      changed: false,
+      problemPrompt: true,
+    }
+  }
+
+  async handleTelegramLeadProblemReason(input: {
+    leadId: string
+    reason: 'no_response' | 'no_seats' | 'need_admin' | 'other'
+    partnerTelegramChatId: string
+  }) {
+    const partnerNote = leadProblemReasonLabel(input.reason)
+    const result = await this.db.$transaction(async (tx) => {
+      const currentLead = await tx.lead.findUnique({
+        where: { id: input.leadId },
+        include: {
+          partner: {
+            select: {
+              name: true,
+              telegramUsername: true,
+              telegramChatId: true,
+            },
+          },
+        },
+      })
+
+      if (!currentLead) {
+        throw new AppError(404, 'NOT_FOUND', 'Lead not found')
+      }
+
+      assertLeadTelegramPartner(currentLead, input.partnerTelegramChatId)
+
+      if (currentLead.status !== LeadStatus.ACCEPTED) {
+        throw new AppError(409, 'CONFLICT', 'Lead must be accepted before reporting a problem')
+      }
+
+      const updatedLead = await tx.lead.update({
+        where: { id: currentLead.id },
+        data: {
+          partnerNote,
+        },
+      })
+
+      await tx.leadStatusHistory.create({
+        data: {
+          leadId: currentLead.id,
+          fromStatus: currentLead.status,
+          toStatus: currentLead.status,
+          actorType: LeadActorType.PARTNER,
+          actorId: currentLead.partnerId,
+          comment: `Partner reported problem: ${partnerNote}`,
+        },
+      })
+
+      return {
+        leadId: updatedLead.id,
+        publicNumber: updatedLead.publicNumber,
+        status: toLeadStatus(updatedLead.status),
+        changed: false,
+        problemNote: partnerNote,
+        sheetsUpdate: {
+          leadId: updatedLead.id,
+          partnerNote,
+          updatedAt: updatedLead.updatedAt,
+          changedAt: updatedLead.updatedAt,
+          actorType: 'partner' as const,
+          actorId: currentLead.partnerId,
+        },
+        adminNotification: {
+          lead: {
+            id: updatedLead.id,
+            publicNumber: updatedLead.publicNumber,
+            status: updatedLead.status,
+            excursionTitle: updatedLead.excursionTitle,
+            partnerNote,
+          },
+          partner: {
+            name: currentLead.partner.name,
+            telegramUsername: currentLead.partner.telegramUsername,
+          },
+        },
+      }
+    })
+
+    await this.updateLeadPartnerNoteInSheets(result.sheetsUpdate)
+    await this.notifyLeadProblemReported(result.adminNotification)
+
+    return {
+      leadId: result.leadId,
+      publicNumber: result.publicNumber,
+      status: result.status,
+      changed: result.changed,
+      problemNote: result.problemNote,
+    }
+  }
+
+  private async findTelegramPartnerLead(input: {
+    leadId: string
+    partnerTelegramChatId: string
+  }) {
+    const lead = await this.db.lead.findUnique({
+      where: { id: input.leadId },
+      include: {
+        partner: {
+          select: {
+            telegramChatId: true,
+          },
+        },
+      },
+    })
+
+    if (!lead) {
+      throw new AppError(404, 'NOT_FOUND', 'Lead not found')
+    }
+
+    assertLeadTelegramPartner(lead, input.partnerTelegramChatId)
+    return lead
+  }
+
+  private async updateLeadStatusInSheets(
+    input: Parameters<LeadSheetsSink['updateLeadStatus']>[0],
+  ) {
+    try {
+      await this.leadSheetsSink.updateLeadStatus(input)
+    } catch (error) {
+      console.error('Google Sheets lead status sync failed', {
+        leadId: input.leadId,
+        message: error instanceof Error ? error.message : 'Unknown Google Sheets error',
+      })
+    }
+  }
+
+  private async updateLeadPartnerNoteInSheets(
+    input: Parameters<LeadSheetsSink['updateLeadPartnerNote']>[0],
+  ) {
+    try {
+      await this.leadSheetsSink.updateLeadPartnerNote(input)
+    } catch (error) {
+      console.error('Google Sheets lead partner note sync failed', {
+        leadId: input.leadId,
+        message: error instanceof Error ? error.message : 'Unknown Google Sheets error',
+      })
+    }
+  }
+
+  private async notifyLeadStatusChanged(
+    input: Parameters<LeadTelegramNotifier['notifyLeadStatusChanged']>[0],
+  ) {
+    try {
+      await this.leadTelegramNotifier.notifyLeadStatusChanged(input)
+    } catch (error) {
+      console.error('Telegram lead status notification failed', {
+        leadId: input.lead.id,
+        message: error instanceof Error ? error.message : 'Unknown Telegram notification error',
+      })
+    }
+  }
+
+  private async notifyLeadProblemReported(
+    input: Parameters<LeadTelegramNotifier['notifyLeadProblemReported']>[0],
+  ) {
+    try {
+      await this.leadTelegramNotifier.notifyLeadProblemReported(input)
+    } catch (error) {
+      console.error('Telegram lead problem notification failed', {
+        leadId: input.lead.id,
+        message: error instanceof Error ? error.message : 'Unknown Telegram notification error',
+      })
+    }
   }
 
   async getReviewsBySlug(slug: string): Promise<ExcursionReviewsResponse> {
@@ -240,7 +587,7 @@ export class CatalogService {
   }
 }
 
-function normalizeNumberFromPrisma(value: string | null) {
+function normalizeNumberFromPrisma(value: unknown | null) {
   if (value === null) return null
   const normalized = Number(value)
   if (!Number.isFinite(normalized)) return null
@@ -388,6 +735,38 @@ function toPhotoImageType(imageType: ExcursionPhotoImageType) {
 function toLeadStatus(status: LeadStatus) {
   if (status === LeadStatus.WAITING_PARTNER) return 'waiting_partner'
   return status.toLowerCase() as LeadDto['status']
+}
+
+function toLeadStatusFromTelegramAction(action: 'accept' | 'decline' | 'complete') {
+  if (action === 'accept') return LeadStatus.ACCEPTED
+  if (action === 'complete') return LeadStatus.COMPLETED
+  return LeadStatus.DECLINED
+}
+
+function telegramLeadStatusHistoryComment(action: 'accept' | 'decline' | 'complete') {
+  if (action === 'accept') return 'Lead accepted from Telegram partner callback.'
+  if (action === 'complete') return 'Lead completed from Telegram partner callback.'
+  return 'Lead declined from Telegram partner callback.'
+}
+
+function assertLeadTelegramPartner(
+  lead: { partner: { telegramChatId: string | null } },
+  partnerTelegramChatId: string,
+) {
+  if (!lead.partner.telegramChatId) {
+    throw new AppError(403, 'FORBIDDEN', 'Lead partner is not linked to Telegram')
+  }
+
+  if (lead.partner.telegramChatId !== partnerTelegramChatId) {
+    throw new AppError(403, 'FORBIDDEN', 'Telegram user cannot update this lead')
+  }
+}
+
+function leadProblemReasonLabel(reason: 'no_response' | 'no_seats' | 'need_admin' | 'other') {
+  if (reason === 'no_response') return 'Клиент не отвечает'
+  if (reason === 'no_seats') return 'Нет мест'
+  if (reason === 'need_admin') return 'Нужна помощь админа'
+  return 'Другая причина'
 }
 
 function toLeadSource(source: string) {

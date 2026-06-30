@@ -149,6 +149,23 @@ export class AuthService {
   }
 
   async getMe(accessToken: string | undefined) {
+    const session = await this.requireSession(accessToken)
+
+    return {
+      user: toUserDto(session.user),
+    }
+  }
+
+  async requireAdmin(accessToken: string | undefined) {
+    const session = await this.requireSession(accessToken)
+    if (!session.user.isAdmin) {
+      throw new AppError(403, 'FORBIDDEN', 'Admin access is required')
+    }
+
+    return session.user
+  }
+
+  private async requireSession(accessToken: string | undefined) {
     if (!accessToken) {
       throw new AppError(401, 'UNAUTHORIZED', 'Access token is required')
     }
@@ -175,9 +192,7 @@ export class AuthService {
       throw new AppError(401, 'UNAUTHORIZED', 'Session is invalid or expired')
     }
 
-    return {
-      user: toUserDto(session.user),
-    }
+    return session
   }
 
   async logout(refreshToken: string | undefined) {

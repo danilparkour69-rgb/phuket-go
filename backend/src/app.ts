@@ -4,20 +4,31 @@ import { secureHeaders } from 'hono/secure-headers'
 
 import type { DbClient } from './db'
 import type { AppEnv } from './env'
+import { createAdminRoutes } from './admin/routes'
+import { AdminService } from './admin/service'
 import { createAuthRoutes } from './auth/routes'
 import { AuthService } from './auth/service'
 import { createCatalogRoutes } from './catalog/routes'
 import { CatalogService } from './catalog/service'
 import { errorResponse, handleError, validationErrorHook } from './http/errors'
+import { createLeadSheetsSinkFromEnv, type LeadSheetsSink } from './leads/google-sheets-sink'
+import {
+  createLeadTelegramNotifierFromEnv,
+  type LeadTelegramNotifier,
+} from './leads/telegram-notifier'
 import { createMediaRoutes } from './media/routes'
 import { createStorageServiceFromEnv, type StorageService } from './storage/service'
+import { createTelegramRoutes } from './telegram/routes'
 import { TripAdvisorClient } from './tripadvisor/client'
 
 type AppBindings = {
   Variables: {
+    adminService: AdminService
     authService: AuthService
     catalogService: CatalogService
     env: AppEnv
+    leadSheetsSink: LeadSheetsSink
+    leadTelegramNotifier: LeadTelegramNotifier
     storageService: StorageService | null
   }
 }
@@ -28,6 +39,7 @@ type CreateAppOptions = {
 }
 
 export function createApp({ env, prisma }: CreateAppOptions) {
+  const adminService = new AdminService(prisma)
   const authService = new AuthService(prisma, env)
   const tripAdvisorClient = env.TRIPADVISOR_API_KEY
     ? new TripAdvisorClient({
@@ -37,7 +49,14 @@ export function createApp({ env, prisma }: CreateAppOptions) {
       })
     : null
 
-  const catalogService = new CatalogService(prisma, tripAdvisorClient)
+  const leadSheetsSink = createLeadSheetsSinkFromEnv(env)
+  const leadTelegramNotifier = createLeadTelegramNotifierFromEnv(env)
+  const catalogService = new CatalogService(
+    prisma,
+    tripAdvisorClient,
+    leadSheetsSink,
+    leadTelegramNotifier,
+  )
   const storageService = createStorageServiceFromEnv(env)
   const app = new OpenAPIHono<AppBindings>({
     defaultHook: validationErrorHook,
@@ -52,15 +71,18 @@ export function createApp({ env, prisma }: CreateAppOptions) {
         return env.CORS_ORIGINS.includes(origin) ? origin : null
       },
       allowHeaders: ['Content-Type', 'Authorization', 'X-Client-Platform'],
-      allowMethods: ['GET', 'POST', 'OPTIONS'],
+      allowMethods: ['GET', 'POST', 'PATCH', 'OPTIONS'],
       credentials: true,
       maxAge: 600,
     }),
   )
   app.use('*', async (c, next) => {
+    c.set('adminService', adminService)
     c.set('authService', authService)
     c.set('catalogService', catalogService)
     c.set('env', env)
+    c.set('leadSheetsSink', leadSheetsSink)
+    c.set('leadTelegramNotifier', leadTelegramNotifier)
     c.set('storageService', storageService)
     await next()
   })
@@ -78,8 +100,10 @@ export function createApp({ env, prisma }: CreateAppOptions) {
     })
   })
 
+  app.route('/api/admin', createAdminRoutes())
   app.route('/api/auth', createAuthRoutes())
   app.route('/api/catalog', createCatalogRoutes())
+  app.route('/api/telegram', createTelegramRoutes())
   app.route('/media', createMediaRoutes())
 
   app.doc('/openapi.json', {

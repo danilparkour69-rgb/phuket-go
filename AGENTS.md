@@ -59,7 +59,7 @@
 - Keep durable project choices in README files and docs, not in this agent file.
 - For Phuket Go planning, use `project-forum/phuket-go-task-map.md` only as a progress tracker. Do not use it as a source of product, architecture, or implementation requirements; use the main documents under `docs/` instead.
 - `CLAUDE.md` is only for Claude Code. Codex should use `AGENTS.md` and the main documents under `docs/`.
-- Before starting project development or writing application code for Phuket Go, first ask the user for the instruction file they said they will provide. Do not begin coding until that file is received and read.
+- Local development for Phuket Go has started. Use the saved owner instruction file and current `docs/` documents before making application-code changes.
 - Infrastructure, deployment, storage, local database, testing runbooks, and provider-specific choices live in `README.md` and `docs/`.
 - When a surface is deferred, prefer a short note in that surface's README over extra agent instructions.
 - Prefer a monolithic backend. Do not split into microservices unless the product has a concrete operational need.

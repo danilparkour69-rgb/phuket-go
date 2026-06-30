@@ -1,0 +1,279 @@
+import {
+  adminLeadAdminNoteRequestSchema,
+  adminLeadBulkStatusActionRequestSchema,
+  adminLeadBulkStatusActionResponseSchema,
+  adminLeadDetailResponseSchema,
+  adminLeadExportQuerySchema,
+  adminLeadIdParamsSchema,
+  adminLeadListQuerySchema,
+  adminLeadListResponseSchema,
+  adminLeadStatusActionRequestSchema,
+  apiErrorSchema,
+} from '@phuket-go/contracts'
+import { createRoute, OpenAPIHono } from '@hono/zod-openapi'
+import type { Context } from 'hono'
+import { z } from 'zod'
+
+import type { AuthService } from '../auth/service'
+import { validationErrorHook } from '../http/errors'
+import type { AdminService } from './service'
+
+type AdminRouteEnv = {
+  Variables: {
+    adminService: AdminService
+    authService: AuthService
+  }
+}
+
+const json = <T>(schema: T) => ({
+  'application/json': {
+    schema,
+  },
+})
+
+const errorResponseContent = json(apiErrorSchema)
+
+const listLeadsRoute = createRoute({
+  method: 'get',
+  path: '/leads',
+  request: {
+    query: adminLeadListQuerySchema,
+  },
+  responses: {
+    200: {
+      content: json(adminLeadListResponseSchema),
+      description: 'Admin lead list',
+    },
+    401: {
+      content: errorResponseContent,
+      description: 'Missing or invalid access token',
+    },
+    403: {
+      content: errorResponseContent,
+      description: 'Admin access required',
+    },
+  },
+})
+
+const exportLeadsCsvRoute = createRoute({
+  method: 'get',
+  path: '/leads/export.csv',
+  request: {
+    query: adminLeadExportQuerySchema,
+  },
+  responses: {
+    200: {
+      content: {
+        'text/csv': {
+          schema: z.string(),
+        },
+      },
+      description: 'Admin lead CSV export',
+    },
+    401: {
+      content: errorResponseContent,
+      description: 'Missing or invalid access token',
+    },
+    403: {
+      content: errorResponseContent,
+      description: 'Admin access required',
+    },
+  },
+})
+
+const getLeadDetailRoute = createRoute({
+  method: 'get',
+  path: '/leads/{id}',
+  request: {
+    params: adminLeadIdParamsSchema,
+  },
+  responses: {
+    200: {
+      content: json(adminLeadDetailResponseSchema),
+      description: 'Admin lead detail with status history',
+    },
+    401: {
+      content: errorResponseContent,
+      description: 'Missing or invalid access token',
+    },
+    403: {
+      content: errorResponseContent,
+      description: 'Admin access required',
+    },
+    404: {
+      content: errorResponseContent,
+      description: 'Lead not found',
+    },
+  },
+})
+
+const updateLeadStatusRoute = createRoute({
+  method: 'patch',
+  path: '/leads/{id}/status',
+  request: {
+    params: adminLeadIdParamsSchema,
+    body: {
+      content: json(adminLeadStatusActionRequestSchema),
+    },
+  },
+  responses: {
+    200: {
+      content: json(adminLeadDetailResponseSchema),
+      description: 'Admin lead status quick action result',
+    },
+    400: {
+      content: errorResponseContent,
+      description: 'Invalid payload',
+    },
+    401: {
+      content: errorResponseContent,
+      description: 'Missing or invalid access token',
+    },
+    403: {
+      content: errorResponseContent,
+      description: 'Admin access required',
+    },
+    404: {
+      content: errorResponseContent,
+      description: 'Lead not found',
+    },
+  },
+})
+
+const bulkUpdateLeadStatusRoute = createRoute({
+  method: 'patch',
+  path: '/leads/bulk/status',
+  request: {
+    body: {
+      content: json(adminLeadBulkStatusActionRequestSchema),
+    },
+  },
+  responses: {
+    200: {
+      content: json(adminLeadBulkStatusActionResponseSchema),
+      description: 'Admin lead bulk status update result',
+    },
+    400: {
+      content: errorResponseContent,
+      description: 'Invalid payload',
+    },
+    401: {
+      content: errorResponseContent,
+      description: 'Missing or invalid access token',
+    },
+    403: {
+      content: errorResponseContent,
+      description: 'Admin access required',
+    },
+    404: {
+      content: errorResponseContent,
+      description: 'One or more leads not found',
+    },
+  },
+})
+
+const updateLeadAdminNoteRoute = createRoute({
+  method: 'patch',
+  path: '/leads/{id}/admin-note',
+  request: {
+    params: adminLeadIdParamsSchema,
+    body: {
+      content: json(adminLeadAdminNoteRequestSchema),
+    },
+  },
+  responses: {
+    200: {
+      content: json(adminLeadDetailResponseSchema),
+      description: 'Admin lead note update result',
+    },
+    400: {
+      content: errorResponseContent,
+      description: 'Invalid payload',
+    },
+    401: {
+      content: errorResponseContent,
+      description: 'Missing or invalid access token',
+    },
+    403: {
+      content: errorResponseContent,
+      description: 'Admin access required',
+    },
+    404: {
+      content: errorResponseContent,
+      description: 'Lead not found',
+    },
+  },
+})
+
+export function createAdminRoutes() {
+  const routes = new OpenAPIHono<AdminRouteEnv>({
+    defaultHook: validationErrorHook,
+  })
+
+  routes.openapi(listLeadsRoute, async (c) => {
+    const auth = c.get('authService')
+    await auth.requireAdmin(bearerToken(c))
+
+    const admin = c.get('adminService')
+    return c.json(await admin.listLeads(c.req.valid('query')), 200)
+  })
+
+  routes.openapi(exportLeadsCsvRoute, async (c) => {
+    const auth = c.get('authService')
+    await auth.requireAdmin(bearerToken(c))
+
+    const admin = c.get('adminService')
+    const csv = await admin.exportLeadsCsv(c.req.valid('query'))
+    return c.body(csv, 200, {
+      'Content-Type': 'text/csv; charset=utf-8',
+      'Content-Disposition': `attachment; filename="${adminLeadCsvFilename()}"`,
+    })
+  })
+
+  routes.openapi(getLeadDetailRoute, async (c) => {
+    const auth = c.get('authService')
+    await auth.requireAdmin(bearerToken(c))
+
+    const admin = c.get('adminService')
+    const { id } = c.req.valid('param')
+    return c.json(await admin.getLeadDetail(id), 200)
+  })
+
+  routes.openapi(bulkUpdateLeadStatusRoute, async (c) => {
+    const auth = c.get('authService')
+    const adminUser = await auth.requireAdmin(bearerToken(c))
+
+    const admin = c.get('adminService')
+    return c.json(await admin.bulkUpdateLeadStatus(c.req.valid('json'), adminUser.id), 200)
+  })
+
+  routes.openapi(updateLeadStatusRoute, async (c) => {
+    const auth = c.get('authService')
+    const adminUser = await auth.requireAdmin(bearerToken(c))
+
+    const admin = c.get('adminService')
+    const { id } = c.req.valid('param')
+    return c.json(await admin.updateLeadStatus(id, c.req.valid('json'), adminUser.id), 200)
+  })
+
+  routes.openapi(updateLeadAdminNoteRoute, async (c) => {
+    const auth = c.get('authService')
+    const adminUser = await auth.requireAdmin(bearerToken(c))
+
+    const admin = c.get('adminService')
+    const { id } = c.req.valid('param')
+    return c.json(await admin.updateLeadAdminNote(id, c.req.valid('json'), adminUser.id), 200)
+  })
+
+  return routes
+}
+
+function adminLeadCsvFilename() {
+  return `admin-leads-${new Date().toISOString().slice(0, 10)}.csv`
+}
+
+function bearerToken(c: Context) {
+  const authorization = c.req.header('authorization')
+  if (!authorization?.startsWith('Bearer ')) return undefined
+  return authorization.slice('Bearer '.length)
+}

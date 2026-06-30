@@ -25,6 +25,9 @@ describe('loadEnv', () => {
     expect(env.TRIPADVISOR_MAX_REQUESTS_PER_RUN).toBe(10)
     expect(env.TRIPADVISOR_DAILY_MAX_REQUESTS).toBe(200)
     expect(env.TRIPADVISOR_REQUEST_TIMEOUT_MS).toBe(8000)
+    expect(env.GOOGLE_SHEETS_ENABLED).toBe(false)
+    expect(env.GOOGLE_SHEETS_LEADS_SHEET_NAME).toBe('Заявки')
+    expect(env.TELEGRAM_NOTIFICATIONS_ENABLED).toBe(false)
   })
 
   test('parses TripAdvisor refresh flag', () => {
@@ -67,6 +70,56 @@ describe('loadEnv', () => {
     expect(env.SPACES_REGION).toBe('nyc3')
     expect(env.SPACES_BUCKET).toBe('uploads')
     expect(env.SPACES_CDN_BASE_URL).toBe('https://images.example.com')
+  })
+
+  test('requires complete Google Sheets configuration when enabled', () => {
+    expect(() =>
+      loadEnv({
+        DATABASE_URL: 'postgresql://superuser:superpassword@localhost:54329/phuket_go',
+        JWT_SECRET: '12345678901234567890123456789012',
+        GOOGLE_SHEETS_ENABLED: 'true',
+        GOOGLE_SHEETS_SPREADSHEET_ID: 'spreadsheet-id',
+      }),
+    ).toThrow('GOOGLE_SERVICE_ACCOUNT_EMAIL')
+  })
+
+  test('normalizes escaped Google service account private keys', () => {
+    const env = loadEnv({
+      DATABASE_URL: 'postgresql://superuser:superpassword@localhost:54329/phuket_go',
+      JWT_SECRET: '12345678901234567890123456789012',
+      GOOGLE_SHEETS_ENABLED: 'true',
+      GOOGLE_SHEETS_SPREADSHEET_ID: 'spreadsheet-id',
+      GOOGLE_SERVICE_ACCOUNT_EMAIL: 'service@example.iam.gserviceaccount.com',
+      GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY:
+        '-----BEGIN PRIVATE KEY-----\\nabc\\n-----END PRIVATE KEY-----',
+    })
+
+    expect(env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY).toBe(
+      '-----BEGIN PRIVATE KEY-----\nabc\n-----END PRIVATE KEY-----',
+    )
+  })
+
+  test('requires complete Telegram notification configuration when enabled', () => {
+    expect(() =>
+      loadEnv({
+        DATABASE_URL: 'postgresql://superuser:superpassword@localhost:54329/phuket_go',
+        JWT_SECRET: '12345678901234567890123456789012',
+        TELEGRAM_NOTIFICATIONS_ENABLED: 'true',
+        TELEGRAM_BOT_TOKEN: 'bot-token',
+      }),
+    ).toThrow('TELEGRAM_ADMIN_CHAT_ID')
+
+    const env = loadEnv({
+      DATABASE_URL: 'postgresql://superuser:superpassword@localhost:54329/phuket_go',
+      JWT_SECRET: '12345678901234567890123456789012',
+      TELEGRAM_NOTIFICATIONS_ENABLED: 'true',
+      TELEGRAM_BOT_TOKEN: 'bot-token',
+      TELEGRAM_ADMIN_CHAT_ID: 'admin-chat',
+    })
+
+    expect(env.TELEGRAM_NOTIFICATIONS_ENABLED).toBe(true)
+    expect(env.TELEGRAM_BOT_TOKEN).toBe('bot-token')
+    expect(env.TELEGRAM_ADMIN_CHAT_ID).toBe('admin-chat')
   })
 
   test('rejects known weak JWT secrets in production-like runtimes', () => {
