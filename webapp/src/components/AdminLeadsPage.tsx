@@ -9,7 +9,9 @@ import type {
   AdminLeadDto,
   AdminLeadExportQuery,
   AdminLeadListResponse,
+  AdminLeadSheetsSyncResponse,
   AdminLeadStatusActionRequest,
+  AdminPartnerOptionDto,
 } from '@phuket-go/contracts'
 import { useMemo, useState } from 'react'
 
@@ -111,10 +113,29 @@ const contactChannelLabels: Record<NonNullable<AdminLeadDto['contactChannel']>, 
   max: 'MAX',
 }
 
+const leadServiceTypes = [
+  'excursion',
+  'bike_rental',
+  'visa',
+  'border_run',
+  'car_rental',
+  'money_exchange',
+] as const
+
+const serviceTypeLabels: Record<AdminLeadDto['serviceType'], string> = {
+  excursion: 'Экскурсии',
+  bike_rental: 'Аренда байков',
+  visa: 'Визы',
+  border_run: 'Border run',
+  car_rental: 'Аренда машин',
+  money_exchange: 'Обмен денег',
+}
+
 const adminLeadsQueryKey = ['admin', 'leads'] as const
 type SummaryFilter = 'total' | 'new' | 'requires_attention' | 'waiting_partner'
 type AdminLeadFilters = {
   status: 'all' | (typeof leadStatuses)[number]
+  serviceType: 'all' | (typeof leadServiceTypes)[number]
   focus: 'all' | 'requires_attention'
   search: string
   partnerId: string
@@ -126,6 +147,7 @@ type AdminLeadFilters = {
 
 const emptyFilters: AdminLeadFilters = {
   status: 'all',
+  serviceType: 'all',
   focus: 'all',
   search: '',
   partnerId: '',
@@ -145,6 +167,10 @@ export function AdminLeadsPage() {
   const [offset, setOffset] = useState(0)
   const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null)
   const [selectedBulkLeadIds, setSelectedBulkLeadIds] = useState<string[]>([])
+  const [sheetsSyncResult, setSheetsSyncResult] = useState<{
+    leadId: string
+    result: AdminLeadSheetsSyncResponse
+  } | null>(null)
 
   const listQuery = useQuery({
     queryKey: [adminLeadsQueryKey[0], adminLeadsQueryKey[1], appliedFilters, pageSize, offset],
@@ -152,6 +178,8 @@ export function AdminLeadsPage() {
     queryFn: () =>
       auth.api.listAdminLeads({
         status: appliedFilters.status === 'all' ? undefined : appliedFilters.status,
+        serviceType:
+          appliedFilters.serviceType === 'all' ? undefined : appliedFilters.serviceType,
         search: appliedFilters.search,
         partnerId: appliedFilters.partnerId,
         createdFrom: appliedFilters.createdFrom,
@@ -185,6 +213,11 @@ export function AdminLeadsPage() {
     queryKey: ['admin', 'lead', effectiveSelectedLeadId],
     enabled: auth.isAuthenticated && Boolean(effectiveSelectedLeadId),
     queryFn: () => auth.api.getAdminLead(effectiveSelectedLeadId ?? ''),
+  })
+  const partnersQuery = useQuery({
+    queryKey: ['admin', 'partners'],
+    enabled: auth.isAuthenticated,
+    queryFn: () => auth.api.listAdminPartners(),
   })
 
   const updateStatusMutation = useMutation({
@@ -228,6 +261,15 @@ export function AdminLeadsPage() {
     mutationFn: () => auth.api.exportAdminLeadsCsv(appliedExportQuery),
     onSuccess: (csv) => {
       downloadBlob(csv, adminLeadCsvFilename())
+    },
+  })
+  const syncSheetsMutation = useMutation({
+    mutationFn: (leadId: string) => auth.api.syncAdminLeadGoogleSheets(leadId),
+    onSuccess: (result, leadId) => {
+      setSheetsSyncResult({
+        leadId,
+        result,
+      })
     },
   })
 
@@ -294,6 +336,8 @@ export function AdminLeadsPage() {
 
       <LeadFilters
         filters={draftFilters}
+        partners={partnersQuery.data?.partners ?? []}
+        isLoadingPartners={partnersQuery.isLoading}
         onFiltersChange={setDraftFilters}
         onApply={() => {
           setAppliedFilters(draftFilters)
@@ -424,11 +468,17 @@ export function AdminLeadsPage() {
           error={detailQuery.error}
           isUpdating={updateStatusMutation.isPending}
           isSavingNote={updateAdminNoteMutation.isPending}
+          isSyncingSheets={syncSheetsMutation.isPending}
           onSaveNote={(adminNote) => {
             updateAdminNoteMutation.mutate({
               leadId: effectiveSelectedLeadId,
               adminNote,
             })
+          }}
+          onSyncSheets={() => {
+            if (effectiveSelectedLeadId) {
+              syncSheetsMutation.mutate(effectiveSelectedLeadId)
+            }
           }}
           onAction={(input) => {
             updateStatusMutation.mutate({
@@ -438,6 +488,10 @@ export function AdminLeadsPage() {
           }}
           mutationError={updateStatusMutation.error}
           noteMutationError={updateAdminNoteMutation.error}
+          sheetsSyncError={syncSheetsMutation.error}
+          sheetsSyncResult={
+            sheetsSyncResult?.leadId === effectiveSelectedLeadId ? sheetsSyncResult.result : null
+          }
         />
       </div>
     </section>
@@ -493,11 +547,15 @@ function summaryFilterFromFilters(
 
 function LeadFilters({
   filters,
+  partners,
+  isLoadingPartners,
   onFiltersChange,
   onApply,
   onReset,
 }: {
   filters: AdminLeadFilters
+  partners: AdminPartnerOptionDto[]
+  isLoadingPartners: boolean
   onFiltersChange: (filters: AdminLeadFilters) => void
   onApply: () => void
   onReset: () => void
@@ -509,7 +567,7 @@ function LeadFilters({
         <CardDescription>Поиск работает по номеру, клиенту, телефону, Telegram, экскурсии и партнеру.</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="grid gap-4 lg:grid-cols-[minmax(220px,1fr)_170px_180px_220px_150px_150px_180px_170px_auto] lg:items-end">
+        <div className="grid gap-4 lg:grid-cols-[minmax(220px,1fr)_170px_190px_180px_220px_150px_150px_180px_170px_auto] lg:items-end">
           <div className="grid gap-2">
             <Label htmlFor="admin-lead-search">Поиск</Label>
             <Input
@@ -541,6 +599,30 @@ function LeadFilters({
             </Select>
           </div>
           <div className="grid gap-2">
+            <Label htmlFor="admin-lead-service-type-filter">Направление</Label>
+            <Select
+              value={filters.serviceType}
+              onValueChange={(value) =>
+                onFiltersChange({
+                  ...filters,
+                  serviceType: value as AdminLeadFilters['serviceType'],
+                })
+              }
+            >
+              <SelectTrigger id="admin-lead-service-type-filter" className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Все направления</SelectItem>
+                {leadServiceTypes.map((serviceType) => (
+                  <SelectItem key={serviceType} value={serviceType}>
+                    {serviceTypeLabels[serviceType]}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="grid gap-2">
             <Label htmlFor="admin-lead-focus-filter">Фокус</Label>
             <Select
               value={filters.focus}
@@ -558,13 +640,29 @@ function LeadFilters({
             </Select>
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="admin-lead-partner-id">Partner ID</Label>
-            <Input
-              id="admin-lead-partner-id"
-              value={filters.partnerId}
-              onChange={(event) => onFiltersChange({ ...filters, partnerId: event.target.value })}
-              placeholder="UUID партнера"
-            />
+            <Label htmlFor="admin-lead-partner-filter">Партнер</Label>
+            <Select
+              value={filters.partnerId || 'all'}
+              onValueChange={(value) =>
+                onFiltersChange({ ...filters, partnerId: value === 'all' ? '' : value })
+              }
+              disabled={isLoadingPartners}
+            >
+              <SelectTrigger id="admin-lead-partner-filter" className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">
+                  {isLoadingPartners ? 'Загружаем партнеров...' : 'Все партнеры'}
+                </SelectItem>
+                {partners.map((partner) => (
+                  <SelectItem key={partner.id} value={partner.id}>
+                    {partner.name}
+                    {partner.telegram ? ` · ${partner.telegram}` : ''}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <div className="grid gap-2">
             <Label htmlFor="admin-lead-created-from">С даты</Label>
@@ -917,20 +1015,28 @@ function LeadDetailPanel({
   error,
   isUpdating,
   isSavingNote,
+  isSyncingSheets,
   onSaveNote,
+  onSyncSheets,
   onAction,
   mutationError,
   noteMutationError,
+  sheetsSyncError,
+  sheetsSyncResult,
 }: {
   detail: AdminLeadDetailResponse | undefined
   isLoading: boolean
   error: Error | null
   isUpdating: boolean
   isSavingNote: boolean
+  isSyncingSheets: boolean
   onSaveNote: (adminNote: string) => void
+  onSyncSheets: () => void
   onAction: (input: AdminLeadStatusActionRequest) => void
   mutationError: Error | null
   noteMutationError: Error | null
+  sheetsSyncError: Error | null
+  sheetsSyncResult: AdminLeadSheetsSyncResponse | null
 }) {
   const lead = detail?.lead
   const facts = useMemo(() => (lead ? leadFacts(lead) : []), [lead])
@@ -1000,6 +1106,28 @@ function LeadDetailPanel({
 
         <div className="grid gap-3">
           <Typography variant="h5">Быстрые действия</Typography>
+          <div className="grid gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              disabled={isSyncingSheets}
+              onClick={onSyncSheets}
+            >
+              {isSyncingSheets ? 'Синхронизируем...' : 'Синхронизировать в Sheets'}
+            </Button>
+            {sheetsSyncResult && (
+              <Alert>
+                <AlertTitle>{sheetsSyncTitle(sheetsSyncResult)}</AlertTitle>
+                <AlertDescription>{sheetsSyncDescription(sheetsSyncResult)}</AlertDescription>
+              </Alert>
+            )}
+            {sheetsSyncError && (
+              <Alert variant="destructive">
+                <AlertTitle>Sheets не синхронизирован</AlertTitle>
+                <AlertDescription>{sheetsSyncError.message}</AlertDescription>
+              </Alert>
+            )}
+          </div>
           <div className="grid gap-2">
             <Label htmlFor="admin-note">Заметка админа</Label>
             <Typography variant="caption" tone="muted">
@@ -1242,6 +1370,7 @@ function LeadSlaBadge({ lead }: { lead: AdminLeadDto }) {
 function hasActiveFilters(filters: AdminLeadFilters) {
   return (
     filters.status !== 'all' ||
+    filters.serviceType !== 'all' ||
     filters.focus !== 'all' ||
     Boolean(filters.search.trim()) ||
     Boolean(filters.partnerId.trim()) ||
@@ -1253,6 +1382,7 @@ function hasActiveFilters(filters: AdminLeadFilters) {
 function adminLeadExportQueryFromFilters(filters: AdminLeadFilters): AdminLeadExportQuery {
   return {
     status: filters.status === 'all' ? undefined : filters.status,
+    serviceType: filters.serviceType === 'all' ? undefined : filters.serviceType,
     search: filters.search,
     partnerId: filters.partnerId,
     createdFrom: filters.createdFrom,
@@ -1281,6 +1411,7 @@ function downloadBlob(blob: Blob, filename: string) {
 
 function leadFacts(lead: AdminLeadDto) {
   return [
+    { label: 'Направление', value: serviceTypeLabels[lead.serviceType] },
     { label: 'Партнер', value: `${lead.partnerName}${lead.partnerTelegram ? ` · ${lead.partnerTelegram}` : ''}` },
     { label: 'Дата', value: lead.requestedDate ? formatDateTime(lead.requestedDate) : 'Не выбрана' },
     { label: 'Людей', value: lead.peopleCount ? String(lead.peopleCount) : 'Не указано' },
@@ -1332,6 +1463,22 @@ function actorLabel(actorType: AdminLeadDetailResponse['statusHistory'][number][
   if (actorType === 'partner') return 'Партнер'
   if (actorType === 'user') return 'Пользователь'
   return 'Система'
+}
+
+function sheetsSyncTitle(result: AdminLeadSheetsSyncResponse) {
+  if (result.mode === 'disabled') return 'Google Sheets выключен'
+  if (result.mode === 'appended') return 'Строка добавлена в Sheets'
+  return 'Строка обновлена в Sheets'
+}
+
+function sheetsSyncDescription(result: AdminLeadSheetsSyncResponse) {
+  if (result.mode === 'disabled') {
+    return 'Интеграция не включена в env, локальная заявка осталась без изменений.'
+  }
+  if (result.mode === 'appended') {
+    return 'Заявка не была найдена в таблице, поэтому создана новая строка.'
+  }
+  return 'Текущий snapshot заявки повторно записан в существующую строку.'
 }
 
 function formatDateTime(value: string) {

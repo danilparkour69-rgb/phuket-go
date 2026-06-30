@@ -6,6 +6,7 @@ import {
   ExcursionStatus,
   LeadActorType,
   LeadContactChannel,
+  LeadServiceType,
   LeadStatus,
   PrismaClient,
 } from '../../../backend/src/generated/prisma/client'
@@ -39,6 +40,14 @@ test('admin can open a lead and change its status from the UI', async ({ page })
 
     await expect(page.getByRole('heading', { name: 'Заявки' })).toBeVisible()
     await page.getByLabel('Поиск').fill(leadGroup)
+    await page.getByRole('button', { name: 'Применить' }).click()
+    await expect(page.getByText('1-13 из 13')).toBeVisible()
+    await page.getByRole('combobox', { name: 'Партнер' }).click()
+    await page.getByRole('option', { name: new RegExp(`E2E Partner ${publicNumber}`) }).click()
+    await page.getByRole('button', { name: 'Применить' }).click()
+    await expect(page.getByText('1-13 из 13')).toBeVisible()
+    await page.getByRole('combobox', { name: 'Направление' }).click()
+    await page.getByRole('option', { name: 'Экскурсии' }).click()
     await page.getByRole('button', { name: 'Применить' }).click()
     await expect(page.getByText('1-13 из 13')).toBeVisible()
     const csvDownloadPromise = page.waitForEvent('download')
@@ -128,6 +137,8 @@ test('admin can open a lead and change its status from the UI', async ({ page })
     await expect(page.getByRole('heading', { name: 'Контакты клиента' })).toBeVisible()
     await expect(page.getByText('Предпочтительно: Telegram')).toBeVisible()
     await expect(page.getByText('@e2e_client')).toBeVisible()
+    await page.getByRole('button', { name: 'Синхронизировать в Sheets' }).click()
+    await expect(page.getByText('Google Sheets выключен')).toBeVisible()
     await expect(page.getByRole('link', { name: 'Позвонить' })).toHaveAttribute(
       'href',
       'tel:+79990001122',
@@ -239,6 +250,7 @@ async function seedAdminLead(
     data: {
       publicNumber: input.publicNumber,
       status: LeadStatus.NEW,
+      serviceType: LeadServiceType.EXCURSION,
       customerName: 'E2E Клиент',
       customerPhone: '+79990001122',
       customerTelegram: '@e2e_client',
@@ -269,6 +281,7 @@ async function seedAdminLead(
       ...Array.from({ length: 11 }, (_, index) => ({
         publicNumber: `${input.leadGroup}-PAGE-${index}`,
         status: LeadStatus.NEW,
+        serviceType: LeadServiceType.EXCURSION,
         customerName: `E2E Клиент ${index + 1}`,
         customerPhone: `+7999000${String(index + 2000).padStart(4, '0')}`,
         excursionId: excursion.id,
@@ -280,6 +293,7 @@ async function seedAdminLead(
       {
         publicNumber: `${input.leadGroup}-FRESH`,
         status: LeadStatus.NEW,
+        serviceType: LeadServiceType.EXCURSION,
         customerName: 'E2E Свежий клиент',
         customerPhone: '+79990009999',
         excursionId: excursion.id,

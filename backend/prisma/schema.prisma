@@ -74,6 +74,17 @@ enum LeadContactChannel {
   @@map("lead_contact_channel")
 }
 
+enum LeadServiceType {
+  EXCURSION      @map("excursion")
+  BIKE_RENTAL    @map("bike_rental")
+  CAR_RENTAL     @map("car_rental")
+  VISA           @map("visa")
+  BORDER_RUN     @map("border_run")
+  MONEY_EXCHANGE @map("money_exchange")
+
+  @@map("lead_service_type")
+}
+
 enum LeadActorType {
   SYSTEM  @map("system")
   USER    @map("user")
@@ -252,6 +263,7 @@ model Lead {
   id                   String              @id @default(dbgenerated("uuidv7()")) @db.Uuid
   publicNumber         String              @unique @map("public_number")
   source               LeadSource          @default(WEBSITE)
+  serviceType          LeadServiceType     @default(EXCURSION) @map("service_type")
   status               LeadStatus          @default(NEW)
   customerName         String              @map("customer_name")
   customerPhone        String              @map("customer_phone")

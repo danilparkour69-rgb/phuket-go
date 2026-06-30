@@ -33,6 +33,14 @@ export const leadStatusSchema = z.enum([
 ])
 export const leadSourceSchema = z.enum(['website', 'article', 'admin', 'telegram'])
 export const leadContactChannelSchema = z.enum(['telegram', 'whatsapp', 'max'])
+export const leadServiceTypeSchema = z.enum([
+  'excursion',
+  'bike_rental',
+  'car_rental',
+  'visa',
+  'border_run',
+  'money_exchange',
+])
 export const photoImageTypeSchema = z.enum(['real', 'ai_enhanced', 'ai_generated'])
 export const leadIdParamsSchema = z.object({
   id: trimmedString.min(1),
@@ -147,6 +155,7 @@ export const leadSchema = z.object({
   publicNumber: trimmedString.min(1),
   status: leadStatusSchema,
   source: leadSourceSchema,
+  serviceType: leadServiceTypeSchema,
   excursionId: z.string(),
   excursionTitle: trimmedString.min(1),
   partnerId: z.string(),
@@ -184,6 +193,7 @@ export type ExcursionStatus = z.infer<typeof excursionStatusSchema>
 export type LeadStatus = z.infer<typeof leadStatusSchema>
 export type LeadSource = z.infer<typeof leadSourceSchema>
 export type LeadContactChannel = z.infer<typeof leadContactChannelSchema>
+export type LeadServiceType = z.infer<typeof leadServiceTypeSchema>
 export type PhotoImageType = z.infer<typeof photoImageTypeSchema>
 export type LeadIdParams = z.infer<typeof leadIdParamsSchema>
 export type ExcursionSlugParams = z.infer<typeof excursionSlugParamsSchema>

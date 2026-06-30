@@ -328,6 +328,7 @@ maybeDescribe('catalog API integration', () => {
       null,
       {
         appendLead: async () => {},
+        syncLeadSnapshot: async () => ({ mode: 'disabled' }),
         updateLeadStatus: async (input) => {
           sheetsUpdates.push(input)
         },
@@ -384,6 +385,7 @@ maybeDescribe('catalog API integration', () => {
       null,
       {
         appendLead: async () => {},
+        syncLeadSnapshot: async () => ({ mode: 'disabled' }),
         updateLeadStatus: async (input) => {
           sheetsUpdates.push(input)
         },
@@ -502,6 +504,7 @@ maybeDescribe('catalog API integration', () => {
       null,
       {
         appendLead: async () => {},
+        syncLeadSnapshot: async () => ({ mode: 'disabled' }),
         updateLeadStatus: async () => {},
         updateLeadPartnerNote: async (input) => {
           sheetsPartnerNotes.push(input)
@@ -636,6 +639,7 @@ maybeDescribe('catalog API integration', () => {
       null,
       {
         appendLead: async () => {},
+        syncLeadSnapshot: async () => ({ mode: 'disabled' }),
         updateLeadStatus: async () => {
           throw new Error('Sheets unavailable')
         },

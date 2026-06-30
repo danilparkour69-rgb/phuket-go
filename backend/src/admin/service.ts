@@ -6,25 +6,34 @@ import type {
   AdminLeadDto,
   AdminLeadExportQuery,
   AdminLeadListQuery,
+  AdminLeadSheetsSyncResponse,
   AdminLeadStatusActionRequest,
   AdminLeadStatusHistoryItemDto,
+  AdminPartnerListResponse,
 } from '@phuket-go/contracts'
 
 import type { DbClient } from '../db'
 import {
   LeadActorType,
   LeadContactChannel,
+  LeadServiceType,
   LeadSource,
   LeadStatus,
   Prisma,
 } from '../generated/prisma/client'
 import { AppError } from '../http/errors'
+import {
+  NoopLeadSheetsSink,
+  type LeadSheetsRowInput,
+  type LeadSheetsSink,
+} from '../leads/google-sheets-sink'
 
 const adminLeadCsvExportLimit = 5000
 const adminLeadCsvColumns = [
   ['lead_id', (lead: AdminLeadDto) => lead.id],
   ['public_number', (lead: AdminLeadDto) => lead.publicNumber],
   ['status', (lead: AdminLeadDto) => lead.status],
+  ['service_type', (lead: AdminLeadDto) => lead.serviceType],
   ['source', (lead: AdminLeadDto) => lead.source],
   ['source_page', (lead: AdminLeadDto) => lead.sourcePage],
   ['created_at', (lead: AdminLeadDto) => lead.createdAt],
@@ -51,7 +60,10 @@ const adminLeadCsvColumns = [
 type AdminLeadQueryFilters = AdminLeadListQuery | AdminLeadExportQuery
 
 export class AdminService {
-  constructor(private readonly db: DbClient) {}
+  constructor(
+    private readonly db: DbClient,
+    private readonly leadSheetsSink: LeadSheetsSink = new NoopLeadSheetsSink(),
+  ) {}
 
   async listLeads(query: AdminLeadListQuery) {
     const staleSince = adminLeadAttentionCutoff()
@@ -86,6 +98,25 @@ export class AdminService {
     }
   }
 
+  async listPartners(): Promise<AdminPartnerListResponse> {
+    const partners = await this.db.partner.findMany({
+      select: {
+        id: true,
+        name: true,
+        telegramUsername: true,
+      },
+      orderBy: [{ name: 'asc' }, { id: 'asc' }],
+    })
+
+    return {
+      partners: partners.map((partner) => ({
+        id: partner.id,
+        name: partner.name,
+        telegram: partner.telegramUsername,
+      })),
+    }
+  }
+
   async getLeadDetail(id: string): Promise<AdminLeadDetailResponse> {
     const lead = await this.db.lead.findUnique({
       where: { id },
@@ -109,6 +140,31 @@ export class AdminService {
     })
 
     return buildAdminLeadsCsv(leads.map(toAdminLeadDto))
+  }
+
+  async syncLeadToGoogleSheets(id: string): Promise<AdminLeadSheetsSyncResponse> {
+    const lead = await this.db.lead.findUnique({
+      where: { id },
+      include: adminLeadSheetsSyncInclude,
+    })
+
+    if (!lead) {
+      throw new AppError(404, 'NOT_FOUND', 'Lead not found')
+    }
+
+    try {
+      const result = await this.leadSheetsSink.syncLeadSnapshot(toLeadSheetsRowInput(lead))
+      return {
+        synced: result.mode !== 'disabled',
+        mode: result.mode,
+      }
+    } catch (error) {
+      console.error('Manual Google Sheets lead sync failed', {
+        leadId: id,
+        message: error instanceof Error ? error.message : 'Unknown Google Sheets error',
+      })
+      throw new AppError(502, 'INTERNAL_ERROR', 'Google Sheets sync failed')
+    }
   }
 
   async updateLeadStatus(
@@ -278,6 +334,7 @@ export class AdminService {
 function adminLeadWhere(query: AdminLeadQueryFilters, staleSince: Date): Prisma.LeadWhereInput {
   return {
     ...(query.status ? { status: toLeadStatusRecord(query.status) } : {}),
+    ...(query.serviceType ? { serviceType: toLeadServiceTypeRecord(query.serviceType) } : {}),
     ...(query.partnerId ? { partnerId: query.partnerId } : {}),
     ...(query.search ? { OR: adminLeadSearchWhere(query.search) } : {}),
     ...(query.requiresAttention ? { AND: [adminLeadRequiresAttentionWhere(staleSince)] } : {}),
@@ -364,12 +421,26 @@ type AdminLeadDetailRecord = Prisma.LeadGetPayload<{
   include: typeof adminLeadDetailInclude
 }>
 
+const adminLeadSheetsSyncInclude = {
+  partner: true,
+  excursion: {
+    include: {
+      category: true,
+    },
+  },
+} satisfies Prisma.LeadInclude
+
+type AdminLeadSheetsSyncRecord = Prisma.LeadGetPayload<{
+  include: typeof adminLeadSheetsSyncInclude
+}>
+
 function toAdminLeadDto(lead: AdminLeadRecord): AdminLeadDto {
   return {
     id: lead.id,
     publicNumber: lead.publicNumber,
     status: toLeadStatus(lead.status),
     source: toLeadSource(lead.source),
+    serviceType: toLeadServiceType(lead.serviceType),
     sourcePage: lead.sourcePage,
     excursionId: lead.excursionId,
     excursionTitle: lead.excursionTitle,
@@ -396,6 +467,22 @@ function toAdminLeadDto(lead: AdminLeadRecord): AdminLeadDto {
     commissionTotal: lead.commissionTotal,
     createdAt: lead.createdAt.toISOString(),
     updatedAt: lead.updatedAt.toISOString(),
+  }
+}
+
+function toLeadSheetsRowInput(lead: AdminLeadSheetsSyncRecord): LeadSheetsRowInput {
+  return {
+    lead,
+    excursion: {
+      slug: lead.excursion.slug,
+      categoryTitle: lead.excursion.category.title,
+      rubRate: Number(lead.excursion.rubRate),
+      rateDate: lead.excursion.rateDate,
+    },
+    partner: {
+      name: lead.partner.name,
+      telegramUsername: lead.partner.telegramUsername,
+    },
   }
 }
 
@@ -460,6 +547,24 @@ function toLeadStatusRecord(status: string) {
 function toLeadStatus(status: LeadStatus) {
   if (status === LeadStatus.WAITING_PARTNER) return 'waiting_partner'
   return status.toLowerCase() as AdminLeadDto['status']
+}
+
+function toLeadServiceTypeRecord(serviceType: string) {
+  if (serviceType === 'bike_rental') return LeadServiceType.BIKE_RENTAL
+  if (serviceType === 'car_rental') return LeadServiceType.CAR_RENTAL
+  if (serviceType === 'visa') return LeadServiceType.VISA
+  if (serviceType === 'border_run') return LeadServiceType.BORDER_RUN
+  if (serviceType === 'money_exchange') return LeadServiceType.MONEY_EXCHANGE
+  return LeadServiceType.EXCURSION
+}
+
+function toLeadServiceType(serviceType: LeadServiceType) {
+  if (serviceType === LeadServiceType.BIKE_RENTAL) return 'bike_rental'
+  if (serviceType === LeadServiceType.CAR_RENTAL) return 'car_rental'
+  if (serviceType === LeadServiceType.VISA) return 'visa'
+  if (serviceType === LeadServiceType.BORDER_RUN) return 'border_run'
+  if (serviceType === LeadServiceType.MONEY_EXCHANGE) return 'money_exchange'
+  return 'excursion'
 }
 
 function toLeadSource(source: LeadSource) {

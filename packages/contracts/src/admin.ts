@@ -1,6 +1,11 @@
 import { z } from 'zod'
 
-import { leadContactChannelSchema, leadSourceSchema, leadStatusSchema } from './catalog'
+import {
+  leadContactChannelSchema,
+  leadServiceTypeSchema,
+  leadSourceSchema,
+  leadStatusSchema,
+} from './catalog'
 
 const trimmedString = z.string().trim()
 const optionalTrimmedString = z
@@ -34,6 +39,7 @@ const optionalBooleanString = z
 
 const adminLeadBaseQuerySchema = z.object({
   status: leadStatusSchema.optional(),
+  serviceType: leadServiceTypeSchema.optional(),
   search: optionalTrimmedString,
   partnerId: optionalTrimmedString,
   createdFrom: optionalDateString,
@@ -77,6 +83,7 @@ export const adminLeadSchema = z.object({
   publicNumber: trimmedString.min(1),
   status: leadStatusSchema,
   source: leadSourceSchema,
+  serviceType: leadServiceTypeSchema,
   sourcePage: z.string().nullable(),
   excursionId: z.string(),
   excursionTitle: trimmedString.min(1),
@@ -141,14 +148,32 @@ export const adminLeadBulkStatusActionResponseSchema = z.object({
   historyCount: z.number().int().nonnegative(),
 })
 
+export const adminLeadSheetsSyncResponseSchema = z.object({
+  synced: z.boolean(),
+  mode: z.enum(['disabled', 'updated', 'appended']),
+})
+
+export const adminPartnerOptionSchema = z.object({
+  id: z.string(),
+  name: trimmedString.min(1),
+  telegram: z.string().nullable(),
+})
+
+export const adminPartnerListResponseSchema = z.object({
+  partners: z.array(adminPartnerOptionSchema),
+})
+
 export type AdminLeadListQuery = z.output<typeof adminLeadListQuerySchema>
 export type AdminLeadExportQuery = z.output<typeof adminLeadExportQuerySchema>
 export type AdminLeadStatusActionRequest = z.output<typeof adminLeadStatusActionRequestSchema>
 export type AdminLeadBulkStatusActionRequest = z.output<typeof adminLeadBulkStatusActionRequestSchema>
 export type AdminLeadBulkStatusActionResponse = z.infer<typeof adminLeadBulkStatusActionResponseSchema>
+export type AdminLeadSheetsSyncResponse = z.infer<typeof adminLeadSheetsSyncResponseSchema>
 export type AdminLeadAdminNoteRequest = z.output<typeof adminLeadAdminNoteRequestSchema>
 export type AdminLeadDto = z.infer<typeof adminLeadSchema>
 export type AdminLeadStatusHistoryItemDto = z.infer<typeof adminLeadStatusHistoryItemSchema>
 export type AdminLeadQueueSummaryDto = z.infer<typeof adminLeadQueueSummarySchema>
 export type AdminLeadListResponse = z.infer<typeof adminLeadListResponseSchema>
 export type AdminLeadDetailResponse = z.infer<typeof adminLeadDetailResponseSchema>
+export type AdminPartnerOptionDto = z.infer<typeof adminPartnerOptionSchema>
+export type AdminPartnerListResponse = z.infer<typeof adminPartnerListResponseSchema>

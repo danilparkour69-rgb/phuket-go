@@ -8,8 +8,13 @@ const googleSheetsApiBaseUrl = 'https://sheets.googleapis.com/v4/spreadsheets'
 
 export type LeadSheetsSink = {
   appendLead(input: LeadSheetsRowInput): Promise<void>
+  syncLeadSnapshot(input: LeadSheetsRowInput): Promise<LeadSheetsSyncResult>
   updateLeadStatus(input: LeadSheetsStatusUpdateInput): Promise<void>
   updateLeadPartnerNote(input: LeadSheetsPartnerNoteUpdateInput): Promise<void>
+}
+
+export type LeadSheetsSyncResult = {
+  mode: 'disabled' | 'updated' | 'appended'
 }
 
 export type LeadSheetsConfig = {
@@ -21,6 +26,12 @@ export type LeadSheetsConfig = {
 
 type LeadSheetsFetch = (input: string | URL, init?: RequestInit) => Promise<Response>
 
+class LeadSheetsRowNotFoundError extends Error {
+  constructor() {
+    super('Google Sheets lead row was not found')
+  }
+}
+
 export type LeadSheetsRowInput = {
   lead: {
     id: string
@@ -29,6 +40,7 @@ export type LeadSheetsRowInput = {
     updatedAt: Date
     status: string
     source: string
+    serviceType: string
     sourcePage: string | null
     customerName: string
     customerPhone: string
@@ -77,6 +89,9 @@ export type LeadSheetsPartnerNoteUpdateInput = {
 
 export class NoopLeadSheetsSink implements LeadSheetsSink {
   async appendLead(_input: LeadSheetsRowInput) {}
+  async syncLeadSnapshot(_input: LeadSheetsRowInput) {
+    return { mode: 'disabled' } satisfies LeadSheetsSyncResult
+  }
   async updateLeadStatus(_input: LeadSheetsStatusUpdateInput) {}
   async updateLeadPartnerNote(_input: LeadSheetsPartnerNoteUpdateInput) {}
 }
@@ -90,24 +105,40 @@ export class GoogleSheetsLeadSink implements LeadSheetsSink {
 
   async appendLead(input: LeadSheetsRowInput) {
     const token = await this.fetchAccessToken()
-    const url = this.valuesUrl('A:AX:append')
-    url.searchParams.set('valueInputOption', 'USER_ENTERED')
-    url.searchParams.set('insertDataOption', 'INSERT_ROWS')
+    await this.appendLeadWithToken(input, token)
+  }
 
-    const response = await this.fetcher(url, {
+  async syncLeadSnapshot(input: LeadSheetsRowInput) {
+    const token = await this.fetchAccessToken()
+    const rowNumber = await this.findLeadRowNumber(input.lead.id, token).catch((error: unknown) => {
+      if (error instanceof LeadSheetsRowNotFoundError) return null
+      throw error
+    })
+
+    if (rowNumber === null) {
+      await this.appendLeadWithToken(input, token)
+      return { mode: 'appended' } satisfies LeadSheetsSyncResult
+    }
+
+    const response = await this.fetcher(this.batchUpdateUrl(), {
       method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
+      headers: this.authJsonHeaders(token),
       body: JSON.stringify({
-        values: [buildLeadSheetsRow(input)],
+        valueInputOption: 'USER_ENTERED',
+        data: [
+          {
+            range: rowNumberRange('A:AX', rowNumber),
+            values: [buildLeadSheetsRow(input)],
+          },
+        ],
       }),
     })
 
     if (!response.ok) {
-      throw new Error(`Google Sheets append failed with status ${response.status}`)
+      throw new Error(`Google Sheets snapshot sync failed with status ${response.status}`)
     }
+
+    return { mode: 'updated' } satisfies LeadSheetsSyncResult
   }
 
   async updateLeadStatus(input: LeadSheetsStatusUpdateInput) {
@@ -163,10 +194,28 @@ export class GoogleSheetsLeadSink implements LeadSheetsSink {
 
     const rowIndex = body.values.findIndex((row) => row[0] === leadId)
     if (rowIndex < 0) {
-      throw new Error('Google Sheets lead row was not found')
+      throw new LeadSheetsRowNotFoundError()
     }
 
     return rowIndex + 1
+  }
+
+  private async appendLeadWithToken(input: LeadSheetsRowInput, token: string) {
+    const url = this.valuesUrl('A:AX:append')
+    url.searchParams.set('valueInputOption', 'USER_ENTERED')
+    url.searchParams.set('insertDataOption', 'INSERT_ROWS')
+
+    const response = await this.fetcher(url, {
+      method: 'POST',
+      headers: this.authJsonHeaders(token),
+      body: JSON.stringify({
+        values: [buildLeadSheetsRow(input)],
+      }),
+    })
+
+    if (!response.ok) {
+      throw new Error(`Google Sheets append failed with status ${response.status}`)
+    }
   }
 
   private valuesUrl(range: string) {
@@ -267,7 +316,7 @@ export function buildLeadSheetsRow(input: LeadSheetsRowInput) {
     'Thailand',
     'Phuket',
     'ru',
-    'excursion',
+    enumValue(lead.serviceType),
     input.excursion.categoryTitle,
     lead.excursionId,
     input.excursion.slug,

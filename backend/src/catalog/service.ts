@@ -14,6 +14,7 @@ import {
   ExcursionStatus,
   LeadActorType,
   LeadContactChannel,
+  LeadServiceType,
   LeadSource,
   LeadStatus,
   TripAdvisorMatchStatus,
@@ -110,6 +111,7 @@ export class CatalogService {
         data: {
           publicNumber: publicLeadNumber(),
           source,
+          serviceType: LeadServiceType.EXCURSION,
           status: LeadStatus.NEW,
           customerName: input.customerName,
           customerPhone: input.customerPhone,
@@ -660,6 +662,7 @@ function toLeadDto(lead: LeadRecord): LeadDto {
     publicNumber: lead.publicNumber,
     status: toLeadStatus(lead.status),
     source: toLeadSourceDto(lead.source),
+    serviceType: toLeadServiceType(lead.serviceType),
     excursionId: lead.excursionId,
     excursionTitle: lead.excursionTitle,
     partnerId: lead.partnerId,
@@ -778,6 +781,15 @@ function toLeadSource(source: string) {
 
 function toLeadSourceDto(source: LeadSource) {
   return source.toLowerCase() as LeadDto['source']
+}
+
+function toLeadServiceType(serviceType: LeadServiceType) {
+  if (serviceType === LeadServiceType.BIKE_RENTAL) return 'bike_rental'
+  if (serviceType === LeadServiceType.CAR_RENTAL) return 'car_rental'
+  if (serviceType === LeadServiceType.BORDER_RUN) return 'border_run'
+  if (serviceType === LeadServiceType.MONEY_EXCHANGE) return 'money_exchange'
+  if (serviceType === LeadServiceType.VISA) return 'visa'
+  return 'excursion'
 }
 
 function toLeadContactChannel(channel: string) {

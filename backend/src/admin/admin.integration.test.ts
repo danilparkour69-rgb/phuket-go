@@ -3,7 +3,12 @@ import { afterAll, beforeEach, describe, expect, test } from 'bun:test'
 import { createApp } from '../app'
 import { createPrisma } from '../db'
 import type { AppEnv } from '../env'
-import { ExcursionStatus, LeadActorType, LeadStatus } from '../generated/prisma/client'
+import {
+  ExcursionStatus,
+  LeadActorType,
+  LeadServiceType,
+  LeadStatus,
+} from '../generated/prisma/client'
 
 const databaseUrl = process.env.TEST_DATABASE_URL
 
@@ -66,6 +71,44 @@ maybeDescribe('admin API integration', () => {
     expect(forbiddenBody.error.code).toBe('FORBIDDEN')
   })
 
+  test('lists partner options for admin filters', async () => {
+    const adminToken = await registerAccessToken('partners-admin@example.com')
+    await prisma.user.update({
+      where: { email: 'partners-admin@example.com' },
+      data: { isAdmin: true },
+    })
+    await prisma.partner.createMany({
+      data: [
+        {
+          name: 'Zeta Travel',
+        },
+        {
+          name: 'Alpha Travel',
+          telegramUsername: '@alpha',
+        },
+      ],
+    })
+
+    const response = await app.request('/api/admin/partners', {
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+      },
+    })
+    const body = await response.json()
+
+    expect(response.status).toBe(200)
+    expect(body.partners).toEqual([
+      expect.objectContaining({
+        name: 'Alpha Travel',
+        telegram: '@alpha',
+      }),
+      expect.objectContaining({
+        name: 'Zeta Travel',
+        telegram: null,
+      }),
+    ])
+  })
+
   test('lists leads with status, partner, and created date filters', async () => {
     const adminToken = await registerAccessToken('admin@example.com')
     await prisma.user.update({
@@ -90,6 +133,7 @@ maybeDescribe('admin API integration', () => {
         {
           publicNumber: 'PG-20260630-ACCEPTED',
           status: LeadStatus.ACCEPTED,
+          serviceType: LeadServiceType.EXCURSION,
           customerName: 'Даниил',
           customerPhone: '+79990000000',
           customerTelegram: '@danil',
@@ -120,7 +164,7 @@ maybeDescribe('admin API integration', () => {
     })
 
     const response = await app.request(
-      `/api/admin/leads?status=accepted&search=${encodeURIComponent('marusya')}&partnerId=${firstPartner.id}&createdFrom=2026-06-30&createdTo=2026-06-30`,
+      `/api/admin/leads?status=accepted&serviceType=excursion&search=${encodeURIComponent('marusya')}&partnerId=${firstPartner.id}&createdFrom=2026-06-30&createdTo=2026-06-30`,
       {
         headers: {
           Authorization: `Bearer ${adminToken}`,
@@ -137,6 +181,7 @@ maybeDescribe('admin API integration', () => {
     expect(body.leads[0]).toMatchObject({
       publicNumber: 'PG-20260630-ACCEPTED',
       status: 'accepted',
+      serviceType: 'excursion',
       partnerId: firstPartner.id,
       partnerName: 'Marusya Travel',
       partnerTelegram: '@marusya',
@@ -397,12 +442,48 @@ maybeDescribe('admin API integration', () => {
     expect(response.headers.get('content-type')).toContain('text/csv')
     expect(response.headers.get('content-disposition')).toMatch(/admin-leads-\d{4}-\d{2}-\d{2}\.csv/)
     expect(csv.split('\r\n')[0]).toBe(
-      'lead_id,public_number,status,source,source_page,created_at,updated_at,customer_name,customer_phone,customer_telegram,contact_channel,requested_date,people_count,comment,excursion_id,excursion_title,partner_id,partner_name,partner_telegram,partner_note,admin_note,price_rub,price_thb,commission_thb,commission_total_thb',
+      'lead_id,public_number,status,service_type,source,source_page,created_at,updated_at,customer_name,customer_phone,customer_telegram,contact_channel,requested_date,people_count,comment,excursion_id,excursion_title,partner_id,partner_name,partner_telegram,partner_note,admin_note,price_rub,price_thb,commission_thb,commission_total_thb',
     )
+    expect(csv).toContain('PG-CSV-FIRST,accepted,excursion,website')
     expect(csv).toContain('PG-CSV-FIRST')
     expect(csv).not.toContain('PG-CSV-SECOND')
     expect(csv).toContain('"Комментарий, ""важно"""')
     expect(csv).toContain(',300\r\n')
+  })
+
+  test('manually syncs a lead to Google Sheets as disabled no-op when integration is off', async () => {
+    const adminToken = await registerAccessToken('sheets-sync-admin@example.com')
+    await prisma.user.update({
+      where: { email: 'sheets-sync-admin@example.com' },
+      data: { isAdmin: true },
+    })
+    const { firstPartner, firstExcursion } = await seedAdminLeadCatalog()
+    const lead = await prisma.lead.create({
+      data: {
+        publicNumber: 'PG-20260630-SHEETS-SYNC',
+        status: LeadStatus.NEW,
+        customerName: 'Sheets Sync',
+        customerPhone: '+79990000003',
+        excursionId: firstExcursion.id,
+        excursionTitle: firstExcursion.title,
+        partnerId: firstPartner.id,
+        commissionThb: 100,
+      },
+    })
+
+    const response = await app.request(`/api/admin/leads/${lead.id}/google-sheets-sync`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+      },
+    })
+    const body = await response.json()
+
+    expect(response.status).toBe(200)
+    expect(body).toEqual({
+      synced: false,
+      mode: 'disabled',
+    })
   })
 
   test('updates lead status from admin quick action and writes history', async () => {

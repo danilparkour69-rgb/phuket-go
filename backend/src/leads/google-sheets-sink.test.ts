@@ -7,6 +7,7 @@ import {
   buildLeadSheetsStatusUpdateRanges,
   GoogleSheetsLeadSink,
   leadSheetsConfigFromEnv,
+  NoopLeadSheetsSink,
   type LeadSheetsPartnerNoteUpdateInput,
   type LeadSheetsRowInput,
   type LeadSheetsStatusUpdateInput,
@@ -233,6 +234,81 @@ describe('GoogleSheetsLeadSink', () => {
     })
   })
 
+  test('looks up a lead row and replaces the full lead snapshot', async () => {
+    const privateKey = await testPrivateKey()
+    const calls: Array<{ url: string; init?: RequestInit }> = []
+    const fetcher = async (input: string | URL, init?: RequestInit) => {
+      calls.push({ url: String(input), init })
+      if (calls.length === 1) {
+        return jsonResponse({ access_token: 'access-token' })
+      }
+      if (calls.length === 2) {
+        return jsonResponse({ values: [['lead-other'], ['lead-1']] })
+      }
+
+      return jsonResponse({ totalUpdatedRows: 1 })
+    }
+    const sink = new GoogleSheetsLeadSink(
+      {
+        spreadsheetId: 'spreadsheet-id',
+        sheetName: 'Заявки',
+        serviceAccountEmail: 'service@example.iam.gserviceaccount.com',
+        privateKey,
+      },
+      fetcher,
+      () => new Date('2026-06-30T07:00:00.000Z'),
+    )
+
+    const result = await sink.syncLeadSnapshot(fullLeadInput())
+
+    expect(result).toEqual({ mode: 'updated' })
+    expect(calls).toHaveLength(3)
+    expect(calls[1].url).toContain('/values/%D0%97%D0%B0%D1%8F%D0%B2%D0%BA%D0%B8!A:A')
+    expect(calls[2].url).toContain('/values:batchUpdate')
+    expect(JSON.parse(String(calls[2].init?.body))).toEqual({
+      valueInputOption: 'USER_ENTERED',
+      data: [
+        {
+          range: 'A2:AX2',
+          values: [buildLeadSheetsRow(fullLeadInput())],
+        },
+      ],
+    })
+  })
+
+  test('appends a full lead snapshot when the row is not found', async () => {
+    const privateKey = await testPrivateKey()
+    const calls: Array<{ url: string; init?: RequestInit }> = []
+    const fetcher = async (input: string | URL, init?: RequestInit) => {
+      calls.push({ url: String(input), init })
+      if (calls.length === 1) {
+        return jsonResponse({ access_token: 'access-token' })
+      }
+      if (calls.length === 2) {
+        return jsonResponse({ values: [['lead-other']] })
+      }
+
+      return jsonResponse({ updates: { updatedRows: 1 } })
+    }
+    const sink = new GoogleSheetsLeadSink(
+      {
+        spreadsheetId: 'spreadsheet-id',
+        sheetName: 'Заявки',
+        serviceAccountEmail: 'service@example.iam.gserviceaccount.com',
+        privateKey,
+      },
+      fetcher,
+      () => new Date('2026-06-30T07:00:00.000Z'),
+    )
+
+    const result = await sink.syncLeadSnapshot(fullLeadInput())
+
+    expect(result).toEqual({ mode: 'appended' })
+    expect(calls).toHaveLength(3)
+    expect(calls[2].url).toContain('/values/%D0%97%D0%B0%D1%8F%D0%B2%D0%BA%D0%B8!A:AX:append')
+    expect(JSON.parse(String(calls[2].init?.body)).values[0][0]).toBe('lead-1')
+  })
+
   test('looks up a lead row and updates partner note columns', async () => {
     const privateKey = await testPrivateKey()
     const calls: Array<{ url: string; init?: RequestInit }> = []
@@ -320,6 +396,14 @@ describe('GoogleSheetsLeadSink', () => {
   })
 })
 
+describe('NoopLeadSheetsSink', () => {
+  test('reports disabled snapshot sync', async () => {
+    await expect(new NoopLeadSheetsSink().syncLeadSnapshot(fullLeadInput())).resolves.toEqual({
+      mode: 'disabled',
+    })
+  })
+})
+
 function fullLeadInput(): LeadSheetsRowInput {
   return {
     lead: {
@@ -329,6 +413,7 @@ function fullLeadInput(): LeadSheetsRowInput {
       updatedAt: new Date('2026-06-30T07:01:00.000Z'),
       status: 'NEW',
       source: 'WEBSITE',
+      serviceType: 'EXCURSION',
       sourcePage: '/excursions/phi-phi',
       customerName: 'Даниил',
       customerPhone: '+79990000000',

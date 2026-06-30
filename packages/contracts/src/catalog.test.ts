@@ -5,6 +5,7 @@ import {
   excursionDetailSchema,
   leadContactChannelSchema,
   leadSchema,
+  leadServiceTypeSchema,
   leadStatusSchema,
 } from './index'
 
@@ -121,6 +122,14 @@ describe('catalog contracts', () => {
 
   test('keeps stable lead statuses for admin, partner bot, and user history', () => {
     expect(leadContactChannelSchema.options).toEqual(['telegram', 'whatsapp', 'max'])
+    expect(leadServiceTypeSchema.options).toEqual([
+      'excursion',
+      'bike_rental',
+      'car_rental',
+      'visa',
+      'border_run',
+      'money_exchange',
+    ])
 
     expect(leadStatusSchema.options).toEqual([
       'new',
@@ -137,6 +146,7 @@ describe('catalog contracts', () => {
         publicNumber: 'PG-000001',
         status: 'new',
         source: 'website',
+        serviceType: 'excursion',
         excursionId: 'excursion_1',
         excursionTitle: 'Острова Пхи-Пхи: день как в мечте',
         partnerId: 'partner_1',
@@ -158,6 +168,7 @@ describe('catalog contracts', () => {
       publicNumber: 'PG-000001',
       status: 'new',
       source: 'website',
+      serviceType: 'excursion',
       contactChannel: 'whatsapp',
       commissionTotal: 200,
     })

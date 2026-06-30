@@ -283,6 +283,7 @@ test('ApiClient calls admin lead list and detail endpoints with auth', async () 
 
   const list = await client.listAdminLeads({
     status: 'accepted',
+    serviceType: 'excursion',
     search: '  Даниил  ',
     partnerId: 'partner-1',
     createdFrom: '2026-06-30',
@@ -296,7 +297,7 @@ test('ApiClient calls admin lead list and detail endpoints with auth', async () 
     {
       path: '/api/admin/leads',
       search:
-        '?status=accepted&search=%D0%94%D0%B0%D0%BD%D0%B8%D0%B8%D0%BB&partnerId=partner-1&createdFrom=2026-06-30&requiresAttention=true&sortBy=created_at&sortDirection=desc&limit=50&offset=0',
+        '?status=accepted&serviceType=excursion&search=%D0%94%D0%B0%D0%BD%D0%B8%D0%B8%D0%BB&partnerId=partner-1&createdFrom=2026-06-30&requiresAttention=true&sortBy=created_at&sortDirection=desc&limit=50&offset=0',
       authorization: 'Bearer admin-access-token',
     },
     {
@@ -340,6 +341,57 @@ test('ApiClient sends admin lead status quick action payload', async () => {
   })
 })
 
+test('ApiClient calls admin partner options endpoint with auth', async () => {
+  const calls: Array<{ path: string; authorization: string | null }> = []
+
+  globalThis.fetch = async (input, init) => {
+    const url = new URL(String(input))
+    const headers = new Headers(init?.headers)
+    calls.push({
+      path: url.pathname,
+      authorization: headers.get('Authorization'),
+    })
+
+    if (url.pathname === '/api/admin/partners') {
+      return json(
+        {
+          partners: [
+            {
+              id: 'partner-1',
+              name: 'Marusya Travel',
+              telegram: '@marusya',
+            },
+          ],
+        },
+        200,
+      )
+    }
+
+    return json({ error: { code: 'NOT_FOUND', message: 'Unexpected request' } }, 404)
+  }
+
+  const client = new ApiClient({
+    getAccessToken: () => 'admin-access-token',
+    setAccessToken: () => undefined,
+  })
+
+  const response = await client.listAdminPartners()
+
+  expect(response.partners).toEqual([
+    {
+      id: 'partner-1',
+      name: 'Marusya Travel',
+      telegram: '@marusya',
+    },
+  ])
+  expect(calls).toEqual([
+    {
+      path: '/api/admin/partners',
+      authorization: 'Bearer admin-access-token',
+    },
+  ])
+})
+
 test('ApiClient downloads admin lead CSV export with filters', async () => {
   const calls: Array<{ path: string; search: string; authorization: string | null }> = []
 
@@ -370,6 +422,7 @@ test('ApiClient downloads admin lead CSV export with filters', async () => {
   })
 
   const csv = await client.exportAdminLeadsCsv({
+    serviceType: 'excursion',
     search: '  Marusya  ',
     requiresAttention: true,
     sortBy: 'updated_at',
@@ -380,7 +433,7 @@ test('ApiClient downloads admin lead CSV export with filters', async () => {
   expect(calls).toEqual([
     {
       path: '/api/admin/leads/export.csv',
-      search: '?search=Marusya&requiresAttention=true&sortBy=updated_at&sortDirection=asc',
+      search: '?serviceType=excursion&search=Marusya&requiresAttention=true&sortBy=updated_at&sortDirection=asc',
       authorization: 'Bearer admin-access-token',
     },
   ])
@@ -431,6 +484,43 @@ test('ApiClient sends admin lead bulk status payload', async () => {
     status: 'waiting_partner',
     comment: 'Передали партнеру',
   })
+})
+
+test('ApiClient sends admin lead Google Sheets sync request', async () => {
+  let path: string | undefined
+  let method: string | undefined
+
+  globalThis.fetch = async (input, init) => {
+    const url = new URL(String(input))
+    path = url.pathname
+    method = init?.method
+
+    if (url.pathname === '/api/admin/leads/lead-1/google-sheets-sync') {
+      return json(
+        {
+          synced: true,
+          mode: 'updated',
+        },
+        200,
+      )
+    }
+
+    return json({ error: { code: 'NOT_FOUND', message: 'Unexpected request' } }, 404)
+  }
+
+  const client = new ApiClient({
+    getAccessToken: () => 'admin-access-token',
+    setAccessToken: () => undefined,
+  })
+
+  const response = await client.syncAdminLeadGoogleSheets('lead-1')
+
+  expect(response).toEqual({
+    synced: true,
+    mode: 'updated',
+  })
+  expect(path).toBe('/api/admin/leads/lead-1/google-sheets-sync')
+  expect(method).toBe('POST')
 })
 
 test('ApiClient sends admin lead note payload without status action', async () => {
@@ -529,6 +619,7 @@ function adminLeadFixture(overrides: Partial<AdminLeadDto> = {}): AdminLeadDto {
     publicNumber: 'PG-20260630-ABC12345',
     status: 'accepted',
     source: 'website',
+    serviceType: 'excursion',
     sourcePage: '/excursions/phi-phi',
     excursionId: 'excursion-1',
     excursionTitle: 'Острова Пхи-Пхи',

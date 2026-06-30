@@ -39,7 +39,6 @@ type CreateAppOptions = {
 }
 
 export function createApp({ env, prisma }: CreateAppOptions) {
-  const adminService = new AdminService(prisma)
   const authService = new AuthService(prisma, env)
   const tripAdvisorClient = env.TRIPADVISOR_API_KEY
     ? new TripAdvisorClient({
@@ -50,6 +49,7 @@ export function createApp({ env, prisma }: CreateAppOptions) {
     : null
 
   const leadSheetsSink = createLeadSheetsSinkFromEnv(env)
+  const adminService = new AdminService(prisma, leadSheetsSink)
   const leadTelegramNotifier = createLeadTelegramNotifierFromEnv(env)
   const catalogService = new CatalogService(
     prisma,

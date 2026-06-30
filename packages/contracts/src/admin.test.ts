@@ -8,7 +8,9 @@ import {
   adminLeadExportQuerySchema,
   adminLeadListQuerySchema,
   adminLeadListResponseSchema,
+  adminLeadSheetsSyncResponseSchema,
   adminLeadStatusActionRequestSchema,
+  adminPartnerListResponseSchema,
 } from './admin'
 
 describe('admin contracts', () => {
@@ -79,9 +81,10 @@ describe('admin contracts', () => {
         {
           id: 'lead-1',
           publicNumber: 'PG-20260630-ABC12345',
-          status: 'accepted',
-          source: 'website',
-          sourcePage: '/excursions/phi-phi',
+        status: 'accepted',
+        source: 'website',
+        serviceType: 'excursion',
+        sourcePage: '/excursions/phi-phi',
           excursionId: 'excursion-1',
           excursionTitle: 'Острова Пхи-Пхи',
           partnerId: 'partner-1',
@@ -122,6 +125,38 @@ describe('admin contracts', () => {
 
     expect(response.leads[0].partnerNote).toBe('Клиент не отвечает')
     expect(response.summary.requiresAttention).toBe(1)
+  })
+
+  test('validates admin partner option list response', () => {
+    expect(
+      adminPartnerListResponseSchema.parse({
+        partners: [
+          {
+            id: 'partner-1',
+            name: ' Marusya Travel ',
+            telegram: '@marusya',
+          },
+          {
+            id: 'partner-2',
+            name: 'Other Travel',
+            telegram: null,
+          },
+        ],
+      }),
+    ).toEqual({
+      partners: [
+        {
+          id: 'partner-1',
+          name: 'Marusya Travel',
+          telegram: '@marusya',
+        },
+        {
+          id: 'partner-2',
+          name: 'Other Travel',
+          telegram: null,
+        },
+      ],
+    })
   })
 
   test('normalizes admin lead status quick action payload', () => {
@@ -171,6 +206,28 @@ describe('admin contracts', () => {
     })
   })
 
+  test('validates admin lead Google Sheets sync response', () => {
+    expect(
+      adminLeadSheetsSyncResponseSchema.parse({
+        synced: true,
+        mode: 'updated',
+      }),
+    ).toEqual({
+      synced: true,
+      mode: 'updated',
+    })
+
+    expect(
+      adminLeadSheetsSyncResponseSchema.parse({
+        synced: false,
+        mode: 'disabled',
+      }),
+    ).toEqual({
+      synced: false,
+      mode: 'disabled',
+    })
+  })
+
   test('normalizes admin lead note payload', () => {
     expect(
       adminLeadAdminNoteRequestSchema.parse({
@@ -192,6 +249,7 @@ describe('admin contracts', () => {
         publicNumber: 'PG-20260630-ABC12345',
         status: 'cancelled',
         source: 'website',
+        serviceType: 'excursion',
         sourcePage: '/excursions/phi-phi',
         excursionId: 'excursion-1',
         excursionTitle: 'Острова Пхи-Пхи',

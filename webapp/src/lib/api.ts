@@ -6,7 +6,9 @@ import {
   adminLeadExportQuerySchema,
   adminLeadListQuerySchema,
   adminLeadListResponseSchema,
+  adminLeadSheetsSyncResponseSchema,
   adminLeadStatusActionRequestSchema,
+  adminPartnerListResponseSchema,
   apiErrorSchema,
   authResponseSchema,
   loginRequestSchema,
@@ -22,7 +24,9 @@ import {
   type AdminLeadExportQuery,
   type AdminLeadListQuery,
   type AdminLeadListResponse,
+  type AdminLeadSheetsSyncResponse,
   type AdminLeadStatusActionRequest,
+  type AdminPartnerListResponse,
   type AuthResponse,
   type LoginRequest,
   type LogoutRequest,
@@ -109,6 +113,12 @@ export class ApiClient {
     })
   }
 
+  listAdminPartners(): Promise<AdminPartnerListResponse> {
+    return this.request('/api/admin/partners', adminPartnerListResponseSchema, {
+      auth: true,
+    })
+  }
+
   async exportAdminLeadsCsv(query: Partial<AdminLeadExportQuery> = {}): Promise<Blob> {
     const payload = adminLeadExportQuerySchema.parse(query)
     const response = await this.rawRequest(`/api/admin/leads/export.csv${queryString(payload)}`, {
@@ -153,6 +163,17 @@ export class ApiClient {
       body: payload,
       auth: true,
     })
+  }
+
+  syncAdminLeadGoogleSheets(id: string): Promise<AdminLeadSheetsSyncResponse> {
+    return this.request(
+      `/api/admin/leads/${encodeURIComponent(id)}/google-sheets-sync`,
+      adminLeadSheetsSyncResponseSchema,
+      {
+        method: 'POST',
+        auth: true,
+      },
+    )
   }
 
   updateAdminLeadAdminNote(

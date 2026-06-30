@@ -7,7 +7,9 @@ import {
   adminLeadIdParamsSchema,
   adminLeadListQuerySchema,
   adminLeadListResponseSchema,
+  adminLeadSheetsSyncResponseSchema,
   adminLeadStatusActionRequestSchema,
+  adminPartnerListResponseSchema,
   apiErrorSchema,
 } from '@phuket-go/contracts'
 import { createRoute, OpenAPIHono } from '@hono/zod-openapi'
@@ -43,6 +45,25 @@ const listLeadsRoute = createRoute({
     200: {
       content: json(adminLeadListResponseSchema),
       description: 'Admin lead list',
+    },
+    401: {
+      content: errorResponseContent,
+      description: 'Missing or invalid access token',
+    },
+    403: {
+      content: errorResponseContent,
+      description: 'Admin access required',
+    },
+  },
+})
+
+const listPartnersRoute = createRoute({
+  method: 'get',
+  path: '/partners',
+  responses: {
+    200: {
+      content: json(adminPartnerListResponseSchema),
+      description: 'Admin partner options',
     },
     401: {
       content: errorResponseContent,
@@ -103,6 +124,36 @@ const getLeadDetailRoute = createRoute({
     404: {
       content: errorResponseContent,
       description: 'Lead not found',
+    },
+  },
+})
+
+const syncLeadGoogleSheetsRoute = createRoute({
+  method: 'post',
+  path: '/leads/{id}/google-sheets-sync',
+  request: {
+    params: adminLeadIdParamsSchema,
+  },
+  responses: {
+    200: {
+      content: json(adminLeadSheetsSyncResponseSchema),
+      description: 'Manual Google Sheets lead sync result',
+    },
+    401: {
+      content: errorResponseContent,
+      description: 'Missing or invalid access token',
+    },
+    403: {
+      content: errorResponseContent,
+      description: 'Admin access required',
+    },
+    404: {
+      content: errorResponseContent,
+      description: 'Lead not found',
+    },
+    502: {
+      content: errorResponseContent,
+      description: 'Google Sheets sync failed',
     },
   },
 })
@@ -218,6 +269,14 @@ export function createAdminRoutes() {
     return c.json(await admin.listLeads(c.req.valid('query')), 200)
   })
 
+  routes.openapi(listPartnersRoute, async (c) => {
+    const auth = c.get('authService')
+    await auth.requireAdmin(bearerToken(c))
+
+    const admin = c.get('adminService')
+    return c.json(await admin.listPartners(), 200)
+  })
+
   routes.openapi(exportLeadsCsvRoute, async (c) => {
     const auth = c.get('authService')
     await auth.requireAdmin(bearerToken(c))
@@ -228,6 +287,15 @@ export function createAdminRoutes() {
       'Content-Type': 'text/csv; charset=utf-8',
       'Content-Disposition': `attachment; filename="${adminLeadCsvFilename()}"`,
     })
+  })
+
+  routes.openapi(syncLeadGoogleSheetsRoute, async (c) => {
+    const auth = c.get('authService')
+    await auth.requireAdmin(bearerToken(c))
+
+    const admin = c.get('adminService')
+    const { id } = c.req.valid('param')
+    return c.json(await admin.syncLeadToGoogleSheets(id), 200)
   })
 
   routes.openapi(getLeadDetailRoute, async (c) => {
