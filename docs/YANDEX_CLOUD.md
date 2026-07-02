@@ -2,6 +2,8 @@
 
 Use this document only when the user explicitly asks for Yandex Cloud or the product has a clear regional, compliance, or commercial reason to avoid the default DigitalOcean path.
 
+Phuket Go release gate: do not create Yandex resources, push backend images, upload static builds, or configure production hosting until the public website and the full local lead path are approved as 10/10 and the owner explicitly starts deployment.
+
 DigitalOcean remains the default provider in this template. Do not ask the user to compare providers during first-run setup.
 
 ## Service Map

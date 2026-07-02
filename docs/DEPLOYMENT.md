@@ -2,6 +2,8 @@
 
 Use this document only after the user has asked for deployment. Read the root [README.md](../README.md) and active surface READMEs first; they record the installed project's active surfaces, deferred surfaces, release targets, and validation scope.
 
+Phuket Go release gate: do not start deployment, cloud-resource changes, image pushes, or static build uploads until the public website and the full local lead path are approved as 10/10 and the owner explicitly starts publication.
+
 The default production path is DigitalOcean App Platform plus DigitalOcean Managed PostgreSQL. Do not ask the user to choose a cloud provider during first-run setup. Ask for product-facing release details instead:
 
 - which active surfaces should be released now: backend/API, webapp, website, or full-stack;

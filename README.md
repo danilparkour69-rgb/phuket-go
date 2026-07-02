@@ -16,6 +16,7 @@ Phuket Go is a Russian-language Phuket travel marketplace MVP built from the `vi
 - API, auth, lead handling, Telegram notifications, Google Sheets sync, status history, points, and commissions live in `backend`.
 - Shared request/response schemas live in `packages/contracts`.
 - Local development is the current target. Deployment, domains, production bots, final media cleanup, mobile ASO, mobile apps, Telegram Mini App, partner cabinet, and online payments are deferred.
+- Current release gate: finish the public `website` and the full local lead path to 10/10 before any cloud upload, production resource creation, deployment, or publication workflow.
 
 Before product development, read `AGENTS.md`, `docs/00-project-control/project-instructions-for-codex.md`, `docs/00-project-control/context-compression.md`, and `docs/10-mvp-roadmap/start-development-prompt.md`.
 

@@ -7,8 +7,9 @@
     "node": ">=22.12.0"
   },
   "scripts": {
-    "dev": "ASTRO_TELEMETRY_DISABLED=1 astro dev",
-    "build": "ASTRO_TELEMETRY_DISABLED=1 astro build",
+    "sync:media": "bun ../scripts/sync-website-media.mjs",
+    "dev": "bun run sync:media && ASTRO_TELEMETRY_DISABLED=1 astro dev",
+    "build": "bun run sync:media && ASTRO_TELEMETRY_DISABLED=1 astro build",
     "typecheck": "ASTRO_TELEMETRY_DISABLED=1 astro check",
     "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview",
     "astro": "ASTRO_TELEMETRY_DISABLED=1 astro"

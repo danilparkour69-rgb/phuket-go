@@ -85,8 +85,13 @@ approved
 - Фото в `final/carousel`: 569.
 - Манифестов: 54.
 - Фото на будущую замену: 58.
+- `website` уже читает `media-manifest.json`, сохраняет порядок фото из манифеста и строит локальные URL вида `/media/...`.
+- Перед `website` dev/build запускается `sync:media`, который копирует фото в `website/public/media`.
+- `website/public/media` и `website/dist/media` считаются generated output и не коммитятся.
+- После текущего media sync production build сайта не должен зависеть от `localhost` или `127.0.0.1` для изображений.
 
 ## Следующий шаг
 
-- [ ] Перейти от фото к следующему блоку подготовки MVP.
+- [ ] Проверить ключевые страницы сайта с реальными фото на desktop/mobile.
 - [ ] Перед публикацией вернуться к ручной чистке фото.
+- [ ] Для релизных фото заменить `ready_for_manual_review`/`needs_replacement_later` на `approved` там, где изображение точно подходит.

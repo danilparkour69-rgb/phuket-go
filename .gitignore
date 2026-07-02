@@ -10,6 +10,7 @@ coverage/
 playwright-report/
 test-results/
 webapp/e2e/.artifacts/
+website/public/media/
 mobile/.expo/
 mobile/.maestro/reports/
 

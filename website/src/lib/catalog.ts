@@ -10,6 +10,7 @@ import {
   type ExcursionDetailDto,
   type ExcursionReviewsResponse,
 } from '@phuket-go/contracts'
+import { sitePath } from './paths'
 
 const defaultApiUrl = 'http://127.0.0.1:3000'
 const workingDirectory = cwd()
@@ -43,6 +44,16 @@ type ExcursionItem = {
   media?: {
     folder?: string
   }
+}
+
+type MediaManifest = {
+  assets?: MediaManifestAsset[]
+}
+
+type MediaManifestAsset = {
+  file?: string
+  role?: string
+  status?: string
 }
 
 type ExcursionMarkdown = {
@@ -158,9 +169,9 @@ export async function loadExcursionReviews(slug: string) {
   }
 }
 
-export function mediaUrl(value: string | null, apiUrl: string) {
+export function mediaUrl(value: string | null, _apiUrl: string) {
   if (!value) return null
-  if (value.startsWith('/media/')) return new URL(value, apiUrl).toString()
+  if (value.startsWith('/media/')) return sitePath(value)
   return value
 }
 
@@ -292,6 +303,9 @@ async function photosFor(item: ExcursionItem) {
   const folder = item.media?.folder
   if (!folder) return []
 
+  const manifestPhotos = await manifestPhotosFor(folder)
+  if (manifestPhotos.length > 0) return manifestPhotos
+
   const carouselFolder = resolve(mediaRoot, folder, 'final/carousel')
   const files = await readdir(carouselFolder).catch(() => [])
   return files
@@ -300,6 +314,35 @@ async function photosFor(item: ExcursionItem) {
     .map((file) => ({
       url: `/media/excursions/${relative(mediaRoot, join(carouselFolder, file))}`,
     }))
+}
+
+async function manifestPhotosFor(folder: string) {
+  const manifestPath = resolve(mediaRoot, folder, 'media-manifest.json')
+  const manifest = await readFile(manifestPath, 'utf8')
+    .then((value) => JSON.parse(value) as MediaManifest)
+    .catch(() => null)
+  if (!manifest?.assets?.length) return []
+
+  const files = uniqueItems(
+    manifest.assets
+      .filter((asset) => asset.role === 'carousel')
+      .map((asset) => asset.file?.trim() ?? '')
+      .filter(isSafeManifestCarouselFile),
+  )
+
+  return files.map((file) => ({
+    url: `/media/excursions/${folder}/${file}`,
+  }))
+}
+
+function isSafeManifestCarouselFile(file: string) {
+  return (
+    file.startsWith('final/carousel/') &&
+    !file.startsWith('/') &&
+    !file.includes('\0') &&
+    !file.split('/').includes('..') &&
+    ['.jpg', '.jpeg', '.png', '.webp'].includes(extname(file).toLowerCase())
+  )
 }
 
 async function markdownFor(item: ExcursionItem): Promise<ExcursionMarkdown> {

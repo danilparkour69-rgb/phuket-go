@@ -3253,6 +3253,7 @@ function discoveryLocationLabel(_categorySlug: string) {
     height: 430px;
     border-radius: 8px;
     background: #eaf1ee;
+    margin: 0;
   }
 
   .gallery-main > div:not(.gallery-actions) {
@@ -4648,14 +4649,35 @@ function discoveryLocationLabel(_categorySlug: string) {
 
   @media (max-width: 1039px) {
     .site-header {
-      grid-template-columns: 1fr;
-      gap: 12px;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 8px 12px;
+      padding: 8px 14px;
+    }
+
+    .search-pill {
+      justify-self: end;
+      min-height: 36px;
+      padding: 0 12px;
+      font-size: 0.92rem;
     }
 
     .site-header nav {
+      grid-column: 1 / -1;
       justify-content: flex-start;
+      max-width: 100%;
+      min-width: 0;
       overflow-x: auto;
+      padding-bottom: 2px;
       white-space: nowrap;
+      scrollbar-width: none;
+    }
+
+    .site-header nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .site-header nav a {
+      flex: 0 0 auto;
     }
 
     .product-shell {
@@ -4729,14 +4751,13 @@ function discoveryLocationLabel(_categorySlug: string) {
     }
 
     .gallery-mobile-strip {
-      display: grid;
+      order: 2;
+      display: flex;
       gap: 8px;
-      grid-auto-flow: column;
-      grid-auto-columns: 76%;
       overflow-x: auto;
       scroll-snap-type: x mandatory;
-      padding: 0 14px 12px;
-      margin-bottom: 12px;
+      padding: 10px 0 0;
+      margin: 0;
       scrollbar-width: none;
     }
 
@@ -4745,15 +4766,16 @@ function discoveryLocationLabel(_categorySlug: string) {
     }
 
     .gallery-mobile-strip .gallery-thumb--mobile {
-      height: 160px;
+      flex: 0 0 88px;
+      height: 64px;
       scroll-snap-align: start;
-      border-radius: 10px;
+      border-radius: 8px;
     }
 
     .viator-gallery {
-      display: block;
-      margin-right: -14px;
-      margin-left: -14px;
+      display: flex;
+      flex-direction: column;
+      margin: 0 0 16px;
     }
 
     .gallery-rail {
@@ -4761,8 +4783,10 @@ function discoveryLocationLabel(_categorySlug: string) {
     }
 
     .gallery-main {
-      height: 330px;
-      border-radius: 0;
+      order: 1;
+      height: auto;
+      aspect-ratio: 4 / 3;
+      border-radius: 10px;
     }
 
     .gallery-actions {
@@ -4919,8 +4943,9 @@ function discoveryLocationLabel(_categorySlug: string) {
     }
 
     .gallery-main {
-      height: 270px;
-      border-radius: 0;
+      height: auto;
+      aspect-ratio: 16 / 7;
+      border-radius: 10px;
     }
 
     .gallery-rail {
@@ -4928,11 +4953,11 @@ function discoveryLocationLabel(_categorySlug: string) {
     }
 
     .gallery-thumb--mobile {
-      height: 110px;
+      height: 62px;
     }
 
     .gallery-mobile-strip {
-      grid-auto-columns: 52%;
+      display: flex;
       margin-bottom: 8px;
     }
 

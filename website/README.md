@@ -48,6 +48,8 @@ bun run preview
 
 Astro publishes pages from `src/pages`. Static assets live in `public`.
 
+Public excursion media is sourced from `docs/03-service-catalog/media/excursions/{direction}/final/carousel` in the order defined by each `media-manifest.json`. `bun run dev` and `bun run build` run `sync:media` first, copying those carousel files into the ignored `website/public/media` folder so the static site can serve `/media/...` without a running backend. Do not commit the generated media copy; update the source files and manifests under `docs/03-service-catalog/media` instead.
+
 `PUBLIC_API_URL` is build-time config for API calls made by the public site. `PUBLIC_BASE_PATH` is optional and defaults to `/`; use it only when the static site is served from a path prefix. For the first Yandex Object Storage temporary URL release, build with:
 
 ```bash
