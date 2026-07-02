@@ -1,6 +1,6 @@
 # Next Session
 
-Дата обновления: 2026-06-30
+Дата обновления: 2026-07-02
 
 ## Текущее состояние
 
@@ -64,6 +64,35 @@
 - Skill для текстов: `docs/12-skills/pishi-sokrashchai/SKILL.md`
 
 ## Последнее действие
+
+2026-07-02: стабилизирован блок заявок, Telegram-уведомлений, партнерских Telegram-кнопок, Google Sheets sync и админской очереди заявок.
+
+Фактическое состояние:
+
+- публичная заявка сохраняется в Postgres и поддерживает выбор канала связи после отправки;
+- админ и партнер получают Telegram-уведомления по заявке и выбранному каналу связи;
+- партнерские Telegram callback-действия покрывают `accept`, `paid`, `decline`, custom decline reason и problem report;
+- тестовые Telegram-заявки не синхронизируются в Google Sheets;
+- админка покрывает список заявок, фильтры, CSV export, bulk status, заметки, ручной Sheets sync и смену статуса из UI;
+- код-ревью области заявок/Telegram/админки: 9/10 после проверки покрытия и E2E;
+- внешний Telegram smoke для admin chat пройден через `bun run --cwd backend telegram:smoke`;
+- partner Telegram smoke не запускался, потому что `TELEGRAM_SMOKE_PARTNER_CHAT_ID` не задан;
+- внешний Google Sheets smoke остается ручным шагом перед публикацией, потому что в локальном env нет Google Sheets конфигурации.
+
+Проверки, пройденные 2026-07-02:
+
+- `bun run test:contracts` - 28 pass;
+- `bun run test:webapp` - 51 pass;
+- `bun run test:backend:unit` - 92 pass;
+- `TEST_DATABASE_URL="postgresql://superuser:superpassword@localhost:55431/phuket_go_test?schema=public" bun run test:backend:integration` - 45 pass;
+- `bun run e2e:webapp` - 3 pass;
+- `bun run --cwd backend telegram:smoke` - admin message sent.
+
+Важно: дефолтный backend integration порт `54330` был занят локально, поэтому backend integration прогонялся на явном тестовом порту `55431`. Playwright E2E сам выбрал свободный тестовый порт.
+
+Следующий практичный блок: релизная готовность публичного сайта и операционного контура. Проверить публичный путь пользователя на `website`: главная -> каталог -> карточка экскурсии -> заявка -> выбор канала связи -> follow-up, затем сделать внешний smoke Telegram/Sheets с боевыми env.
+
+---
 
 2026-06-29: начата локальная разработка публичного каталога в `website` по шаблону `vibe`.
 
@@ -335,11 +364,11 @@ https://t.me/marusyatravel/2206
 
 Следующий логичный шаг:
 
-1. Открыть главный план: `docs/00-project-control/master-plan.md`.
-2. Открыть карту передачи в разработку: `docs/10-mvp-roadmap/development-handoff-map.md`.
-3. Открыть список перед стартом кодинга: `docs/10-mvp-roadmap/immediate-pre-coding-actions.md`.
-4. Фото больше не блокируют работу: берем доступные фото из папки направления, финальную чистку делаем перед публикацией.
-5. Финальная сверка pre-coding документов выполнена: `docs/10-mvp-roadmap/pre-coding-docs-consistency-review.md`.
+1. Проверить публичный путь на `website`: главная -> каталог -> карточка экскурсии -> заявка -> выбор канала связи -> follow-up.
+2. Сделать внешний smoke Telegram/Sheets с реальными env без вывода секретов в логи.
+3. Открыть главный план: `docs/00-project-control/master-plan.md`.
+4. Открыть карту передачи в разработку: `docs/10-mvp-roadmap/development-handoff-map.md`.
+5. Фото больше не блокируют работу: берем доступные фото из папки направления, финальную чистку делаем перед публикацией.
 6. Сжатый контекст для нового окна: `docs/00-project-control/context-compression.md`.
 7. Инструкция Codex от владельца проекта сохранена: `docs/00-project-control/project-instructions-for-codex.md`.
 8. Если пользователь просит разработку, сначала прочитать сохраненную инструкцию и применить ее с учетом приоритета `AGENTS.md`, шаблона `vibe` и актуальных документов `docs/`.
