@@ -7,6 +7,9 @@ import {
   leadSchema,
   leadServiceTypeSchema,
   leadStatusSchema,
+  leadFollowUpFlowResponseSchema,
+  leadFollowUpQuestionKeySchema,
+  updateLeadFollowUpRequestSchema,
 } from './index'
 
 describe('catalog contracts', () => {
@@ -110,6 +113,121 @@ describe('catalog contracts', () => {
     ).toThrow()
   })
 
+  test('normalizes lead follow-up details and requires at least one field', () => {
+    expect(
+      updateLeadFollowUpRequestSchema.parse({
+        requestedDate: '2026-07-12',
+        comment: ' Подойдут 12 или 13 июля, утром ',
+      }),
+    ).toEqual({
+      requestedDate: '2026-07-12',
+      comment: 'Подойдут 12 или 13 июля, утром',
+    })
+
+    expect(
+      updateLeadFollowUpRequestSchema.parse({
+        requestedDate: '',
+        comment: ' Лучше после обеда ',
+        answers: [
+          {
+            questionKey: 'desired_dates',
+            questionPrompt: ' Какие даты вам удобны? ',
+            answer: ' 12 или 13 июля ',
+            sortOrder: 10,
+          },
+        ],
+      }),
+    ).toEqual({
+      requestedDate: undefined,
+      comment: 'Лучше после обеда',
+      answers: [
+        {
+          questionKey: 'desired_dates',
+          questionPrompt: 'Какие даты вам удобны?',
+          answer: '12 или 13 июля',
+          sortOrder: 10,
+        },
+      ],
+    })
+
+    expect(() => updateLeadFollowUpRequestSchema.parse({ requestedDate: '', comment: '' })).toThrow()
+  })
+
+  test('validates lead follow-up flow with passport preparation as the final instruction', () => {
+    const response = leadFollowUpFlowResponseSchema.parse({
+      leadId: 'lead_1',
+      publicNumber: 'PG-000001',
+      serviceType: 'excursion',
+      serviceTitle: 'Квадроциклы',
+      questions: [
+        {
+          key: 'desired_dates',
+          kind: 'text',
+          prompt: 'Какие даты вам удобны?',
+          placeholder: 'Например: 12 или 13 июля, лучше утром',
+          isRequired: false,
+          sortOrder: 10,
+        },
+        {
+          key: 'prepare_passport',
+          kind: 'instruction',
+          prompt: 'Пожалуйста, подготовьте паспорт. Он может понадобиться менеджеру для оформления.',
+          placeholder: null,
+          isRequired: false,
+          sortOrder: 90,
+        },
+      ],
+      finalMessage: 'Все отлично, в ближайшее время менеджер с вами свяжется.',
+    })
+
+    expect(response.questions.at(-1)).toMatchObject({
+      key: 'prepare_passport',
+      kind: 'instruction',
+      placeholder: null,
+    })
+    expect(response.finalMessage).toContain('менеджер')
+  })
+
+  test('keeps stable follow-up question keys for service-specific flows', () => {
+    expect(leadFollowUpQuestionKeySchema.options).toEqual([
+      'desired_dates',
+      'people_count',
+      'hotel_or_area',
+      'rental_duration',
+      'bike_preference',
+      'car_preference',
+      'pickup_location',
+      'visa_goal',
+      'border_run_direction',
+      'exchange_currency',
+      'exchange_amount',
+      'service_details',
+      'prepare_passport',
+    ])
+
+    expect(
+      updateLeadFollowUpRequestSchema.parse({
+        answers: [
+          {
+            questionKey: 'bike_preference',
+            questionPrompt: ' Какой байк вам интересен? ',
+            answer: ' Honda PCX ',
+            sortOrder: 30,
+          },
+        ],
+      }),
+    ).toMatchObject({
+      answers: [
+        {
+          questionKey: 'bike_preference',
+          questionPrompt: 'Какой байк вам интересен?',
+          answer: 'Honda PCX',
+          sortOrder: 30,
+        },
+      ],
+    })
+  })
+
   test('rejects lead requests without required customer fields', () => {
     expect(() =>
       createLeadRequestSchema.parse({
@@ -135,6 +253,7 @@ describe('catalog contracts', () => {
       'new',
       'waiting_partner',
       'accepted',
+      'paid',
       'declined',
       'completed',
       'cancelled',
@@ -146,6 +265,7 @@ describe('catalog contracts', () => {
         publicNumber: 'PG-000001',
         status: 'new',
         source: 'website',
+        isTest: false,
         serviceType: 'excursion',
         excursionId: 'excursion_1',
         excursionTitle: 'Острова Пхи-Пхи: день как в мечте',
@@ -168,6 +288,7 @@ describe('catalog contracts', () => {
       publicNumber: 'PG-000001',
       status: 'new',
       source: 'website',
+      isTest: false,
       serviceType: 'excursion',
       contactChannel: 'whatsapp',
       commissionTotal: 200,

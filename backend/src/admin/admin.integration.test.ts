@@ -9,6 +9,8 @@ import {
   LeadServiceType,
   LeadStatus,
 } from '../generated/prisma/client'
+import type { LeadSheetsSink } from '../leads/google-sheets-sink'
+import { AdminService } from './service'
 
 const databaseUrl = process.env.TEST_DATABASE_URL
 
@@ -46,6 +48,7 @@ maybeDescribe('admin API integration', () => {
     await prisma.excursion.deleteMany()
     await prisma.excursionCategory.deleteMany()
     await prisma.partner.deleteMany()
+    await prisma.telegramContact.deleteMany()
     await prisma.authSession.deleteMany()
     await prisma.user.deleteMany()
   })
@@ -59,6 +62,23 @@ maybeDescribe('admin API integration', () => {
 
     const noToken = await app.request('/api/admin/leads')
     expect(noToken.status).toBe(401)
+
+    const noTokenServiceTypes = await app.request('/api/admin/service-types')
+    expect(noTokenServiceTypes.status).toBe(401)
+
+    const noTokenCreate = await app.request('/api/admin/leads', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        serviceType: 'bike_rental',
+        partnerId: 'partner-1',
+        customerName: 'Даниил',
+        customerPhone: '+66990000000',
+      }),
+    })
+    expect(noTokenCreate.status).toBe(401)
 
     const forbidden = await app.request('/api/admin/leads', {
       headers: {
@@ -101,12 +121,314 @@ maybeDescribe('admin API integration', () => {
       expect.objectContaining({
         name: 'Alpha Travel',
         telegram: '@alpha',
+        telegramChatId: null,
       }),
       expect.objectContaining({
         name: 'Zeta Travel',
         telegram: null,
+        telegramChatId: null,
       }),
     ])
+  })
+
+  test('lists Telegram contacts for admin binding', async () => {
+    const adminToken = await registerAccessToken('telegram-contacts-admin@example.com')
+    await prisma.user.update({
+      where: { email: 'telegram-contacts-admin@example.com' },
+      data: { isAdmin: true },
+    })
+    await prisma.partner.create({
+      data: {
+        name: 'Marusya Travel',
+        telegramChatId: '111111',
+      },
+    })
+    await prisma.telegramContact.createMany({
+      data: [
+        {
+          chatId: '222222',
+          telegramUserId: '222222',
+          username: 'candidate',
+          firstName: 'Candidate',
+          chatType: 'private',
+          lastMessageText: '/start',
+          lastSeenAt: new Date('2026-07-02T08:00:00.000Z'),
+        },
+        {
+          chatId: '111111',
+          telegramUserId: '111111',
+          username: 'linked',
+          firstName: 'Linked',
+          chatType: 'private',
+          lastMessageText: '/start',
+          lastSeenAt: new Date('2026-07-02T09:00:00.000Z'),
+        },
+      ],
+    })
+
+    const forbidden = await app.request('/api/admin/telegram/contacts')
+    expect(forbidden.status).toBe(401)
+
+    const response = await app.request('/api/admin/telegram/contacts', {
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+      },
+    })
+    const body = await response.json()
+
+    expect(response.status).toBe(200)
+    expect(body.contacts).toHaveLength(2)
+    expect(body.contacts[0]).toMatchObject({
+      chatId: '111111',
+      username: '@linked',
+      displayName: '@linked',
+      linkedPartnerName: 'Marusya Travel',
+    })
+    expect(body.contacts[1]).toMatchObject({
+      chatId: '222222',
+      username: '@candidate',
+      linkedPartnerId: null,
+    })
+  })
+
+  test('binds a Telegram contact to a partner only through admin action', async () => {
+    const adminToken = await registerAccessToken('telegram-bind-admin@example.com')
+    const adminUser = await prisma.user.update({
+      where: { email: 'telegram-bind-admin@example.com' },
+      data: { isAdmin: true },
+    })
+    const partner = await prisma.partner.create({
+      data: {
+        name: 'Marusya Travel',
+      },
+    })
+    const contact = await prisma.telegramContact.create({
+      data: {
+        chatId: '333333',
+        telegramUserId: '333333',
+        username: 'manager',
+        firstName: 'Manager',
+        chatType: 'private',
+        lastMessageText: '/start',
+      },
+    })
+
+    const response = await app.request(`/api/admin/partners/${partner.id}/telegram-contact`, {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contactId: contact.id,
+      }),
+    })
+    const body = await response.json()
+
+    expect(response.status).toBe(200)
+    expect(body.partner).toMatchObject({
+      id: partner.id,
+      telegram: '@manager',
+      telegramChatId: '333333',
+    })
+    expect(body.contact).toMatchObject({
+      id: contact.id,
+      linkedPartnerId: partner.id,
+      linkedPartnerName: 'Marusya Travel',
+    })
+    expect(body.testLead).toMatchObject({
+      isTest: true,
+      source: 'admin',
+      excursionTitle: 'Тестовая заявка Telegram',
+      partnerId: partner.id,
+      status: 'new',
+    })
+    expect(body.testNotificationSent).toBe(true)
+
+    const storedPartner = await prisma.partner.findUniqueOrThrow({
+      where: { id: partner.id },
+    })
+    expect(storedPartner.telegramChatId).toBe('333333')
+    expect(storedPartner.telegramUsername).toBe('@manager')
+
+    const storedLead = await prisma.lead.findUniqueOrThrow({
+      where: { id: body.testLead.id },
+      include: { statusHistory: true },
+    })
+    expect(storedLead.isTest).toBe(true)
+    expect(storedLead.statusHistory[0]).toMatchObject({
+      actorType: LeadActorType.ADMIN,
+      actorId: adminUser.id,
+    })
+  })
+
+  test('lists service type options for admin forms', async () => {
+    const adminToken = await registerAccessToken('service-types-admin@example.com')
+    await prisma.user.update({
+      where: { email: 'service-types-admin@example.com' },
+      data: { isAdmin: true },
+    })
+
+    const response = await app.request('/api/admin/service-types', {
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+      },
+    })
+    const body = await response.json()
+
+    expect(response.status).toBe(200)
+    expect(body.serviceTypes).toEqual([
+      { value: 'excursion', label: 'Экскурсии', isActive: true, sortOrder: 10 },
+      { value: 'bike_rental', label: 'Аренда байков', isActive: true, sortOrder: 20 },
+      { value: 'visa', label: 'Визы', isActive: true, sortOrder: 30 },
+      { value: 'border_run', label: 'Border run', isActive: true, sortOrder: 40 },
+      { value: 'car_rental', label: 'Аренда машин', isActive: true, sortOrder: 50 },
+      { value: 'money_exchange', label: 'Обмен денег', isActive: true, sortOrder: 60 },
+    ])
+  })
+
+  test('creates a non-excursion lead from admin without excursion', async () => {
+    const adminToken = await registerAccessToken('create-bike-admin@example.com')
+    const adminUser = await prisma.user.update({
+      where: { email: 'create-bike-admin@example.com' },
+      data: { isAdmin: true },
+    })
+    const { firstPartner } = await seedAdminLeadCatalog()
+
+    const response = await app.request('/api/admin/leads', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        serviceType: 'bike_rental',
+        partnerId: firstPartner.id,
+        customerName: 'Даниил',
+        customerPhone: '+66990000000',
+        customerTelegram: '@danil',
+        contactChannel: 'telegram',
+        requestedDate: '2026-07-15',
+        peopleCount: 1,
+        comment: 'Нужен байк на день',
+      }),
+    })
+    const body = await response.json()
+
+    expect(response.status).toBe(201)
+    expect(body.lead).toMatchObject({
+      source: 'admin',
+      serviceType: 'bike_rental',
+      excursionId: null,
+      excursionTitle: 'Аренда байков',
+      partnerId: firstPartner.id,
+      customerName: 'Даниил',
+      commissionThb: 100,
+      commissionTotal: 100,
+    })
+    expect(body.statusHistory).toHaveLength(1)
+    expect(body.statusHistory[0]).toMatchObject({
+      fromStatus: null,
+      toStatus: 'new',
+      actorType: 'admin',
+      actorId: adminUser.id,
+    })
+
+    const persisted = await prisma.lead.findUniqueOrThrow({
+      where: { id: body.lead.id },
+    })
+    expect(persisted.excursionId).toBeNull()
+    expect(persisted.serviceType).toBe(LeadServiceType.BIKE_RENTAL)
+  })
+
+  test('creates an excursion lead from admin with excursion snapshot', async () => {
+    const adminToken = await registerAccessToken('create-excursion-admin@example.com')
+    const adminUser = await prisma.user.update({
+      where: { email: 'create-excursion-admin@example.com' },
+      data: { isAdmin: true },
+    })
+    const { firstPartner, firstExcursion } = await seedAdminLeadCatalog()
+
+    const response = await app.request('/api/admin/leads', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        serviceType: 'excursion',
+        partnerId: firstPartner.id,
+        excursionId: firstExcursion.id,
+        customerName: 'Мария',
+        customerPhone: '+66991112233',
+        peopleCount: 2,
+      }),
+    })
+    const body = await response.json()
+
+    expect(response.status).toBe(201)
+    expect(body.lead).toMatchObject({
+      source: 'admin',
+      serviceType: 'excursion',
+      excursionId: firstExcursion.id,
+      excursionTitle: firstExcursion.title,
+      partnerId: firstPartner.id,
+      priceRub: 3900,
+      priceThb: 1500,
+      commissionTotal: 200,
+    })
+    expect(body.statusHistory[0]).toMatchObject({
+      actorType: 'admin',
+      actorId: adminUser.id,
+    })
+  })
+
+  test('keeps admin-created lead when Google Sheets append fails', async () => {
+    const adminUser = await prisma.user.create({
+      data: {
+        email: 'sheets-failure-admin@example.com',
+        passwordHash: 'hash',
+        isAdmin: true,
+      },
+    })
+    const { firstPartner } = await seedAdminLeadCatalog()
+    const failingSheetsSink: LeadSheetsSink = {
+      async appendLead() {
+        throw new Error('Sheets unavailable')
+      },
+      async syncLeadSnapshot() {
+        throw new Error('Unused')
+      },
+      async updateLeadStatus() {},
+      async updateLeadPartnerNote() {},
+    }
+    const originalConsoleError = console.error
+    console.error = () => undefined
+
+    try {
+      const service = new AdminService(prisma, failingSheetsSink)
+      const detail = await service.createLead(
+        {
+          serviceType: 'bike_rental',
+          partnerId: firstPartner.id,
+          excursionId: undefined,
+          customerName: 'Даниил',
+          customerPhone: '+66990000000',
+          customerTelegram: undefined,
+          requestedDate: undefined,
+          comment: undefined,
+        },
+        adminUser.id,
+      )
+
+      expect(detail.lead.serviceType).toBe('bike_rental')
+      const persisted = await prisma.lead.findUniqueOrThrow({ where: { id: detail.lead.id } })
+      expect(persisted).toMatchObject({
+        id: detail.lead.id,
+      })
+    } finally {
+      console.error = originalConsoleError
+    }
   })
 
   test('lists leads with status, partner, and created date filters', async () => {
@@ -283,6 +605,24 @@ maybeDescribe('admin API integration', () => {
         },
       ],
     })
+    await prisma.leadFollowUpAnswer.createMany({
+      data: [
+        {
+          leadId: lead.id,
+          questionKey: 'hotel_or_area',
+          questionPrompt: 'В каком отеле или районе вы находитесь?',
+          answer: 'Patong',
+          sortOrder: 30,
+        },
+        {
+          leadId: lead.id,
+          questionKey: 'desired_dates',
+          questionPrompt: 'Какие даты вам удобны?',
+          answer: '12 или 13 июля',
+          sortOrder: 10,
+        },
+      ],
+    })
 
     const response = await app.request(`/api/admin/leads/${lead.id}`, {
       headers: {
@@ -308,6 +648,14 @@ maybeDescribe('admin API integration', () => {
       fromStatus: null,
       actorType: 'system',
       comment: 'Lead created',
+    })
+    expect(body.followUpAnswers.map((answer: { questionKey: string }) => answer.questionKey)).toEqual([
+      'desired_dates',
+      'hotel_or_area',
+    ])
+    expect(body.followUpAnswers[0]).toMatchObject({
+      questionPrompt: 'Какие даты вам удобны?',
+      answer: '12 или 13 июля',
     })
   })
 
@@ -442,9 +790,9 @@ maybeDescribe('admin API integration', () => {
     expect(response.headers.get('content-type')).toContain('text/csv')
     expect(response.headers.get('content-disposition')).toMatch(/admin-leads-\d{4}-\d{2}-\d{2}\.csv/)
     expect(csv.split('\r\n')[0]).toBe(
-      'lead_id,public_number,status,service_type,source,source_page,created_at,updated_at,customer_name,customer_phone,customer_telegram,contact_channel,requested_date,people_count,comment,excursion_id,excursion_title,partner_id,partner_name,partner_telegram,partner_note,admin_note,price_rub,price_thb,commission_thb,commission_total_thb',
+      'lead_id,public_number,is_test,status,service_type,source,source_page,created_at,updated_at,customer_name,customer_phone,customer_telegram,contact_channel,requested_date,people_count,comment,excursion_id,excursion_title,partner_id,partner_name,partner_telegram,partner_note,admin_note,price_rub,price_thb,commission_thb,commission_total_thb',
     )
-    expect(csv).toContain('PG-CSV-FIRST,accepted,excursion,website')
+    expect(csv).toContain('PG-CSV-FIRST,false,accepted,excursion,website')
     expect(csv).toContain('PG-CSV-FIRST')
     expect(csv).not.toContain('PG-CSV-SECOND')
     expect(csv).toContain('"Комментарий, ""важно"""')
@@ -481,6 +829,37 @@ maybeDescribe('admin API integration', () => {
 
     expect(response.status).toBe(200)
     expect(body).toEqual({
+      synced: false,
+      mode: 'disabled',
+    })
+  })
+
+  test('skips manual Google Sheets sync for test leads', async () => {
+    const { firstPartner, firstExcursion } = await seedAdminLeadCatalog()
+    const testLead = await prisma.lead.create({
+      data: {
+        publicNumber: 'TEST-20260630-SHEETS-SYNC',
+        isTest: true,
+        status: LeadStatus.NEW,
+        customerName: 'Telegram Test',
+        customerPhone: '+66000000000',
+        excursionId: firstExcursion.id,
+        excursionTitle: firstExcursion.title,
+        partnerId: firstPartner.id,
+        commissionThb: 100,
+      },
+    })
+    const throwingSheetsSink: LeadSheetsSink = {
+      async appendLead() {},
+      async syncLeadSnapshot() {
+        throw new Error('Test lead must not reach Google Sheets')
+      },
+      async updateLeadStatus() {},
+      async updateLeadPartnerNote() {},
+    }
+    const service = new AdminService(prisma, throwingSheetsSink)
+
+    await expect(service.syncLeadToGoogleSheets(testLead.id)).resolves.toEqual({
       synced: false,
       mode: 'disabled',
     })

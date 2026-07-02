@@ -1,4 +1,5 @@
 import type {
+  AdminCreateLeadRequest,
   AdminLeadAdminNoteRequest,
   AdminLeadBulkStatusActionRequest,
   AdminLeadBulkStatusActionResponse,
@@ -9,7 +10,12 @@ import type {
   AdminLeadSheetsSyncResponse,
   AdminLeadStatusActionRequest,
   AdminLeadStatusHistoryItemDto,
+  AdminBindPartnerTelegramContactRequest,
+  AdminBindPartnerTelegramContactResponse,
   AdminPartnerListResponse,
+  AdminServiceTypeListResponse,
+  AdminTelegramContactDto,
+  AdminTelegramContactListResponse,
 } from '@phuket-go/contracts'
 
 import type { DbClient } from '../db'
@@ -27,11 +33,24 @@ import {
   type LeadSheetsRowInput,
   type LeadSheetsSink,
 } from '../leads/google-sheets-sink'
+import {
+  NoopLeadTelegramNotifier,
+  type LeadTelegramNotifier,
+} from '../leads/telegram-notifier'
 
 const adminLeadCsvExportLimit = 5000
+const adminServiceTypeOptions = [
+  { value: 'excursion', label: 'Экскурсии', isActive: true, sortOrder: 10 },
+  { value: 'bike_rental', label: 'Аренда байков', isActive: true, sortOrder: 20 },
+  { value: 'visa', label: 'Визы', isActive: true, sortOrder: 30 },
+  { value: 'border_run', label: 'Border run', isActive: true, sortOrder: 40 },
+  { value: 'car_rental', label: 'Аренда машин', isActive: true, sortOrder: 50 },
+  { value: 'money_exchange', label: 'Обмен денег', isActive: true, sortOrder: 60 },
+] as const
 const adminLeadCsvColumns = [
   ['lead_id', (lead: AdminLeadDto) => lead.id],
   ['public_number', (lead: AdminLeadDto) => lead.publicNumber],
+  ['is_test', (lead: AdminLeadDto) => String(lead.isTest)],
   ['status', (lead: AdminLeadDto) => lead.status],
   ['service_type', (lead: AdminLeadDto) => lead.serviceType],
   ['source', (lead: AdminLeadDto) => lead.source],
@@ -63,6 +82,7 @@ export class AdminService {
   constructor(
     private readonly db: DbClient,
     private readonly leadSheetsSink: LeadSheetsSink = new NoopLeadSheetsSink(),
+    private readonly leadTelegramNotifier: LeadTelegramNotifier = new NoopLeadTelegramNotifier(),
   ) {}
 
   async listLeads(query: AdminLeadListQuery) {
@@ -104,6 +124,7 @@ export class AdminService {
         id: true,
         name: true,
         telegramUsername: true,
+        telegramChatId: true,
       },
       orderBy: [{ name: 'asc' }, { id: 'asc' }],
     })
@@ -113,8 +134,298 @@ export class AdminService {
         id: partner.id,
         name: partner.name,
         telegram: partner.telegramUsername,
+        telegramChatId: partner.telegramChatId,
       })),
     }
+  }
+
+  async listTelegramContacts(): Promise<AdminTelegramContactListResponse> {
+    const contacts = await this.db.telegramContact.findMany({
+      orderBy: [{ lastSeenAt: 'desc' }, { createdAt: 'desc' }, { id: 'asc' }],
+      take: 50,
+    })
+    const partners = await this.db.partner.findMany({
+      where: {
+        telegramChatId: {
+          in: contacts.map((contact) => contact.chatId),
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        telegramChatId: true,
+      },
+    })
+    const partnerByChatId = new Map(
+      partners
+        .filter((partner) => partner.telegramChatId)
+        .map((partner) => [partner.telegramChatId as string, partner]),
+    )
+
+    return {
+      contacts: contacts.map((contact) =>
+        toAdminTelegramContactDto(contact, partnerByChatId.get(contact.chatId) ?? null),
+      ),
+    }
+  }
+
+  async bindPartnerTelegramContact(
+    partnerId: string,
+    input: AdminBindPartnerTelegramContactRequest,
+    adminUserId: string,
+  ): Promise<AdminBindPartnerTelegramContactResponse> {
+    const contact = await this.db.telegramContact.findUnique({
+      where: { id: input.contactId },
+    })
+    if (!contact) {
+      throw new AppError(404, 'NOT_FOUND', 'Telegram contact not found')
+    }
+
+    const existingPartner = await this.db.partner.findUnique({
+      where: { id: partnerId },
+      select: {
+        id: true,
+        name: true,
+        telegramUsername: true,
+        telegramChatId: true,
+        defaultCommissionThb: true,
+      },
+    })
+    if (!existingPartner) {
+      throw new AppError(404, 'NOT_FOUND', 'Partner not found')
+    }
+
+    const conflictingPartner = await this.db.partner.findFirst({
+      where: {
+        telegramChatId: contact.chatId,
+        id: { not: partnerId },
+      },
+      select: { id: true },
+    })
+    if (conflictingPartner) {
+      throw new AppError(409, 'CONFLICT', 'Telegram contact is already linked to another partner')
+    }
+
+    const shouldSendTestLead = !existingPartner.telegramChatId
+    const partner = await this.db.partner.update({
+      where: { id: partnerId },
+      data: {
+        telegramChatId: contact.chatId,
+        ...(contact.username ? { telegramUsername: `@${contact.username}` } : {}),
+      },
+      select: {
+        id: true,
+        name: true,
+        telegramUsername: true,
+        telegramChatId: true,
+        defaultCommissionThb: true,
+      },
+    })
+    const testLead = shouldSendTestLead
+      ? await this.createPartnerTelegramTestLead({
+          partner,
+          adminUserId,
+        })
+      : null
+    const testNotificationSent = testLead
+      ? await this.notifyTelegramTestLeadCreated({ lead: testLead, partner })
+      : false
+
+    return {
+      partner: {
+        id: partner.id,
+        name: partner.name,
+        telegram: partner.telegramUsername,
+        telegramChatId: partner.telegramChatId,
+      },
+      contact: toAdminTelegramContactDto(contact, {
+        id: partner.id,
+        name: partner.name,
+        telegramChatId: partner.telegramChatId,
+      }),
+      testLead: testLead ? toAdminLeadDto(testLead) : null,
+      testNotificationSent,
+    }
+  }
+
+  private async createPartnerTelegramTestLead({
+    partner,
+    adminUserId,
+  }: {
+    partner: {
+      id: string
+      defaultCommissionThb: number
+    }
+    adminUserId: string
+  }) {
+    return this.db.$transaction(async (tx) => {
+      const lead = await tx.lead.create({
+        data: {
+          publicNumber: adminTestLeadNumber(),
+          source: LeadSource.ADMIN,
+          isTest: true,
+          serviceType: LeadServiceType.EXCURSION,
+          status: LeadStatus.NEW,
+          customerName: 'Тестовый клиент Phuket Go',
+          customerPhone: '+66000000000',
+          customerTelegram: '@test_customer',
+          contactChannel: LeadContactChannel.TELEGRAM,
+          peopleCount: 2,
+          comment:
+            'Тестовая заявка для проверки Telegram-кнопок менеджера. Нажмите «Взять в работу», затем «Оплата получена».',
+          excursionTitle: 'Тестовая заявка Telegram',
+          partnerId: partner.id,
+          commissionThb: partner.defaultCommissionThb,
+          commissionTotal: partner.defaultCommissionThb * 2,
+        },
+        include: adminLeadInclude,
+      })
+
+      await tx.leadStatusHistory.create({
+        data: {
+          leadId: lead.id,
+          toStatus: LeadStatus.NEW,
+          actorType: LeadActorType.ADMIN,
+          actorId: adminUserId,
+          comment: 'Telegram manager onboarding test lead created.',
+        },
+      })
+
+      return lead
+    })
+  }
+
+  private async notifyTelegramTestLeadCreated({
+    lead,
+    partner,
+  }: {
+    lead: AdminLeadRecord
+    partner: {
+      name: string
+      telegramUsername: string | null
+      telegramChatId: string | null
+    }
+  }) {
+    try {
+      await this.leadTelegramNotifier.notifyLeadCreated({
+        lead: {
+          id: lead.id,
+          publicNumber: lead.publicNumber,
+          status: lead.status,
+          isTest: lead.isTest,
+          customerName: lead.customerName,
+          customerPhone: lead.customerPhone,
+          customerTelegram: lead.customerTelegram,
+          contactChannel: lead.contactChannel,
+          requestedDate: lead.requestedDate,
+          peopleCount: lead.peopleCount,
+          comment: lead.comment,
+          excursionTitle: lead.excursionTitle,
+        },
+        partner: {
+          name: partner.name,
+          telegramUsername: partner.telegramUsername,
+          telegramChatId: partner.telegramChatId,
+        },
+      })
+      return true
+    } catch (error) {
+      console.error('Telegram manager test lead notification failed', {
+        leadId: lead.id,
+        message: error instanceof Error ? error.message : 'Unknown Telegram notification error',
+      })
+      return false
+    }
+  }
+
+  listServiceTypes(): AdminServiceTypeListResponse {
+    return {
+      serviceTypes: adminServiceTypeOptions.map((option) => ({ ...option })),
+    }
+  }
+
+  async createLead(
+    input: AdminCreateLeadRequest,
+    adminUserId: string,
+  ): Promise<AdminLeadDetailResponse> {
+    const serviceType = toLeadServiceTypeRecord(input.serviceType)
+    const serviceTypeLabel = serviceTypeLabelFor(input.serviceType)
+    const partner = await this.db.partner.findUnique({
+      where: { id: input.partnerId },
+    })
+
+    if (!partner) {
+      throw new AppError(404, 'NOT_FOUND', 'Partner not found')
+    }
+
+    const excursion =
+      input.serviceType === 'excursion'
+        ? await this.db.excursion.findUnique({
+            where: { id: input.excursionId ?? '' },
+            include: {
+              category: true,
+            },
+          })
+        : null
+
+    if (input.serviceType === 'excursion' && !excursion) {
+      throw new AppError(404, 'NOT_FOUND', 'Excursion not found')
+    }
+
+    const peopleCount = input.peopleCount ?? null
+    const commissionThb = partner.defaultCommissionThb
+    const commissionTotal = peopleCount === null ? null : commissionThb * peopleCount
+    const excursionTitle = excursion?.title ?? serviceTypeLabel
+
+    const lead = await this.db.$transaction(async (tx) => {
+      const createdLead = await tx.lead.create({
+        data: {
+          publicNumber: adminLeadNumber(),
+          source: LeadSource.ADMIN,
+          serviceType,
+          status: LeadStatus.NEW,
+          customerName: input.customerName,
+          customerPhone: input.customerPhone,
+          customerTelegram: input.customerTelegram,
+          contactChannel: input.contactChannel ? toLeadContactChannelRecord(input.contactChannel) : undefined,
+          requestedDate: input.requestedDate ? new Date(input.requestedDate) : undefined,
+          peopleCount,
+          comment: input.comment,
+          excursionId: excursion?.id,
+          excursionTitle,
+          partnerId: partner.id,
+          priceRub: excursion?.priceFromRub,
+          priceThb: excursion?.priceFromThb,
+          commissionThb,
+          commissionTotal,
+        },
+        include: adminLeadSheetsSyncInclude,
+      })
+
+      await tx.leadStatusHistory.create({
+        data: {
+          leadId: createdLead.id,
+          toStatus: LeadStatus.NEW,
+          actorType: LeadActorType.ADMIN,
+          actorId: adminUserId,
+          comment: 'Lead created manually by admin.',
+        },
+      })
+
+      return createdLead
+    })
+
+    await this.appendLeadToSheets(toLeadSheetsRowInput(lead))
+    await this.notifyLeadCreated({
+      lead,
+      partner: {
+        name: partner.name,
+        telegramUsername: partner.telegramUsername,
+        telegramChatId: partner.telegramChatId,
+      },
+    })
+
+    return this.getLeadDetail(lead.id)
   }
 
   async getLeadDetail(id: string): Promise<AdminLeadDetailResponse> {
@@ -152,6 +463,13 @@ export class AdminService {
       throw new AppError(404, 'NOT_FOUND', 'Lead not found')
     }
 
+    if (lead.isTest) {
+      return {
+        synced: false,
+        mode: 'disabled',
+      }
+    }
+
     try {
       const result = await this.leadSheetsSink.syncLeadSnapshot(toLeadSheetsRowInput(lead))
       return {
@@ -164,6 +482,30 @@ export class AdminService {
         message: error instanceof Error ? error.message : 'Unknown Google Sheets error',
       })
       throw new AppError(502, 'INTERNAL_ERROR', 'Google Sheets sync failed')
+    }
+  }
+
+  private async appendLeadToSheets(input: LeadSheetsRowInput) {
+    try {
+      await this.leadSheetsSink.appendLead(input)
+    } catch (error) {
+      console.error('Google Sheets lead sync failed', {
+        leadId: input.lead.id,
+        message: error instanceof Error ? error.message : 'Unknown Google Sheets error',
+      })
+    }
+  }
+
+  private async notifyLeadCreated(
+    input: Parameters<LeadTelegramNotifier['notifyLeadCreated']>[0],
+  ) {
+    try {
+      await this.leadTelegramNotifier.notifyLeadCreated(input)
+    } catch (error) {
+      console.error('Telegram lead notification failed', {
+        leadId: input.lead.id,
+        message: error instanceof Error ? error.message : 'Unknown Telegram notification error',
+      })
     }
   }
 
@@ -415,6 +757,9 @@ const adminLeadDetailInclude = {
   statusHistory: {
     orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
   },
+  followUpAnswers: {
+    orderBy: [{ sortOrder: 'asc' }, { createdAt: 'asc' }, { id: 'asc' }],
+  },
 } satisfies Prisma.LeadInclude
 
 type AdminLeadDetailRecord = Prisma.LeadGetPayload<{
@@ -433,6 +778,12 @@ const adminLeadSheetsSyncInclude = {
 type AdminLeadSheetsSyncRecord = Prisma.LeadGetPayload<{
   include: typeof adminLeadSheetsSyncInclude
 }>
+type TelegramContactRecord = Prisma.TelegramContactGetPayload<Record<string, never>>
+type TelegramContactLinkedPartner = {
+  id: string
+  name: string
+  telegramChatId: string | null
+}
 
 function toAdminLeadDto(lead: AdminLeadRecord): AdminLeadDto {
   return {
@@ -440,6 +791,7 @@ function toAdminLeadDto(lead: AdminLeadRecord): AdminLeadDto {
     publicNumber: lead.publicNumber,
     status: toLeadStatus(lead.status),
     source: toLeadSource(lead.source),
+    isTest: lead.isTest,
     serviceType: toLeadServiceType(lead.serviceType),
     sourcePage: lead.sourcePage,
     excursionId: lead.excursionId,
@@ -470,14 +822,42 @@ function toAdminLeadDto(lead: AdminLeadRecord): AdminLeadDto {
   }
 }
 
+function toAdminTelegramContactDto(
+  contact: TelegramContactRecord,
+  linkedPartner: TelegramContactLinkedPartner | null,
+): AdminTelegramContactDto {
+  return {
+    id: contact.id,
+    chatId: contact.chatId,
+    telegramUserId: contact.telegramUserId,
+    username: contact.username ? `@${contact.username}` : null,
+    displayName: telegramContactDisplayName(contact),
+    firstName: contact.firstName,
+    lastName: contact.lastName,
+    chatType: contact.chatType,
+    lastMessageText: contact.lastMessageText,
+    lastSeenAt: contact.lastSeenAt.toISOString(),
+    linkedPartnerId: linkedPartner?.id ?? null,
+    linkedPartnerName: linkedPartner?.name ?? null,
+    createdAt: contact.createdAt.toISOString(),
+    updatedAt: contact.updatedAt.toISOString(),
+  }
+}
+
+function telegramContactDisplayName(contact: TelegramContactRecord) {
+  if (contact.username) return `@${contact.username}`
+  const name = [contact.firstName, contact.lastName].filter(Boolean).join(' ').trim()
+  return name || `chat ${contact.chatId}`
+}
+
 function toLeadSheetsRowInput(lead: AdminLeadSheetsSyncRecord): LeadSheetsRowInput {
   return {
     lead,
     excursion: {
-      slug: lead.excursion.slug,
-      categoryTitle: lead.excursion.category.title,
-      rubRate: Number(lead.excursion.rubRate),
-      rateDate: lead.excursion.rateDate,
+      slug: lead.excursion?.slug ?? null,
+      categoryTitle: lead.excursion?.category.title ?? serviceTypeLabelFor(toLeadServiceType(lead.serviceType)),
+      rubRate: lead.excursion ? Number(lead.excursion.rubRate) : null,
+      rateDate: lead.excursion?.rateDate ?? null,
     },
     partner: {
       name: lead.partner.name,
@@ -490,6 +870,15 @@ function toAdminLeadDetailResponse(lead: AdminLeadDetailRecord): AdminLeadDetail
   return {
     lead: toAdminLeadDto(lead),
     statusHistory: lead.statusHistory.map(toAdminLeadStatusHistoryItemDto),
+    followUpAnswers: lead.followUpAnswers.map((answer) => ({
+      id: answer.id,
+      questionKey: answer.questionKey,
+      questionPrompt: answer.questionPrompt,
+      answer: answer.answer,
+      sortOrder: answer.sortOrder,
+      createdAt: answer.createdAt.toISOString(),
+      updatedAt: answer.updatedAt.toISOString(),
+    })),
   }
 }
 
@@ -538,6 +927,7 @@ function nextUtcDay(value: string) {
 function toLeadStatusRecord(status: string) {
   if (status === 'waiting_partner') return LeadStatus.WAITING_PARTNER
   if (status === 'accepted') return LeadStatus.ACCEPTED
+  if (status === 'paid') return LeadStatus.PAID
   if (status === 'declined') return LeadStatus.DECLINED
   if (status === 'completed') return LeadStatus.COMPLETED
   if (status === 'cancelled') return LeadStatus.CANCELLED
@@ -567,10 +957,41 @@ function toLeadServiceType(serviceType: LeadServiceType) {
   return 'excursion'
 }
 
+function serviceTypeLabelFor(serviceType: AdminLeadDto['serviceType']) {
+  return adminServiceTypeOptions.find((option) => option.value === serviceType)?.label ?? 'Экскурсии'
+}
+
 function toLeadSource(source: LeadSource) {
   return source.toLowerCase() as AdminLeadDto['source']
 }
 
 function toLeadContactChannel(channel: LeadContactChannel) {
   return channel.toLowerCase() as NonNullable<AdminLeadDto['contactChannel']>
+}
+
+function toLeadContactChannelRecord(channel: string) {
+  if (channel === 'whatsapp') return LeadContactChannel.WHATSAPP
+  if (channel === 'max') return LeadContactChannel.MAX
+  return LeadContactChannel.TELEGRAM
+}
+
+function adminLeadNumber() {
+  const date = new Date()
+  const day = date.toISOString().slice(0, 10).replaceAll('-', '')
+  const suffix = crypto.randomUUID().slice(0, 8).toUpperCase()
+  return `PG-${day}-${suffix}`
+}
+
+function adminTestLeadNumber() {
+  const date = new Date()
+  const day = date.toISOString().slice(0, 10).replaceAll('-', '')
+  const suffix = crypto.randomUUID().slice(0, 8).toUpperCase()
+  return `TEST-${day}-${suffix}`
+}
+
+function isRecordNotFound(error: unknown) {
+  return (
+    error instanceof Prisma.PrismaClientKnownRequestError &&
+    error.code === 'P2025'
+  )
 }

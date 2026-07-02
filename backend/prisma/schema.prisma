@@ -50,6 +50,7 @@ enum LeadStatus {
   NEW             @map("new")
   WAITING_PARTNER @map("waiting_partner")
   ACCEPTED        @map("accepted")
+  PAID            @map("paid")
   DECLINED        @map("declined")
   COMPLETED       @map("completed")
   CANCELLED       @map("cancelled")
@@ -95,10 +96,10 @@ enum LeadActorType {
 }
 
 enum TripAdvisorMatchStatus {
-  NOT_MATCHED  @map("not_matched")
-  MATCHED      @map("matched")
-  APPROVED     @map("approved")
-  DISABLED     @map("disabled")
+  NOT_MATCHED @map("not_matched")
+  MATCHED     @map("matched")
+  APPROVED    @map("approved")
+  DISABLED    @map("disabled")
 
   @@map("tripadvisor_match_status")
 }
@@ -169,6 +170,28 @@ model Partner {
   @@map("partners")
 }
 
+model TelegramContact {
+  id                       String    @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  chatId                   String    @unique(map: "telegram_contacts_chat_id_key") @map("chat_id")
+  telegramUserId           String?   @map("telegram_user_id")
+  username                 String?
+  firstName                String?   @map("first_name")
+  lastName                 String?   @map("last_name")
+  chatType                 String    @map("chat_type")
+  lastMessageText          String?   @map("last_message_text")
+  pendingReasonLeadId      String?   @map("pending_reason_lead_id") @db.Uuid
+  pendingReasonAction      String?   @map("pending_reason_action")
+  pendingReasonMessageId   Int?      @map("pending_reason_message_id")
+  pendingReasonRequestedAt DateTime? @map("pending_reason_requested_at")
+  lastSeenAt               DateTime  @default(now()) @map("last_seen_at")
+  createdAt                DateTime  @default(now()) @map("created_at")
+  updatedAt                DateTime  @updatedAt @map("updated_at")
+
+  @@index([lastSeenAt], map: "telegram_contacts_last_seen_at_idx")
+  @@index([pendingReasonLeadId], map: "telegram_contacts_pending_reason_lead_id_idx")
+  @@map("telegram_contacts")
+}
+
 model ExcursionCategory {
   id          String          @id @default(dbgenerated("uuidv7()")) @db.Uuid
   slug        String          @unique
@@ -185,50 +208,50 @@ model ExcursionCategory {
 }
 
 model Excursion {
-  id                 String            @id @default(dbgenerated("uuidv7()")) @db.Uuid
-  slug               String            @unique
-  title              String
-  categoryId         String            @map("category_id") @db.Uuid
-  shortEmotion       String            @map("short_emotion")
-  description        String
-  route              String?
-  duration           String?
-  priceFromThb       Int               @map("price_from_thb")
-  priceFromRub       Int               @map("price_from_rub")
-  rubRate            Decimal           @map("rub_rate") @db.Decimal(10, 4)
-  rateDate           DateTime          @map("rate_date")
-  currencyNote       String            @map("currency_note")
-  included           Json?
-  notIncluded        Json?             @map("not_included")
-  takeWithYou        Json?             @map("take_with_you")
-  restrictions       Json?
-  insurance          String
-  guideLanguageNote  String?           @map("guide_language_note")
-  cancellationPolicy String?           @map("cancellation_policy")
-  partnerId          String            @map("partner_id") @db.Uuid
-  status             ExcursionStatus   @default(DRAFT)
-  seoTitle           String            @map("seo_title")
-  seoDescription     String            @map("seo_description")
-  sourceUrl          String?           @map("source_url")
-  adminNote          String?           @map("admin_note")
-  tripadvisorLocationId       String?      @map("tripadvisor_location_id")
-  tripadvisorLocationName     String?      @map("tripadvisor_location_name")
-  tripadvisorRating           Decimal?     @map("tripadvisor_rating") @db.Decimal(3, 2)
-  tripadvisorReviewCount      Int?         @map("tripadvisor_review_count")
-  tripadvisorRanking          Int?         @map("tripadvisor_ranking")
-  tripadvisorWebUrl           String?      @map("tripadvisor_web_url")
-  tripadvisorRatingImageUrl   String?      @map("tripadvisor_rating_image_url")
-  tripadvisorLastSyncedAt      DateTime?    @map("tripadvisor_last_synced_at")
-  tripadvisorMatchStatus       TripAdvisorMatchStatus @default(NOT_MATCHED) @map("tripadvisor_match_status")
-  tripadvisorSyncStatus        TripAdvisorSyncStatus @default(NOT_STARTED) @map("tripadvisor_sync_status")
-  tripadvisorSyncMessage       String?      @map("tripadvisor_sync_message")
-  tripadvisorDisplayAllowed    Boolean      @default(false) @map("tripadvisor_display_allowed")
-  createdAt          DateTime          @default(now()) @map("created_at")
-  updatedAt          DateTime          @updatedAt @map("updated_at")
-  category           ExcursionCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict, map: "excursions_category_id_fkey")
-  partner            Partner           @relation(fields: [partnerId], references: [id], onDelete: Restrict, map: "excursions_partner_id_fkey")
-  photos             ExcursionPhoto[]
-  leads              Lead[]
+  id                        String                 @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  slug                      String                 @unique
+  title                     String
+  categoryId                String                 @map("category_id") @db.Uuid
+  shortEmotion              String                 @map("short_emotion")
+  description               String
+  route                     String?
+  duration                  String?
+  priceFromThb              Int                    @map("price_from_thb")
+  priceFromRub              Int                    @map("price_from_rub")
+  rubRate                   Decimal                @map("rub_rate") @db.Decimal(10, 4)
+  rateDate                  DateTime               @map("rate_date")
+  currencyNote              String                 @map("currency_note")
+  included                  Json?
+  notIncluded               Json?                  @map("not_included")
+  takeWithYou               Json?                  @map("take_with_you")
+  restrictions              Json?
+  insurance                 String
+  guideLanguageNote         String?                @map("guide_language_note")
+  cancellationPolicy        String?                @map("cancellation_policy")
+  partnerId                 String                 @map("partner_id") @db.Uuid
+  status                    ExcursionStatus        @default(DRAFT)
+  seoTitle                  String                 @map("seo_title")
+  seoDescription            String                 @map("seo_description")
+  sourceUrl                 String?                @map("source_url")
+  adminNote                 String?                @map("admin_note")
+  tripadvisorLocationId     String?                @map("tripadvisor_location_id")
+  tripadvisorLocationName   String?                @map("tripadvisor_location_name")
+  tripadvisorRating         Decimal?               @map("tripadvisor_rating") @db.Decimal(3, 2)
+  tripadvisorReviewCount    Int?                   @map("tripadvisor_review_count")
+  tripadvisorRanking        Int?                   @map("tripadvisor_ranking")
+  tripadvisorWebUrl         String?                @map("tripadvisor_web_url")
+  tripadvisorRatingImageUrl String?                @map("tripadvisor_rating_image_url")
+  tripadvisorLastSyncedAt   DateTime?              @map("tripadvisor_last_synced_at")
+  tripadvisorMatchStatus    TripAdvisorMatchStatus @default(NOT_MATCHED) @map("tripadvisor_match_status")
+  tripadvisorSyncStatus     TripAdvisorSyncStatus  @default(NOT_STARTED) @map("tripadvisor_sync_status")
+  tripadvisorSyncMessage    String?                @map("tripadvisor_sync_message")
+  tripadvisorDisplayAllowed Boolean                @default(false) @map("tripadvisor_display_allowed")
+  createdAt                 DateTime               @default(now()) @map("created_at")
+  updatedAt                 DateTime               @updatedAt @map("updated_at")
+  category                  ExcursionCategory      @relation(fields: [categoryId], references: [id], onDelete: Restrict, map: "excursions_category_id_fkey")
+  partner                   Partner                @relation(fields: [partnerId], references: [id], onDelete: Restrict, map: "excursions_partner_id_fkey")
+  photos                    ExcursionPhoto[]
+  leads                     Lead[]
 
   @@index([categoryId, status], map: "excursions_category_id_status_idx")
   @@index([partnerId], map: "excursions_partner_id_idx")
@@ -260,38 +283,40 @@ model ExcursionPhoto {
 }
 
 model Lead {
-  id                   String              @id @default(dbgenerated("uuidv7()")) @db.Uuid
-  publicNumber         String              @unique @map("public_number")
-  source               LeadSource          @default(WEBSITE)
-  serviceType          LeadServiceType     @default(EXCURSION) @map("service_type")
-  status               LeadStatus          @default(NEW)
-  customerName         String              @map("customer_name")
-  customerPhone        String              @map("customer_phone")
-  customerTelegram     String?             @map("customer_telegram")
-  contactChannel       LeadContactChannel? @map("contact_channel")
-  requestedDate        DateTime?           @map("requested_date")
-  peopleCount          Int?                @map("people_count")
+  id                   String               @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  publicNumber         String               @unique @map("public_number")
+  source               LeadSource           @default(WEBSITE)
+  isTest               Boolean              @default(false) @map("is_test")
+  serviceType          LeadServiceType      @default(EXCURSION) @map("service_type")
+  status               LeadStatus           @default(NEW)
+  customerName         String               @map("customer_name")
+  customerPhone        String               @map("customer_phone")
+  customerTelegram     String?              @map("customer_telegram")
+  contactChannel       LeadContactChannel?  @map("contact_channel")
+  requestedDate        DateTime?            @map("requested_date")
+  peopleCount          Int?                 @map("people_count")
   comment              String?
-  sourcePage           String?             @map("source_page")
-  userId               String?             @map("user_id") @db.Uuid
-  excursionId          String              @map("excursion_id") @db.Uuid
-  excursionTitle       String              @map("excursion_title_snapshot")
-  partnerId            String              @map("partner_id") @db.Uuid
-  priceRub             Int?                @map("price_rub_snapshot")
-  priceThb             Int?                @map("price_thb_snapshot")
-  commissionThb        Int                 @default(100) @map("commission_per_person_thb")
-  commissionTotal      Int?                @map("commission_total_thb")
-  adminNote            String?             @map("admin_note")
-  adminNoteUpdatedAt   DateTime?           @map("admin_note_updated_at")
-  adminNoteUpdatedById String?             @map("admin_note_updated_by_id") @db.Uuid
-  partnerNote          String?             @map("partner_note")
-  createdAt            DateTime            @default(now()) @map("created_at")
-  updatedAt            DateTime            @updatedAt @map("updated_at")
-  user                 User?               @relation(fields: [userId], references: [id], onDelete: SetNull, map: "leads_user_id_fkey")
-  adminNoteUpdatedBy   User?               @relation("LeadAdminNoteUpdatedBy", fields: [adminNoteUpdatedById], references: [id], onDelete: SetNull, map: "leads_admin_note_updated_by_id_fkey")
-  excursion            Excursion           @relation(fields: [excursionId], references: [id], onDelete: Restrict, map: "leads_excursion_id_fkey")
-  partner              Partner             @relation(fields: [partnerId], references: [id], onDelete: Restrict, map: "leads_partner_id_fkey")
+  sourcePage           String?              @map("source_page")
+  userId               String?              @map("user_id") @db.Uuid
+  excursionId          String?              @map("excursion_id") @db.Uuid
+  excursionTitle       String               @map("excursion_title_snapshot")
+  partnerId            String               @map("partner_id") @db.Uuid
+  priceRub             Int?                 @map("price_rub_snapshot")
+  priceThb             Int?                 @map("price_thb_snapshot")
+  commissionThb        Int                  @default(100) @map("commission_per_person_thb")
+  commissionTotal      Int?                 @map("commission_total_thb")
+  adminNote            String?              @map("admin_note")
+  adminNoteUpdatedAt   DateTime?            @map("admin_note_updated_at")
+  adminNoteUpdatedById String?              @map("admin_note_updated_by_id") @db.Uuid
+  partnerNote          String?              @map("partner_note")
+  createdAt            DateTime             @default(now()) @map("created_at")
+  updatedAt            DateTime             @updatedAt @map("updated_at")
+  user                 User?                @relation(fields: [userId], references: [id], onDelete: SetNull, map: "leads_user_id_fkey")
+  adminNoteUpdatedBy   User?                @relation("LeadAdminNoteUpdatedBy", fields: [adminNoteUpdatedById], references: [id], onDelete: SetNull, map: "leads_admin_note_updated_by_id_fkey")
+  excursion            Excursion?           @relation(fields: [excursionId], references: [id], onDelete: Restrict, map: "leads_excursion_id_fkey")
+  partner              Partner              @relation(fields: [partnerId], references: [id], onDelete: Restrict, map: "leads_partner_id_fkey")
   statusHistory        LeadStatusHistory[]
+  followUpAnswers      LeadFollowUpAnswer[]
 
   @@index([status, createdAt], map: "leads_status_created_at_idx")
   @@index([userId, createdAt], map: "leads_user_id_created_at_idx")
@@ -299,6 +324,22 @@ model Lead {
   @@index([partnerId], map: "leads_partner_id_idx")
   @@index([adminNoteUpdatedById], map: "leads_admin_note_updated_by_id_idx")
   @@map("leads")
+}
+
+model LeadFollowUpAnswer {
+  id             String   @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  leadId         String   @map("lead_id") @db.Uuid
+  questionKey    String   @map("question_key")
+  questionPrompt String   @map("question_prompt")
+  answer         String
+  sortOrder      Int      @default(0) @map("sort_order")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+  lead           Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade, map: "lead_follow_up_answers_lead_id_fkey")
+
+  @@unique([leadId, questionKey], map: "lead_follow_up_answers_lead_id_question_key_key")
+  @@index([leadId, sortOrder], map: "lead_follow_up_answers_lead_id_sort_order_idx")
+  @@map("lead_follow_up_answers")
 }
 
 model LeadStatusHistory {
@@ -317,13 +358,13 @@ model LeadStatusHistory {
 }
 
 model IntegrationCredential {
-  id                 String   @id @default(dbgenerated("uuidv7()")) @db.Uuid
-  provider           String   @unique
-  apiKey             String   @map("api_key")
-  isActive           Boolean  @default(true) @map("is_active")
+  id                 String    @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  provider           String    @unique
+  apiKey             String    @map("api_key")
+  isActive           Boolean   @default(true) @map("is_active")
   lastUsedAt         DateTime? @map("last_used_at")
   lastValidationAt   DateTime? @map("last_validation_at")
-  lastValidationNote String?  @map("last_validation_note")
+  lastValidationNote String?   @map("last_validation_note")
   createdAt          DateTime  @default(now()) @map("created_at")
   updatedAt          DateTime  @updatedAt @map("updated_at")
 
@@ -331,12 +372,12 @@ model IntegrationCredential {
 }
 
 model IntegrationApiUsage {
-  id            String   @id @default(dbgenerated("uuidv7()")) @db.Uuid
-  provider      String
-  budgetDate    DateTime @map("budget_date")
-  requestCount  Int      @default(0) @map("request_count")
-  createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @updatedAt @map("updated_at")
+  id           String   @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  provider     String
+  budgetDate   DateTime @map("budget_date")
+  requestCount Int      @default(0) @map("request_count")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
 
   @@unique([provider, budgetDate])
   @@map("integration_api_usage")

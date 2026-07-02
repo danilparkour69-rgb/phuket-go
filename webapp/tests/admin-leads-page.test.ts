@@ -19,6 +19,7 @@ describe('admin lead SLA indicator', () => {
     expect(slaLabel({ status: 'accepted', createdAt: '2026-06-30T10:30:00.000Z' })).toBe(
       'В работе',
     )
+    expect(slaLabel({ status: 'paid', createdAt: '2026-06-30T10:30:00.000Z' })).toBe('Закрыта')
     expect(slaLabel({ status: 'completed', createdAt: '2026-06-30T10:30:00.000Z' })).toBe(
       'Закрыта',
     )

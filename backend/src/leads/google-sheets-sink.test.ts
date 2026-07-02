@@ -17,7 +17,7 @@ describe('buildLeadSheetsRow', () => {
   test('maps a complete lead snapshot to the Google Sheets column order', () => {
     const row = buildLeadSheetsRow(fullLeadInput())
 
-    expect(row).toHaveLength(50)
+    expect(row).toHaveLength(51)
     expect(row.slice(0, 18)).toEqual([
       'lead-1',
       'PG-20260630-ABC12345',
@@ -57,7 +57,7 @@ describe('buildLeadSheetsRow', () => {
       200,
       'not_accrued',
     ])
-    expect(row[49]).toBe('not_migrated')
+    expect(row[50]).toBe('not_migrated')
   })
 
   test('keeps optional fields empty and calculates commission fallback', () => {
@@ -76,6 +76,27 @@ describe('buildLeadSheetsRow', () => {
     expect(row[23]).toBe('')
     expect(row[33]).toBe(200)
   })
+
+  test('maps non-excursion lead snapshots with empty excursion identifiers', () => {
+    const input = fullLeadInput()
+    input.lead.serviceType = 'BIKE_RENTAL'
+    input.lead.excursionId = null
+    input.lead.excursionTitle = 'Аренда байков'
+    input.excursion.slug = null
+    input.excursion.categoryTitle = 'Аренда байков'
+    input.excursion.rubRate = null
+    input.excursion.rateDate = null
+
+    const row = buildLeadSheetsRow(input)
+
+    expect(row[10]).toBe('bike_rental')
+    expect(row[11]).toBe('Аренда байков')
+    expect(row[12]).toBe('')
+    expect(row[13]).toBe('')
+    expect(row[14]).toBe('Аренда байков')
+    expect(row[29]).toBe('')
+    expect(row[30]).toBe('')
+  })
 })
 
 describe('buildLeadSheetsStatusUpdateRanges', () => {
@@ -90,7 +111,7 @@ describe('buildLeadSheetsStatusUpdateRanges', () => {
         values: [['2026-06-30T08:01:00.000Z']],
       },
       {
-        range: 'AO12:AQ12',
+        range: 'AP12:AR12',
         values: [['partner', 'partner-1', '2026-06-30T08:01:00.000Z']],
       },
     ])
@@ -115,6 +136,18 @@ describe('buildLeadSheetsStatusUpdateRanges', () => {
     const ranges = buildLeadSheetsStatusUpdateRanges(input, 12)
 
     expect(ranges[1]).toEqual({
+      range: 'AN12:AN12',
+      values: [['2026-06-30T08:01:00.000Z']],
+    })
+  })
+
+  test('maps paid status updates to paid_at', () => {
+    const input = statusUpdateInput()
+    input.status = 'PAID'
+
+    const ranges = buildLeadSheetsStatusUpdateRanges(input, 12)
+
+    expect(ranges[1]).toEqual({
       range: 'AM12:AM12',
       values: [['2026-06-30T08:01:00.000Z']],
     })
@@ -129,11 +162,11 @@ describe('buildLeadSheetsPartnerNoteUpdateRanges', () => {
         values: [['2026-06-30T08:02:00.000Z']],
       },
       {
-        range: 'AO12:AQ12',
+        range: 'AP12:AR12',
         values: [['partner', 'partner-1', '2026-06-30T08:02:00.000Z']],
       },
       {
-        range: 'AS12:AS12',
+        range: 'AT12:AT12',
         values: [['Клиент не отвечает']],
       },
     ])
@@ -182,7 +215,7 @@ describe('GoogleSheetsLeadSink', () => {
     expect(String(calls[0].init?.body)).toContain(
       'grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer',
     )
-    expect(calls[1].url).toContain('/values/%D0%97%D0%B0%D1%8F%D0%B2%D0%BA%D0%B8!A:AX:append')
+    expect(calls[1].url).toContain('/values/%D0%97%D0%B0%D1%8F%D0%B2%D0%BA%D0%B8!A:AY:append')
     expect(calls[1].url).toContain('valueInputOption=USER_ENTERED')
     expect(calls[1].init?.headers).toMatchObject({
       Authorization: 'Bearer access-token',
@@ -269,7 +302,7 @@ describe('GoogleSheetsLeadSink', () => {
       valueInputOption: 'USER_ENTERED',
       data: [
         {
-          range: 'A2:AX2',
+        range: 'A2:AY2',
           values: [buildLeadSheetsRow(fullLeadInput())],
         },
       ],
@@ -305,7 +338,7 @@ describe('GoogleSheetsLeadSink', () => {
 
     expect(result).toEqual({ mode: 'appended' })
     expect(calls).toHaveLength(3)
-    expect(calls[2].url).toContain('/values/%D0%97%D0%B0%D1%8F%D0%B2%D0%BA%D0%B8!A:AX:append')
+    expect(calls[2].url).toContain('/values/%D0%97%D0%B0%D1%8F%D0%B2%D0%BA%D0%B8!A:AY:append')
     expect(JSON.parse(String(calls[2].init?.body)).values[0][0]).toBe('lead-1')
   })
 

@@ -27,6 +27,7 @@ export const leadStatusSchema = z.enum([
   'new',
   'waiting_partner',
   'accepted',
+  'paid',
   'declined',
   'completed',
   'cancelled',
@@ -150,11 +151,66 @@ export const updateLeadContactChannelRequestSchema = z.object({
   contactChannel: leadContactChannelSchema,
 })
 
+export const leadFollowUpQuestionKeySchema = z.enum([
+  'desired_dates',
+  'people_count',
+  'hotel_or_area',
+  'rental_duration',
+  'bike_preference',
+  'car_preference',
+  'pickup_location',
+  'visa_goal',
+  'border_run_direction',
+  'exchange_currency',
+  'exchange_amount',
+  'service_details',
+  'prepare_passport',
+])
+export const leadFollowUpQuestionKindSchema = z.enum(['text', 'number', 'instruction'])
+export const leadFollowUpQuestionSchema = z.object({
+  key: leadFollowUpQuestionKeySchema,
+  kind: leadFollowUpQuestionKindSchema,
+  prompt: trimmedString.min(1),
+  placeholder: z.string().nullable(),
+  isRequired: z.boolean(),
+  sortOrder: z.number().int().nonnegative(),
+})
+export const leadFollowUpAnswerInputSchema = z.object({
+  questionKey: leadFollowUpQuestionKeySchema,
+  questionPrompt: trimmedString.min(1),
+  answer: trimmedString.min(1),
+  sortOrder: z.number().int().nonnegative(),
+})
+
+export const updateLeadFollowUpRequestSchema = z
+  .object({
+    requestedDate: optionalDateString,
+    comment: optionalTrimmedString,
+    answers: z.array(leadFollowUpAnswerInputSchema).optional(),
+  })
+  .refine(
+    (value) =>
+      value.requestedDate !== undefined ||
+      value.comment !== undefined ||
+      (value.answers !== undefined && value.answers.length > 0),
+    'Expected requestedDate, comment or answers',
+  )
+
+export const leadFollowUpFlowResponseSchema = z.object({
+  leadId: z.string(),
+  publicNumber: trimmedString.min(1),
+  serviceType: leadServiceTypeSchema,
+  serviceTitle: trimmedString.min(1),
+  questions: z.array(leadFollowUpQuestionSchema),
+  finalMessage: trimmedString.min(1),
+})
+
 export const leadSchema = z.object({
   id: z.string(),
   publicNumber: trimmedString.min(1),
   status: leadStatusSchema,
   source: leadSourceSchema,
+  isTest: z.boolean().default(false),
   serviceType: leadServiceTypeSchema,
   excursionId: z.string(),
   excursionTitle: trimmedString.min(1),
@@ -208,6 +264,9 @@ export type CreateLeadPayload = z.output<typeof createLeadRequestSchema>
 export type UpdateLeadContactChannelRequest = z.infer<
   typeof updateLeadContactChannelRequestSchema
 >
+export type UpdateLeadFollowUpRequest = z.output<typeof updateLeadFollowUpRequestSchema>
+export type LeadFollowUpQuestion = z.infer<typeof leadFollowUpQuestionSchema>
+export type LeadFollowUpFlowResponse = z.infer<typeof leadFollowUpFlowResponseSchema>
 export type LeadDto = z.infer<typeof leadSchema>
 export type ExcursionListResponse = z.infer<typeof excursionListResponseSchema>
 export type ExcursionDetailResponse = z.infer<typeof excursionDetailResponseSchema>

@@ -49,7 +49,7 @@ export type LeadSheetsRowInput = {
     peopleCount: number | null
     comment: string | null
     userId: string | null
-    excursionId: string
+    excursionId: string | null
     excursionTitle: string
     partnerId: string
     priceThb: number | null
@@ -58,7 +58,7 @@ export type LeadSheetsRowInput = {
     commissionTotal: number | null
   }
   excursion: {
-    slug: string
+    slug: string | null
     categoryTitle: string
     rubRate: number | string | null
     rateDate: Date | null
@@ -127,7 +127,7 @@ export class GoogleSheetsLeadSink implements LeadSheetsSink {
         valueInputOption: 'USER_ENTERED',
         data: [
           {
-            range: rowNumberRange('A:AX', rowNumber),
+            range: rowNumberRange('A:AY', rowNumber),
             values: [buildLeadSheetsRow(input)],
           },
         ],
@@ -201,7 +201,7 @@ export class GoogleSheetsLeadSink implements LeadSheetsSink {
   }
 
   private async appendLeadWithToken(input: LeadSheetsRowInput, token: string) {
-    const url = this.valuesUrl('A:AX:append')
+    const url = this.valuesUrl('A:AY:append')
     url.searchParams.set('valueInputOption', 'USER_ENTERED')
     url.searchParams.set('insertDataOption', 'INSERT_ROWS')
 
@@ -318,8 +318,8 @@ export function buildLeadSheetsRow(input: LeadSheetsRowInput) {
     'ru',
     enumValue(lead.serviceType),
     input.excursion.categoryTitle,
-    lead.excursionId,
-    input.excursion.slug,
+    lead.excursionId ?? '',
+    input.excursion.slug ?? '',
     lead.excursionTitle,
     lead.partnerId,
     input.partner.name,
@@ -355,6 +355,7 @@ export function buildLeadSheetsRow(input: LeadSheetsRowInput) {
     '',
     '',
     '',
+    '',
     'not_migrated',
   ]
 }
@@ -376,7 +377,7 @@ export function buildLeadSheetsStatusUpdateRanges(
       values: [[changedAt]],
     },
     {
-      range: rowNumberRange('AO:AQ', rowNumber),
+      range: rowNumberRange('AP:AR', rowNumber),
       values: [[input.actorType, input.actorId ?? '', changedAt]],
     },
   ]
@@ -394,11 +395,11 @@ export function buildLeadSheetsPartnerNoteUpdateRanges(
       values: [[iso(input.updatedAt)]],
     },
     {
-      range: rowNumberRange('AO:AQ', rowNumber),
+      range: rowNumberRange('AP:AR', rowNumber),
       values: [[input.actorType, input.actorId ?? '', changedAt]],
     },
     {
-      range: rowNumberRange('AS:AS', rowNumber),
+      range: rowNumberRange('AT:AT', rowNumber),
       values: [[input.partnerNote]],
     },
   ]
@@ -433,7 +434,9 @@ function rowNumberRange(columns: string, rowNumber: number) {
 
 function statusTimestampColumn(status: string) {
   if (status === 'accepted') return 'AK:AK'
-  if (status === 'completed') return 'AM:AM'
+  if (status === 'paid') return 'AM:AM'
+  if (status === 'completed') return 'AN:AN'
+  if (status === 'cancelled') return 'AO:AO'
   return 'AL:AL'
 }
 

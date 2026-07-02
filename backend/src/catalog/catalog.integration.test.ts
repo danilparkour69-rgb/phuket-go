@@ -10,6 +10,8 @@ import {
   TripAdvisorSyncStatus,
   LeadContactChannel,
   LeadActorType,
+  LeadServiceType,
+  LeadSource,
   LeadStatus,
 } from '../generated/prisma/client'
 import type {
@@ -18,6 +20,8 @@ import type {
   LeadSheetsStatusUpdateInput,
 } from '../leads/google-sheets-sink'
 import type {
+  LeadTelegramContactChannelUpdatedInput,
+  LeadTelegramCustomerFollowUpInput,
   LeadTelegramNotifier,
   LeadTelegramProblemReportedInput,
   LeadTelegramStatusChangedInput,
@@ -58,6 +62,7 @@ maybeDescribe('catalog API integration', () => {
   beforeEach(async () => {
     await prisma.leadStatusHistory.deleteMany()
     await prisma.lead.deleteMany()
+    await prisma.telegramContact.deleteMany()
     await prisma.excursionPhoto.deleteMany()
     await prisma.excursion.deleteMany()
     await prisma.excursionCategory.deleteMany()
@@ -170,6 +175,350 @@ maybeDescribe('catalog API integration', () => {
     expect(storedLead.contactChannel).toBe(LeadContactChannel.WHATSAPP)
   })
 
+  test('notifies Telegram after customer selects contact channel post-submit', async () => {
+    const { excursion } = await seedPublishedExcursion({
+      partnerTelegramChatId: '123456',
+    })
+    const createLead = await app.request('/api/catalog/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        excursionId: excursion.id,
+        customerName: 'Даниил',
+        customerPhone: '+79990000000',
+        customerTelegram: '@danil',
+      }),
+    })
+    const createLeadBody = await createLead.json()
+    const contactNotifications: LeadTelegramContactChannelUpdatedInput[] = []
+    const catalog = new CatalogService(
+      prisma,
+      null,
+      undefined,
+      {
+        notifyLeadCreated: async () => {},
+        notifyLeadContactChannelUpdated: async (input) => {
+          contactNotifications.push(input)
+        },
+        notifyLeadCustomerFollowUp: async () => {},
+        notifyLeadStatusChanged: async () => {},
+        notifyLeadProblemReported: async () => {},
+        confirmPartnerLeadCallback: async () => {},
+      } satisfies LeadTelegramNotifier,
+    )
+
+    const lead = await catalog.updateLeadContactChannel(createLeadBody.lead.id, {
+      contactChannel: 'whatsapp',
+    })
+
+    expect(lead.contactChannel).toBe('whatsapp')
+    expect(contactNotifications).toEqual([
+      {
+        lead: {
+          id: createLeadBody.lead.id,
+          publicNumber: createLeadBody.lead.publicNumber,
+          excursionTitle: 'Острова Пхи-Пхи: день как в мечте',
+          customerName: 'Даниил',
+          customerPhone: '+79990000000',
+          customerTelegram: '@danil',
+          contactChannel: LeadContactChannel.WHATSAPP,
+        },
+        partner: {
+          name: 'Marusya Travel',
+          telegramUsername: null,
+          telegramChatId: '123456',
+        },
+      },
+    ])
+  })
+
+  test('keeps contact channel update when Telegram contact notification fails', async () => {
+    const consoleError = spyOn(console, 'error').mockImplementation(() => {})
+    const { excursion } = await seedPublishedExcursion({
+      partnerTelegramChatId: '123456',
+    })
+    const createLead = await app.request('/api/catalog/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        excursionId: excursion.id,
+        customerName: 'Даниил',
+        customerPhone: '+79990000000',
+      }),
+    })
+    const createLeadBody = await createLead.json()
+    const catalog = new CatalogService(
+      prisma,
+      null,
+      undefined,
+      {
+        notifyLeadCreated: async () => {},
+        notifyLeadContactChannelUpdated: async () => {
+          throw new Error('Telegram unavailable')
+        },
+        notifyLeadCustomerFollowUp: async () => {},
+        notifyLeadStatusChanged: async () => {},
+        notifyLeadProblemReported: async () => {},
+        confirmPartnerLeadCallback: async () => {},
+      } satisfies LeadTelegramNotifier,
+    )
+
+    try {
+      const lead = await catalog.updateLeadContactChannel(createLeadBody.lead.id, {
+        contactChannel: 'max',
+      })
+
+      expect(lead.contactChannel).toBe('max')
+      const storedLead = await prisma.lead.findUniqueOrThrow({
+        where: { id: createLeadBody.lead.id },
+      })
+      expect(storedLead.contactChannel).toBe(LeadContactChannel.MAX)
+      expect(consoleError).toHaveBeenCalledWith(
+        'Telegram lead contact channel notification failed',
+        {
+          leadId: createLeadBody.lead.id,
+          message: 'Telegram unavailable',
+        },
+      )
+    } finally {
+      consoleError.mockRestore()
+    }
+  })
+
+  test('updates customer follow-up details from the public lead flow', async () => {
+    const { excursion } = await seedPublishedExcursion()
+    const createLead = await app.request('/api/catalog/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        excursionId: excursion.id,
+        customerName: 'Даниил',
+        customerPhone: '+79990000000',
+      }),
+    })
+    const createLeadBody = await createLead.json()
+
+    const followUp = await app.request(
+      `/api/catalog/leads/${createLeadBody.lead.id}/follow-up`,
+      {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          requestedDate: '2026-07-12',
+          comment: 'Подойдут 12 или 13 июля, утром',
+          answers: [
+            {
+              questionKey: 'desired_dates',
+              questionPrompt: 'Какие даты вам удобны?',
+              answer: '12 или 13 июля',
+              sortOrder: 10,
+            },
+          ],
+        }),
+      },
+    )
+    const followUpBody = await followUp.json()
+
+    expect(followUp.status).toBe(200)
+    expect(followUpBody.lead).toMatchObject({
+      id: createLeadBody.lead.id,
+      requestedDate: '2026-07-12T00:00:00.000Z',
+      comment: 'Подойдут 12 или 13 июля, утром',
+    })
+
+    const storedLead = await prisma.lead.findUniqueOrThrow({
+      where: { id: createLeadBody.lead.id },
+    })
+    expect(storedLead.requestedDate?.toISOString()).toBe('2026-07-12T00:00:00.000Z')
+    expect(storedLead.comment).toBe('Подойдут 12 или 13 июля, утром')
+    const storedAnswers = await prisma.leadFollowUpAnswer.findMany({
+      where: { leadId: createLeadBody.lead.id },
+      orderBy: { sortOrder: 'asc' },
+    })
+    expect(storedAnswers).toHaveLength(1)
+    expect(storedAnswers[0]).toMatchObject({
+      questionKey: 'desired_dates',
+      questionPrompt: 'Какие даты вам удобны?',
+      answer: '12 или 13 июля',
+      sortOrder: 10,
+    })
+  })
+
+  test('returns customer follow-up question flow with passport preparation last', async () => {
+    const { excursion } = await seedPublishedExcursion({
+      excursionTitle: 'Квадроциклы',
+    })
+    const createLead = await app.request('/api/catalog/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        excursionId: excursion.id,
+        customerName: 'Даниил',
+        customerPhone: '+79990000000',
+      }),
+    })
+    const createLeadBody = await createLead.json()
+
+    const flow = await app.request(`/api/catalog/leads/${createLeadBody.lead.id}/follow-up-flow`)
+    const flowBody = await flow.json()
+
+    expect(flow.status).toBe(200)
+    expect(flowBody).toMatchObject({
+      leadId: createLeadBody.lead.id,
+      publicNumber: createLeadBody.lead.publicNumber,
+      serviceType: 'excursion',
+      serviceTitle: 'Квадроциклы',
+      finalMessage: 'Все отлично, в ближайшее время менеджер с вами свяжется.',
+    })
+    expect(flowBody.questions.at(-1)).toMatchObject({
+      key: 'prepare_passport',
+      kind: 'instruction',
+      placeholder: null,
+    })
+    expect(flowBody.questions.at(-1).prompt).toContain('подготовьте паспорт')
+  })
+
+  test('returns service-specific customer follow-up questions for bike rental leads', async () => {
+    const { partner } = await seedPublishedExcursion()
+    const lead = await prisma.lead.create({
+      data: {
+        publicNumber: 'PG-20260702-BIKEFLOW',
+        source: LeadSource.ADMIN,
+        serviceType: LeadServiceType.BIKE_RENTAL,
+        customerName: 'Даниил',
+        customerPhone: '+79990000000',
+        excursionTitle: 'Аренда байков',
+        partnerId: partner.id,
+      },
+    })
+
+    const flow = await app.request(`/api/catalog/leads/${lead.id}/follow-up-flow`)
+    const flowBody = await flow.json()
+
+    expect(flow.status).toBe(200)
+    expect(flowBody).toMatchObject({
+      leadId: lead.id,
+      serviceType: 'bike_rental',
+      serviceTitle: 'Аренда байков',
+    })
+    expect(flowBody.questions.map((question: { key: string }) => question.key)).toEqual([
+      'desired_dates',
+      'rental_duration',
+      'bike_preference',
+      'pickup_location',
+      'service_details',
+      'prepare_passport',
+    ])
+    expect(flowBody.questions[2]).toMatchObject({
+      key: 'bike_preference',
+      prompt: 'Какой байк вам интересен?',
+    })
+    expect(flowBody.questions.at(-1)).toMatchObject({
+      key: 'prepare_passport',
+      kind: 'instruction',
+    })
+  })
+
+  test('notifies admin when customer adds follow-up details', async () => {
+    const { excursion } = await seedPublishedExcursion()
+    const createLead = await app.request('/api/catalog/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        excursionId: excursion.id,
+        customerName: 'Даниил',
+        customerPhone: '+79990000000',
+        customerTelegram: '@danil',
+      }),
+    })
+    const createLeadBody = await createLead.json()
+    const followUpNotifications: LeadTelegramCustomerFollowUpInput[] = []
+    const catalog = new CatalogService(
+      prisma,
+      null,
+      undefined,
+      {
+        notifyLeadCreated: async () => {},
+        notifyLeadCustomerFollowUp: async (input) => {
+          followUpNotifications.push(input)
+        },
+        notifyLeadStatusChanged: async () => {},
+        notifyLeadProblemReported: async () => {},
+        confirmPartnerLeadCallback: async () => {},
+      } satisfies LeadTelegramNotifier,
+    )
+
+    const lead = await catalog.updateLeadFollowUp(createLeadBody.lead.id, {
+      requestedDate: '2026-07-12',
+      comment: 'Подойдут 12 или 13 июля, утром',
+    })
+
+    expect(lead.comment).toBe('Подойдут 12 или 13 июля, утром')
+    expect(followUpNotifications).toHaveLength(1)
+    expect(followUpNotifications[0]).toMatchObject({
+      lead: {
+        id: createLeadBody.lead.id,
+        publicNumber: createLeadBody.lead.publicNumber,
+        excursionTitle: 'Острова Пхи-Пхи: день как в мечте',
+        customerName: 'Даниил',
+        customerPhone: '+79990000000',
+        customerTelegram: '@danil',
+        comment: 'Подойдут 12 или 13 июля, утром',
+      },
+    })
+    expect(followUpNotifications[0]?.lead.requestedDate?.toISOString()).toBe(
+      '2026-07-12T00:00:00.000Z',
+    )
+  })
+
+  test('keeps customer follow-up details when Telegram notification fails', async () => {
+    const consoleError = spyOn(console, 'error').mockImplementation(() => {})
+    const { excursion } = await seedPublishedExcursion()
+    const createLead = await app.request('/api/catalog/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        excursionId: excursion.id,
+        customerName: 'Даниил',
+        customerPhone: '+79990000000',
+      }),
+    })
+    const createLeadBody = await createLead.json()
+    const catalog = new CatalogService(
+      prisma,
+      null,
+      undefined,
+      {
+        notifyLeadCreated: async () => {},
+        notifyLeadCustomerFollowUp: async () => {
+          throw new Error('Telegram unavailable')
+        },
+        notifyLeadStatusChanged: async () => {},
+        notifyLeadProblemReported: async () => {},
+        confirmPartnerLeadCallback: async () => {},
+      } satisfies LeadTelegramNotifier,
+    )
+
+    try {
+      const lead = await catalog.updateLeadFollowUp(createLeadBody.lead.id, {
+        requestedDate: undefined,
+        comment: 'Можно в любые даты после 15 июля',
+      })
+
+      expect(lead.comment).toBe('Можно в любые даты после 15 июля')
+      const storedLead = await prisma.lead.findUniqueOrThrow({
+        where: { id: createLeadBody.lead.id },
+      })
+      expect(storedLead.comment).toBe('Можно в любые даты после 15 июля')
+      expect(consoleError).toHaveBeenCalledWith('Telegram lead follow-up notification failed', {
+        leadId: createLeadBody.lead.id,
+        message: 'Telegram unavailable',
+      })
+    } finally {
+      consoleError.mockRestore()
+    }
+  })
+
   test('does not expose hidden excursions or accept leads for them', async () => {
     const { excursion } = await seedPublishedExcursion({ status: ExcursionStatus.HIDDEN })
 
@@ -254,6 +603,189 @@ maybeDescribe('catalog API integration', () => {
     })
   })
 
+  test('asks for a Telegram decline reason before declining a lead', async () => {
+    const { excursion, partner } = await seedPublishedExcursion({
+      partnerTelegramChatId: '123456',
+    })
+    const createLead = await app.request('/api/catalog/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        excursionId: excursion.id,
+        customerName: 'Даниил',
+        customerPhone: '+79990000000',
+      }),
+    })
+    const createLeadBody = await createLead.json()
+
+    const prompt = await app.request('/api/telegram/webhook', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Telegram-Bot-Api-Secret-Token': 'telegram-secret',
+      },
+      body: JSON.stringify(telegramCallbackUpdate({
+        data: `lead:${createLeadBody.lead.id}:decline`,
+        fromId: 123456,
+      })),
+    })
+    const promptBody = await prompt.json()
+
+    expect(prompt.status).toBe(200)
+    expect(promptBody.result).toMatchObject({
+      leadId: createLeadBody.lead.id,
+      status: 'new',
+      changed: false,
+      declinePrompt: true,
+    })
+    const promptedLead = await prisma.lead.findUniqueOrThrow({
+      where: { id: createLeadBody.lead.id },
+    })
+    expect(promptedLead).toMatchObject({
+      status: LeadStatus.NEW,
+      partnerNote: null,
+    })
+
+    const decline = await app.request('/api/telegram/webhook', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Telegram-Bot-Api-Secret-Token': 'telegram-secret',
+      },
+      body: JSON.stringify(telegramCallbackUpdate({
+        data: `lead:${createLeadBody.lead.id}:decline:spam`,
+        fromId: 123456,
+      })),
+    })
+    const declineBody = await decline.json()
+
+    expect(decline.status).toBe(200)
+    expect(declineBody.result).toMatchObject({
+      leadId: createLeadBody.lead.id,
+      status: 'declined',
+      changed: true,
+      declineNote: 'Спам',
+    })
+
+    const storedLead = await prisma.lead.findUniqueOrThrow({
+      where: { id: createLeadBody.lead.id },
+    })
+    expect(storedLead).toMatchObject({
+      status: LeadStatus.DECLINED,
+      partnerNote: 'Спам',
+    })
+
+    const history = await prisma.leadStatusHistory.findMany({
+      where: { leadId: createLeadBody.lead.id },
+      orderBy: { createdAt: 'asc' },
+    })
+    expect(history).toHaveLength(2)
+    expect(history[1]).toMatchObject({
+      fromStatus: LeadStatus.NEW,
+      toStatus: LeadStatus.DECLINED,
+      actorType: LeadActorType.PARTNER,
+      actorId: partner.id,
+      comment: 'Lead declined from Telegram partner callback: Спам.',
+    })
+  })
+
+  test('uses the next Telegram text message as a custom decline reason', async () => {
+    const { excursion, partner } = await seedPublishedExcursion({
+      partnerTelegramChatId: '123456',
+    })
+    const createLead = await app.request('/api/catalog/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        excursionId: excursion.id,
+        customerName: 'Даниил',
+        customerPhone: '+79990000000',
+      }),
+    })
+    const createLeadBody = await createLead.json()
+
+    const prompt = await app.request('/api/telegram/webhook', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Telegram-Bot-Api-Secret-Token': 'telegram-secret',
+      },
+      body: JSON.stringify(telegramCallbackUpdate({
+        data: `lead:${createLeadBody.lead.id}:decline:other`,
+        fromId: 123456,
+      })),
+    })
+    const promptBody = await prompt.json()
+
+    expect(prompt.status).toBe(200)
+    expect(promptBody.result).toMatchObject({
+      leadId: createLeadBody.lead.id,
+      status: 'new',
+      changed: false,
+      customReasonPrompt: true,
+      customReasonAction: 'decline',
+    })
+
+    const promptedContact = await prisma.telegramContact.findUniqueOrThrow({
+      where: { chatId: '123456' },
+    })
+    expect(promptedContact).toMatchObject({
+      pendingReasonLeadId: createLeadBody.lead.id,
+      pendingReasonAction: 'decline',
+      pendingReasonMessageId: 10,
+    })
+
+    const customReason = 'Клиент просит дату, на которую нет мест'
+    const decline = await app.request('/api/telegram/webhook', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Telegram-Bot-Api-Secret-Token': 'telegram-secret',
+      },
+      body: JSON.stringify(telegramMessageUpdate({
+        text: customReason,
+        fromId: 123456,
+      })),
+    })
+    const declineBody = await decline.json()
+
+    expect(decline.status).toBe(200)
+    expect(declineBody.result).toMatchObject({
+      leadId: createLeadBody.lead.id,
+      status: 'declined',
+      changed: true,
+      declineNote: customReason,
+    })
+
+    const storedLead = await prisma.lead.findUniqueOrThrow({
+      where: { id: createLeadBody.lead.id },
+    })
+    expect(storedLead).toMatchObject({
+      status: LeadStatus.DECLINED,
+      partnerNote: customReason,
+    })
+
+    const clearedContact = await prisma.telegramContact.findUniqueOrThrow({
+      where: { chatId: '123456' },
+    })
+    expect(clearedContact.pendingReasonLeadId).toBeNull()
+    expect(clearedContact.pendingReasonAction).toBeNull()
+    expect(clearedContact.pendingReasonMessageId).toBeNull()
+
+    const history = await prisma.leadStatusHistory.findMany({
+      where: { leadId: createLeadBody.lead.id },
+      orderBy: { createdAt: 'asc' },
+    })
+    expect(history).toHaveLength(2)
+    expect(history[1]).toMatchObject({
+      fromStatus: LeadStatus.NEW,
+      toStatus: LeadStatus.DECLINED,
+      actorType: LeadActorType.PARTNER,
+      actorId: partner.id,
+      comment: `Lead declined from Telegram partner callback: ${customReason}.`,
+    })
+  })
+
   test('notifies admin after a partner Telegram status callback is persisted', async () => {
     const { excursion } = await seedPublishedExcursion({
       partnerTelegramChatId: '123456',
@@ -275,6 +807,7 @@ maybeDescribe('catalog API integration', () => {
       undefined,
       {
         notifyLeadCreated: async () => {},
+        notifyLeadCustomerFollowUp: async () => {},
         notifyLeadStatusChanged: async (input) => {
           statusNotifications.push(input)
         },
@@ -336,6 +869,7 @@ maybeDescribe('catalog API integration', () => {
       } satisfies LeadSheetsSink,
       {
         notifyLeadCreated: async () => {},
+        notifyLeadCustomerFollowUp: async () => {},
         notifyLeadStatusChanged: async () => {},
         notifyLeadProblemReported: async () => {},
         confirmPartnerLeadCallback: async () => {},
@@ -364,7 +898,117 @@ maybeDescribe('catalog API integration', () => {
     expect(sheetsUpdates[0].changedAt).toBeInstanceOf(Date)
   })
 
-  test('completes an accepted lead from partner Telegram callback', async () => {
+  test('updates test leads from partner Telegram callbacks without Google Sheets sync', async () => {
+    const { partner } = await seedPublishedExcursion({
+      partnerTelegramChatId: '123456',
+    })
+    const testLead = await prisma.lead.create({
+      data: {
+        publicNumber: 'TEST-20260702-CALLBACK',
+        source: LeadSource.ADMIN,
+        isTest: true,
+        serviceType: LeadServiceType.EXCURSION,
+        status: LeadStatus.NEW,
+        customerName: 'Тестовый клиент Phuket Go',
+        customerPhone: '+66000000000',
+        customerTelegram: '@test_customer',
+        contactChannel: LeadContactChannel.TELEGRAM,
+        peopleCount: 2,
+        comment: 'Проверка кнопок менеджера',
+        excursionTitle: 'Тестовая заявка Telegram',
+        partnerId: partner.id,
+        commissionThb: partner.defaultCommissionThb,
+        commissionTotal: partner.defaultCommissionThb * 2,
+      },
+    })
+    const sheetsUpdates: LeadSheetsStatusUpdateInput[] = []
+    const statusNotifications: LeadTelegramStatusChangedInput[] = []
+    const catalog = new CatalogService(
+      prisma,
+      null,
+      {
+        appendLead: async () => {},
+        syncLeadSnapshot: async () => ({ mode: 'disabled' }),
+        updateLeadStatus: async (input) => {
+          sheetsUpdates.push(input)
+        },
+        updateLeadPartnerNote: async () => {},
+      } satisfies LeadSheetsSink,
+      {
+        notifyLeadCreated: async () => {},
+        notifyLeadCustomerFollowUp: async () => {},
+        notifyLeadStatusChanged: async (input) => {
+          statusNotifications.push(input)
+        },
+        notifyLeadProblemReported: async () => {},
+        confirmPartnerLeadCallback: async () => {},
+      } satisfies LeadTelegramNotifier,
+    )
+
+    const accept = await catalog.handleTelegramLeadCallback({
+      leadId: testLead.id,
+      action: 'accept',
+      partnerTelegramChatId: '123456',
+    })
+    const paid = await catalog.handleTelegramLeadCallback({
+      leadId: testLead.id,
+      action: 'paid',
+      partnerTelegramChatId: '123456',
+    })
+
+    expect(accept).toMatchObject({
+      leadId: testLead.id,
+      status: 'accepted',
+      changed: true,
+    })
+    expect(paid).toMatchObject({
+      leadId: testLead.id,
+      status: 'paid',
+      changed: true,
+    })
+    expect(sheetsUpdates).toHaveLength(0)
+    expect(statusNotifications).toHaveLength(2)
+    expect(statusNotifications[0]).toMatchObject({
+      lead: {
+        id: testLead.id,
+        publicNumber: 'TEST-20260702-CALLBACK',
+        isTest: true,
+        status: LeadStatus.ACCEPTED,
+      },
+    })
+    expect(statusNotifications[1]).toMatchObject({
+      lead: {
+        id: testLead.id,
+        isTest: true,
+        status: LeadStatus.PAID,
+      },
+    })
+
+    const storedLead = await prisma.lead.findUniqueOrThrow({
+      where: { id: testLead.id },
+    })
+    expect(storedLead.status).toBe(LeadStatus.PAID)
+
+    const history = await prisma.leadStatusHistory.findMany({
+      where: { leadId: testLead.id },
+      orderBy: { createdAt: 'asc' },
+    })
+    expect(history).toHaveLength(2)
+    expect(history[0]).toMatchObject({
+      fromStatus: LeadStatus.NEW,
+      toStatus: LeadStatus.ACCEPTED,
+      actorType: LeadActorType.PARTNER,
+      actorId: partner.id,
+    })
+    expect(history[1]).toMatchObject({
+      fromStatus: LeadStatus.ACCEPTED,
+      toStatus: LeadStatus.PAID,
+      actorType: LeadActorType.PARTNER,
+      actorId: partner.id,
+    })
+  })
+
+  test('marks an accepted lead as paid from partner Telegram callback', async () => {
     const { excursion, partner } = await seedPublishedExcursion({
       partnerTelegramChatId: '123456',
     })
@@ -393,6 +1037,7 @@ maybeDescribe('catalog API integration', () => {
       } satisfies LeadSheetsSink,
       {
         notifyLeadCreated: async () => {},
+        notifyLeadCustomerFollowUp: async () => {},
         notifyLeadStatusChanged: async (input) => {
           statusNotifications.push(input)
         },
@@ -406,22 +1051,22 @@ maybeDescribe('catalog API integration', () => {
       action: 'accept',
       partnerTelegramChatId: '123456',
     })
-    const complete = await catalog.handleTelegramLeadCallback({
+    const paid = await catalog.handleTelegramLeadCallback({
       leadId: createLeadBody.lead.id,
-      action: 'complete',
+      action: 'paid',
       partnerTelegramChatId: '123456',
     })
 
-    expect(complete).toMatchObject({
+    expect(paid).toMatchObject({
       leadId: createLeadBody.lead.id,
-      status: 'completed',
+      status: 'paid',
       changed: true,
     })
 
     const storedLead = await prisma.lead.findUniqueOrThrow({
       where: { id: createLeadBody.lead.id },
     })
-    expect(storedLead.status).toBe(LeadStatus.COMPLETED)
+    expect(storedLead.status).toBe(LeadStatus.PAID)
 
     const history = await prisma.leadStatusHistory.findMany({
       where: { leadId: createLeadBody.lead.id },
@@ -430,20 +1075,20 @@ maybeDescribe('catalog API integration', () => {
     expect(history).toHaveLength(3)
     expect(history[2]).toMatchObject({
       fromStatus: LeadStatus.ACCEPTED,
-      toStatus: LeadStatus.COMPLETED,
+      toStatus: LeadStatus.PAID,
       actorType: LeadActorType.PARTNER,
       actorId: partner.id,
     })
     expect(sheetsUpdates[1]).toMatchObject({
       leadId: createLeadBody.lead.id,
-      status: LeadStatus.COMPLETED,
+      status: LeadStatus.PAID,
       actorType: 'partner',
       actorId: partner.id,
     })
     expect(statusNotifications[1]).toMatchObject({
       lead: {
         id: createLeadBody.lead.id,
-        status: LeadStatus.COMPLETED,
+        status: LeadStatus.PAID,
       },
       partner: {
         name: 'Marusya Travel',
@@ -451,7 +1096,7 @@ maybeDescribe('catalog API integration', () => {
     })
   })
 
-  test('rejects completed callback before a lead is accepted', async () => {
+  test('rejects paid callback before a lead is accepted', async () => {
     const { excursion } = await seedPublishedExcursion({
       partnerTelegramChatId: '123456',
     })
@@ -466,21 +1111,21 @@ maybeDescribe('catalog API integration', () => {
     })
     const createLeadBody = await createLead.json()
 
-    const complete = await app.request('/api/telegram/webhook', {
+    const paid = await app.request('/api/telegram/webhook', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'X-Telegram-Bot-Api-Secret-Token': 'telegram-secret',
       },
       body: JSON.stringify(telegramCallbackUpdate({
-        data: `lead:${createLeadBody.lead.id}:complete`,
+        data: `lead:${createLeadBody.lead.id}:paid`,
         fromId: 123456,
       })),
     })
-    const completeBody = await complete.json()
+    const paidBody = await paid.json()
 
-    expect(complete.status).toBe(409)
-    expect(completeBody.error.code).toBe('CONFLICT')
+    expect(paid.status).toBe(409)
+    expect(paidBody.error.code).toBe('CONFLICT')
   })
 
   test('saves partner problem note from Telegram callback and notifies admin', async () => {
@@ -512,6 +1157,7 @@ maybeDescribe('catalog API integration', () => {
       } satisfies LeadSheetsSink,
       {
         notifyLeadCreated: async () => {},
+        notifyLeadCustomerFollowUp: async () => {},
         notifyLeadStatusChanged: async () => {},
         notifyLeadProblemReported: async (input) => {
           problemNotifications.push(input)
@@ -647,6 +1293,7 @@ maybeDescribe('catalog API integration', () => {
       } satisfies LeadSheetsSink,
       {
         notifyLeadCreated: async () => {},
+        notifyLeadCustomerFollowUp: async () => {},
         notifyLeadStatusChanged: async (input) => {
           statusNotifications.push(input)
         },
@@ -675,7 +1322,11 @@ maybeDescribe('catalog API integration', () => {
   })
 
   async function seedPublishedExcursion(
-    options: { status?: ExcursionStatus; partnerTelegramChatId?: string } = {},
+    options: {
+      status?: ExcursionStatus
+      partnerTelegramChatId?: string
+      excursionTitle?: string
+    } = {},
   ) {
     const partner = await prisma.partner.create({
       data: {
@@ -693,7 +1344,7 @@ maybeDescribe('catalog API integration', () => {
     const excursion = await prisma.excursion.create({
       data: {
         slug: 'phi-phi-dream-day',
-        title: 'Острова Пхи-Пхи: день как в мечте',
+        title: options.excursionTitle ?? 'Острова Пхи-Пхи: день как в мечте',
         categoryId: category.id,
         shortEmotion: 'Бирюзовая вода, белый песок и ощущение настоящего отпуска.',
         description: 'День среди островов, ради которого хочется прилететь на Пхукет.',
@@ -753,6 +1404,31 @@ maybeDescribe('catalog API integration', () => {
         data: options.data,
         from: {
           id: options.fromId,
+        },
+        message: {
+          message_id: 10,
+          chat: {
+            id: options.fromId,
+          },
+        },
+      },
+    }
+  }
+
+  function telegramMessageUpdate(options: { text: string; fromId: number }) {
+    return {
+      update_id: 2,
+      message: {
+        message_id: 11,
+        text: options.text,
+        chat: {
+          id: options.fromId,
+          type: 'private',
+        },
+        from: {
+          id: options.fromId,
+          username: 'manager',
+          first_name: 'Manager',
         },
       },
     }

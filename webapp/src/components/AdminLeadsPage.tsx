@@ -4,7 +4,9 @@ import {
   useQueryClient,
 } from '@tanstack/react-query'
 import type {
+  AdminCreateLeadRequest,
   AdminLeadBulkStatusActionRequest,
+  AdminBindPartnerTelegramContactResponse,
   AdminLeadDetailResponse,
   AdminLeadDto,
   AdminLeadExportQuery,
@@ -12,6 +14,9 @@ import type {
   AdminLeadSheetsSyncResponse,
   AdminLeadStatusActionRequest,
   AdminPartnerOptionDto,
+  AdminServiceTypeOptionDto,
+  AdminTelegramContactDto,
+  ExcursionCardDto,
 } from '@phuket-go/contracts'
 import { useMemo, useState } from 'react'
 
@@ -55,6 +60,7 @@ const leadStatuses = [
   'new',
   'waiting_partner',
   'accepted',
+  'paid',
   'declined',
   'completed',
   'cancelled',
@@ -64,8 +70,9 @@ const statusLabels: Record<(typeof leadStatuses)[number], string> = {
   new: 'Новая',
   waiting_partner: 'Ждет партнера',
   accepted: 'Принята',
+  paid: 'Оплачена',
   declined: 'Отклонена',
-  completed: 'Оказана',
+  completed: 'Услуга оказана',
   cancelled: 'Отменена',
 }
 
@@ -76,6 +83,7 @@ const statusBadgeVariant: Record<
   new: 'outline',
   waiting_partner: 'secondary',
   accepted: 'default',
+  paid: 'secondary',
   declined: 'destructive',
   completed: 'secondary',
   cancelled: 'outline',
@@ -83,8 +91,9 @@ const statusBadgeVariant: Record<
 
 const quickActions = [
   { status: 'accepted', label: 'Принять' },
+  { status: 'paid', label: 'Оплата получена' },
   { status: 'declined', label: 'Отклонить' },
-  { status: 'completed', label: 'Оказана' },
+  { status: 'completed', label: 'Услуга оказана' },
   { status: 'cancelled', label: 'Отменить' },
 ] as const
 
@@ -131,6 +140,15 @@ const serviceTypeLabels: Record<AdminLeadDto['serviceType'], string> = {
   money_exchange: 'Обмен денег',
 }
 
+function fallbackServiceTypeOptions(): AdminServiceTypeOptionDto[] {
+  return leadServiceTypes.map((serviceType, index) => ({
+    value: serviceType,
+    label: serviceTypeLabels[serviceType],
+    isActive: true,
+    sortOrder: (index + 1) * 10,
+  }))
+}
+
 const adminLeadsQueryKey = ['admin', 'leads'] as const
 type SummaryFilter = 'total' | 'new' | 'requires_attention' | 'waiting_partner'
 type AdminLeadFilters = {
@@ -158,6 +176,127 @@ const emptyFilters: AdminLeadFilters = {
 }
 const pageSizeOptions = [10, 25, 50, 100] as const
 
+function TelegramPartnerBindingPanel({
+  partners,
+  contacts,
+  isLoading,
+  isSubmitting,
+  result,
+  error,
+  onBind,
+}: {
+  partners: AdminPartnerOptionDto[]
+  contacts: AdminTelegramContactDto[]
+  isLoading: boolean
+  isSubmitting: boolean
+  result: AdminBindPartnerTelegramContactResponse | undefined
+  error: unknown
+  onBind: (partnerId: string, contactId: string) => void
+}) {
+  const [partnerId, setPartnerId] = useState('')
+  const [contactId, setContactId] = useState('')
+  const availableContacts = contacts.filter((contact) => !contact.linkedPartnerId)
+  const selectedPartner = partners.find((partner) => partner.id === partnerId)
+  const selectedContact = contacts.find((contact) => contact.id === contactId)
+  const submitDisabled = isLoading || isSubmitting || !selectedPartner || !selectedContact
+
+  return (
+    <Card>
+      <CardHeader className="gap-2">
+        <CardTitle>Telegram менеджеры</CardTitle>
+        <CardDescription>
+          Привязка делается только вручную администратором после сообщения менеджера боту.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="grid gap-4">
+        <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] md:items-end">
+          <div className="grid gap-2">
+            <Label htmlFor="telegram-bind-partner">Партнер</Label>
+            <Select value={partnerId} onValueChange={setPartnerId} disabled={isLoading}>
+              <SelectTrigger id="telegram-bind-partner">
+                <SelectValue placeholder="Выберите партнера" />
+              </SelectTrigger>
+              <SelectContent>
+                {partners.map((partner) => (
+                  <SelectItem key={partner.id} value={partner.id}>
+                    {partner.name}
+                    {partner.telegramChatId ? ' · Telegram привязан' : ''}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="telegram-bind-contact">Telegram контакт</Label>
+            <Select value={contactId} onValueChange={setContactId} disabled={isLoading}>
+              <SelectTrigger id="telegram-bind-contact">
+                <SelectValue placeholder="Выберите контакт" />
+              </SelectTrigger>
+              <SelectContent>
+                {availableContacts.map((contact) => (
+                  <SelectItem key={contact.id} value={contact.id}>
+                    {contact.displayName} · {contact.chatId}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <Button
+            type="button"
+            disabled={submitDisabled}
+            onClick={() => {
+              if (selectedPartner && selectedContact) {
+                onBind(selectedPartner.id, selectedContact.id)
+              }
+            }}
+          >
+            {isSubmitting ? 'Привязываем...' : 'Привязать'}
+          </Button>
+        </div>
+
+        {error instanceof Error && (
+          <Alert variant="destructive">
+            <AlertTitle>Не удалось привязать Telegram</AlertTitle>
+            <AlertDescription>{error.message}</AlertDescription>
+          </Alert>
+        )}
+
+        {result?.testLead && (
+          <Alert>
+            <AlertTitle>Тестовая заявка создана</AlertTitle>
+            <AlertDescription>
+              {result.testNotificationSent
+                ? `Менеджеру отправлена тестовая заявка ${result.testLead.publicNumber}.`
+                : `Тестовая заявка ${result.testLead.publicNumber} создана, но Telegram-отправка не подтвердилась.`}
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {contacts.length > 0 && (
+          <div className="grid gap-2">
+            <Typography variant="bodySmMedium">Последние контакты бота</Typography>
+            <div className="grid gap-2 md:grid-cols-2">
+              {contacts.slice(0, 4).map((contact) => (
+                <div key={contact.id} className="grid gap-1 rounded-lg border bg-muted/20 p-3">
+                  <Typography variant="bodySmMedium" wrap="break">
+                    {contact.displayName}
+                  </Typography>
+                  <Typography variant="caption" tone="muted" wrap="break">
+                    {contact.chatId}
+                    {contact.linkedPartnerName ? ` · ${contact.linkedPartnerName}` : ''}
+                  </Typography>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  )
+}
+
 export function AdminLeadsPage() {
   const auth = useAuth()
   const queryClient = useQueryClient()
@@ -166,6 +305,7 @@ export function AdminLeadsPage() {
   const [pageSize, setPageSize] = useState<(typeof pageSizeOptions)[number]>(25)
   const [offset, setOffset] = useState(0)
   const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null)
+  const [isCreateLeadOpen, setIsCreateLeadOpen] = useState(false)
   const [selectedBulkLeadIds, setSelectedBulkLeadIds] = useState<string[]>([])
   const [sheetsSyncResult, setSheetsSyncResult] = useState<{
     leadId: string
@@ -203,7 +343,7 @@ export function AdminLeadsPage() {
   ).length
   const allVisibleLeadsSelected = leads.length > 0 && selectedVisibleLeadCount === leads.length
   const effectiveSelectedLeadId =
-    leads.find((lead) => lead.id === selectedLeadId)?.id ?? leads[0]?.id ?? null
+    selectedLeadId ?? leads[0]?.id ?? null
   const appliedExportQuery = useMemo(
     () => adminLeadExportQueryFromFilters(appliedFilters),
     [appliedFilters],
@@ -218,6 +358,21 @@ export function AdminLeadsPage() {
     queryKey: ['admin', 'partners'],
     enabled: auth.isAuthenticated,
     queryFn: () => auth.api.listAdminPartners(),
+  })
+  const serviceTypesQuery = useQuery({
+    queryKey: ['admin', 'service-types'],
+    enabled: auth.isAuthenticated,
+    queryFn: () => auth.api.listAdminServiceTypes(),
+  })
+  const telegramContactsQuery = useQuery({
+    queryKey: ['admin', 'telegram-contacts'],
+    enabled: auth.isAuthenticated,
+    queryFn: () => auth.api.listAdminTelegramContacts(),
+  })
+  const excursionsQuery = useQuery({
+    queryKey: ['catalog', 'excursions'],
+    enabled: auth.isAuthenticated,
+    queryFn: () => auth.api.listExcursions(),
   })
 
   const updateStatusMutation = useMutation({
@@ -270,6 +425,26 @@ export function AdminLeadsPage() {
         leadId,
         result,
       })
+    },
+  })
+  const createLeadMutation = useMutation({
+    mutationFn: (input: AdminCreateLeadRequest) => auth.api.createAdminLead(input),
+    onSuccess: (detail) => {
+      setDraftFilters(emptyFilters)
+      setAppliedFilters(emptyFilters)
+      setOffset(0)
+      setSelectedLeadId(detail.lead.id)
+      setIsCreateLeadOpen(false)
+      queryClient.setQueryData(['admin', 'lead', detail.lead.id], detail)
+      void queryClient.invalidateQueries({ queryKey: adminLeadsQueryKey })
+    },
+  })
+  const bindTelegramContactMutation = useMutation({
+    mutationFn: ({ partnerId, contactId }: { partnerId: string; contactId: string }) =>
+      auth.api.bindAdminPartnerTelegramContact(partnerId, { contactId }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['admin', 'partners'] })
+      void queryClient.invalidateQueries({ queryKey: ['admin', 'telegram-contacts'] })
     },
   })
 
@@ -327,12 +502,44 @@ export function AdminLeadsPage() {
           <Badge variant="outline" className="w-fit">
             Admin
           </Badge>
-          <Typography variant="h1">Заявки</Typography>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <Typography variant="h1">Заявки</Typography>
+            <Button type="button" onClick={() => setIsCreateLeadOpen((current) => !current)}>
+              {isCreateLeadOpen ? 'Закрыть форму' : 'Создать заявку'}
+            </Button>
+          </div>
           <Typography tone="muted">
             Операционная очередь: фильтр, карточка, история и быстрые действия по статусу.
           </Typography>
         </div>
       </div>
+
+      {isCreateLeadOpen && (
+        <CreateLeadForm
+          partners={partnersQuery.data?.partners ?? []}
+          serviceTypes={serviceTypesQuery.data?.serviceTypes ?? fallbackServiceTypeOptions()}
+          excursions={excursionsQuery.data?.excursions ?? []}
+          isLoadingOptions={
+            partnersQuery.isLoading || serviceTypesQuery.isLoading || excursionsQuery.isLoading
+          }
+          isSubmitting={createLeadMutation.isPending}
+          error={createLeadMutation.error}
+          onCancel={() => setIsCreateLeadOpen(false)}
+          onSubmit={(input) => createLeadMutation.mutate(input)}
+        />
+      )}
+
+      <TelegramPartnerBindingPanel
+        partners={partnersQuery.data?.partners ?? []}
+        contacts={telegramContactsQuery.data?.contacts ?? []}
+        isLoading={partnersQuery.isLoading || telegramContactsQuery.isLoading}
+        isSubmitting={bindTelegramContactMutation.isPending}
+        result={bindTelegramContactMutation.data}
+        error={bindTelegramContactMutation.error}
+        onBind={(partnerId, contactId) =>
+          bindTelegramContactMutation.mutate({ partnerId, contactId })
+        }
+      />
 
       <LeadFilters
         filters={draftFilters}
@@ -543,6 +750,243 @@ function summaryFilterFromFilters(
   if (filters.status === 'new') return 'new'
   if (filters.status === 'waiting_partner') return 'waiting_partner'
   return 'total'
+}
+
+function CreateLeadForm({
+  partners,
+  serviceTypes,
+  excursions,
+  isLoadingOptions,
+  isSubmitting,
+  error,
+  onCancel,
+  onSubmit,
+}: {
+  partners: AdminPartnerOptionDto[]
+  serviceTypes: AdminServiceTypeOptionDto[]
+  excursions: ExcursionCardDto[]
+  isLoadingOptions: boolean
+  isSubmitting: boolean
+  error: Error | null
+  onCancel: () => void
+  onSubmit: (input: AdminCreateLeadRequest) => void
+}) {
+  const [serviceType, setServiceType] = useState<AdminCreateLeadRequest['serviceType']>('excursion')
+  const [partnerId, setPartnerId] = useState('')
+  const [excursionId, setExcursionId] = useState('')
+  const [customerName, setCustomerName] = useState('')
+  const [customerPhone, setCustomerPhone] = useState('')
+  const [customerTelegram, setCustomerTelegram] = useState('')
+  const [contactChannel, setContactChannel] =
+    useState<NonNullable<AdminCreateLeadRequest['contactChannel']>>('telegram')
+  const [requestedDate, setRequestedDate] = useState('')
+  const [peopleCount, setPeopleCount] = useState('')
+  const [comment, setComment] = useState('')
+  const isExcursion = serviceType === 'excursion'
+  const canSubmit =
+    Boolean(partnerId) &&
+    Boolean(customerName.trim()) &&
+    Boolean(customerPhone.trim()) &&
+    (!isExcursion || Boolean(excursionId))
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Новая заявка</CardTitle>
+        <CardDescription>Ручное создание заявки администратором.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form
+          aria-label="Новая заявка"
+          className="grid gap-4"
+          onSubmit={(event) => {
+            event.preventDefault()
+            if (!canSubmit) return
+
+            onSubmit({
+              serviceType,
+              partnerId,
+              excursionId: isExcursion ? excursionId : undefined,
+              customerName,
+              customerPhone,
+              customerTelegram,
+              contactChannel,
+              requestedDate,
+              peopleCount: peopleCount ? Number(peopleCount) : undefined,
+              comment,
+            })
+          }}
+        >
+          <div className="grid gap-4 lg:grid-cols-3">
+            <div className="grid gap-2">
+              <Label htmlFor="admin-create-lead-service-type">Направление</Label>
+              <Select
+                value={serviceType}
+                onValueChange={(value) => {
+                  setServiceType(value as AdminCreateLeadRequest['serviceType'])
+                  if (value !== 'excursion') {
+                    setExcursionId('')
+                  }
+                }}
+                disabled={isLoadingOptions}
+              >
+                <SelectTrigger id="admin-create-lead-service-type" className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {serviceTypes.map((option) => (
+                    <SelectItem key={option.value} value={option.value} disabled={!option.isActive}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="admin-create-lead-partner">Партнер</Label>
+              <Select
+                value={partnerId || 'none'}
+                onValueChange={(value) => setPartnerId(value === 'none' ? '' : value)}
+                disabled={isLoadingOptions || partners.length === 0}
+              >
+                <SelectTrigger id="admin-create-lead-partner" className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Выберите партнера</SelectItem>
+                  {partners.map((partner) => (
+                    <SelectItem key={partner.id} value={partner.id}>
+                      {partner.name}
+                      {partner.telegram ? ` · ${partner.telegram}` : ''}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {isExcursion && (
+              <div className="grid gap-2">
+                <Label htmlFor="admin-create-lead-excursion">Экскурсия</Label>
+                <Select
+                  value={excursionId || 'none'}
+                  onValueChange={(value) => setExcursionId(value === 'none' ? '' : value)}
+                  disabled={isLoadingOptions || excursions.length === 0}
+                >
+                  <SelectTrigger id="admin-create-lead-excursion" className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">Выберите экскурсию</SelectItem>
+                    {excursions.map((excursion) => (
+                      <SelectItem key={excursion.id} value={excursion.id}>
+                        {excursion.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+          </div>
+
+          <div className="grid gap-4 lg:grid-cols-3">
+            <div className="grid gap-2">
+              <Label htmlFor="admin-create-lead-customer-name">Клиент</Label>
+              <Input
+                id="admin-create-lead-customer-name"
+                value={customerName}
+                onChange={(event) => setCustomerName(event.target.value)}
+                placeholder="Имя клиента"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="admin-create-lead-customer-phone">Телефон</Label>
+              <Input
+                id="admin-create-lead-customer-phone"
+                value={customerPhone}
+                onChange={(event) => setCustomerPhone(event.target.value)}
+                placeholder="+66..."
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="admin-create-lead-customer-telegram">Telegram</Label>
+              <Input
+                id="admin-create-lead-customer-telegram"
+                value={customerTelegram}
+                onChange={(event) => setCustomerTelegram(event.target.value)}
+                placeholder="@username"
+              />
+            </div>
+          </div>
+
+          <div className="grid gap-4 lg:grid-cols-[180px_180px_180px_minmax(220px,1fr)]">
+            <div className="grid gap-2">
+              <Label htmlFor="admin-create-lead-contact-channel">Канал</Label>
+              <Select
+                value={contactChannel}
+                onValueChange={(value) =>
+                  setContactChannel(value as NonNullable<AdminCreateLeadRequest['contactChannel']>)
+                }
+              >
+                <SelectTrigger id="admin-create-lead-contact-channel" className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(contactChannelLabels).map(([value, label]) => (
+                    <SelectItem key={value} value={value}>
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="admin-create-lead-requested-date">Дата</Label>
+              <Input
+                id="admin-create-lead-requested-date"
+                type="date"
+                value={requestedDate}
+                onChange={(event) => setRequestedDate(event.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="admin-create-lead-people-count">Количество</Label>
+              <Input
+                id="admin-create-lead-people-count"
+                type="number"
+                min={1}
+                max={100}
+                value={peopleCount}
+                onChange={(event) => setPeopleCount(event.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="admin-create-lead-comment">Комментарий</Label>
+              <Input
+                id="admin-create-lead-comment"
+                value={comment}
+                onChange={(event) => setComment(event.target.value)}
+                placeholder="Детали заявки"
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            <Button type="submit" disabled={!canSubmit || isSubmitting}>
+              {isSubmitting ? 'Создаем...' : 'Создать заявку'}
+            </Button>
+            <Button type="button" variant="outline" disabled={isSubmitting} onClick={onCancel}>
+              Отменить
+            </Button>
+          </div>
+          {error && (
+            <Alert variant="destructive">
+              <AlertTitle>Заявка не создана</AlertTitle>
+              <AlertDescription>{error.message}</AlertDescription>
+            </Alert>
+          )}
+        </form>
+      </CardContent>
+    </Card>
+  )
 }
 
 function LeadFilters({
@@ -905,7 +1349,10 @@ function LeadTable({
             </TableCell>
             <TableCell>
               <div className="grid gap-1">
-                <Typography variant="bodySmMedium">{lead.publicNumber}</Typography>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Typography variant="bodySmMedium">{lead.publicNumber}</Typography>
+                  {lead.isTest && <Badge variant="outline">Тест</Badge>}
+                </div>
                 <Typography variant="caption" tone="muted">
                   {formatDateTime(lead.createdAt)}
                 </Typography>
@@ -1081,6 +1528,7 @@ function LeadDetailPanel({
             <CardDescription>{lead.excursionTitle}</CardDescription>
           </div>
           <div className="flex flex-wrap gap-2">
+            {lead.isTest && <Badge variant="outline">Тест</Badge>}
             <LeadSlaBadge lead={lead} />
             <StatusBadge status={lead.status} />
           </div>
@@ -1103,6 +1551,28 @@ function LeadDetailPanel({
         </div>
 
         <Separator />
+
+        {detail.followUpAnswers.length > 0 && (
+          <>
+            <div className="grid gap-3">
+              <Typography variant="h5">Ответы клиента</Typography>
+              <div className="grid gap-3">
+                {detail.followUpAnswers.map((answer) => (
+                  <div key={answer.id} className="grid gap-1 rounded-lg border bg-muted/20 p-3">
+                    <Typography variant="caption" tone="muted">
+                      {answer.questionPrompt}
+                    </Typography>
+                    <Typography variant="bodySmMedium" wrap="break">
+                      {answer.answer}
+                    </Typography>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <Separator />
+          </>
+        )}
 
         <div className="grid gap-3">
           <Typography variant="h5">Быстрые действия</Typography>

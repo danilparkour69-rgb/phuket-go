@@ -1,4 +1,6 @@
 import {
+  adminCreateLeadRequestSchema,
+  adminCreateLeadResponseSchema,
   adminLeadAdminNoteRequestSchema,
   adminLeadBulkStatusActionRequestSchema,
   adminLeadBulkStatusActionResponseSchema,
@@ -9,7 +11,12 @@ import {
   adminLeadListResponseSchema,
   adminLeadSheetsSyncResponseSchema,
   adminLeadStatusActionRequestSchema,
+  adminBindPartnerTelegramContactRequestSchema,
+  adminBindPartnerTelegramContactResponseSchema,
   adminPartnerListResponseSchema,
+  adminPartnerIdParamsSchema,
+  adminServiceTypeListResponseSchema,
+  adminTelegramContactListResponseSchema,
   apiErrorSchema,
 } from '@phuket-go/contracts'
 import { createRoute, OpenAPIHono } from '@hono/zod-openapi'
@@ -72,6 +79,113 @@ const listPartnersRoute = createRoute({
     403: {
       content: errorResponseContent,
       description: 'Admin access required',
+    },
+  },
+})
+
+const listServiceTypesRoute = createRoute({
+  method: 'get',
+  path: '/service-types',
+  responses: {
+    200: {
+      content: json(adminServiceTypeListResponseSchema),
+      description: 'Admin service type options',
+    },
+    401: {
+      content: errorResponseContent,
+      description: 'Missing or invalid access token',
+    },
+    403: {
+      content: errorResponseContent,
+      description: 'Admin access required',
+    },
+  },
+})
+
+const listTelegramContactsRoute = createRoute({
+  method: 'get',
+  path: '/telegram/contacts',
+  responses: {
+    200: {
+      content: json(adminTelegramContactListResponseSchema),
+      description: 'Telegram contacts seen by the bot',
+    },
+    401: {
+      content: errorResponseContent,
+      description: 'Missing or invalid access token',
+    },
+    403: {
+      content: errorResponseContent,
+      description: 'Admin access required',
+    },
+  },
+})
+
+const bindPartnerTelegramContactRoute = createRoute({
+  method: 'patch',
+  path: '/partners/{id}/telegram-contact',
+  request: {
+    params: adminPartnerIdParamsSchema,
+    body: {
+      content: json(adminBindPartnerTelegramContactRequestSchema),
+    },
+  },
+  responses: {
+    200: {
+      content: json(adminBindPartnerTelegramContactResponseSchema),
+      description: 'Bind a Telegram contact to a partner',
+    },
+    400: {
+      content: errorResponseContent,
+      description: 'Invalid payload',
+    },
+    401: {
+      content: errorResponseContent,
+      description: 'Missing or invalid access token',
+    },
+    403: {
+      content: errorResponseContent,
+      description: 'Admin access required',
+    },
+    404: {
+      content: errorResponseContent,
+      description: 'Partner or Telegram contact not found',
+    },
+    409: {
+      content: errorResponseContent,
+      description: 'Telegram contact is already linked to another partner',
+    },
+  },
+})
+
+const createLeadRoute = createRoute({
+  method: 'post',
+  path: '/leads',
+  request: {
+    body: {
+      content: json(adminCreateLeadRequestSchema),
+    },
+  },
+  responses: {
+    201: {
+      content: json(adminCreateLeadResponseSchema),
+      description: 'Admin-created lead detail with status history',
+    },
+    400: {
+      content: errorResponseContent,
+      description: 'Invalid payload',
+    },
+    401: {
+      content: errorResponseContent,
+      description: 'Missing or invalid access token',
+    },
+    403: {
+      content: errorResponseContent,
+      description: 'Admin access required',
+    },
+    404: {
+      content: errorResponseContent,
+      description: 'Partner or excursion not found',
     },
   },
 })
@@ -275,6 +389,39 @@ export function createAdminRoutes() {
 
     const admin = c.get('adminService')
     return c.json(await admin.listPartners(), 200)
+  })
+
+  routes.openapi(listServiceTypesRoute, async (c) => {
+    const auth = c.get('authService')
+    await auth.requireAdmin(bearerToken(c))
+
+    const admin = c.get('adminService')
+    return c.json(admin.listServiceTypes(), 200)
+  })
+
+  routes.openapi(listTelegramContactsRoute, async (c) => {
+    const auth = c.get('authService')
+    await auth.requireAdmin(bearerToken(c))
+
+    const admin = c.get('adminService')
+    return c.json(await admin.listTelegramContacts(), 200)
+  })
+
+  routes.openapi(bindPartnerTelegramContactRoute, async (c) => {
+    const auth = c.get('authService')
+    const adminUser = await auth.requireAdmin(bearerToken(c))
+
+    const admin = c.get('adminService')
+    const { id } = c.req.valid('param')
+    return c.json(await admin.bindPartnerTelegramContact(id, c.req.valid('json'), adminUser.id), 200)
+  })
+
+  routes.openapi(createLeadRoute, async (c) => {
+    const auth = c.get('authService')
+    const adminUser = await auth.requireAdmin(bearerToken(c))
+
+    const admin = c.get('adminService')
+    return c.json(await admin.createLead(c.req.valid('json'), adminUser.id), 201)
   })
 
   routes.openapi(exportLeadsCsvRoute, async (c) => {

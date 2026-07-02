@@ -8,7 +8,12 @@ export function getLeadSlaInfo(
   title: string
   variant: 'default' | 'secondary' | 'destructive' | 'outline'
 } {
-  if (lead.status === 'completed' || lead.status === 'cancelled' || lead.status === 'declined') {
+  if (
+    lead.status === 'paid' ||
+    lead.status === 'completed' ||
+    lead.status === 'cancelled' ||
+    lead.status === 'declined'
+  ) {
     return {
       label: 'Закрыта',
       title: 'Заявка больше не требует SLA-реакции.',

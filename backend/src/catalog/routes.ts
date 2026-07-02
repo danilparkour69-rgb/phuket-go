@@ -7,8 +7,10 @@ import {
   excursionListResponseSchema,
   excursionSlugParamsSchema,
   leadIdParamsSchema,
+  leadFollowUpFlowResponseSchema,
   leadResponseSchema,
   updateLeadContactChannelRequestSchema,
+  updateLeadFollowUpRequestSchema,
 } from '@phuket-go/contracts'
 import { createRoute, OpenAPIHono } from '@hono/zod-openapi'
 
@@ -128,6 +130,49 @@ const updateLeadContactChannelRoute = createRoute({
   },
 })
 
+const getLeadFollowUpFlowRoute = createRoute({
+  method: 'get',
+  path: '/leads/{id}/follow-up-flow',
+  request: {
+    params: leadIdParamsSchema,
+  },
+  responses: {
+    200: {
+      content: json(leadFollowUpFlowResponseSchema),
+      description: 'Customer follow-up question flow',
+    },
+    404: {
+      content: errorResponseContent,
+      description: 'Lead not found',
+    },
+  },
+})
+
+const updateLeadFollowUpRoute = createRoute({
+  method: 'patch',
+  path: '/leads/{id}/follow-up',
+  request: {
+    params: leadIdParamsSchema,
+    body: {
+      content: json(updateLeadFollowUpRequestSchema),
+    },
+  },
+  responses: {
+    200: {
+      content: json(leadResponseSchema),
+      description: 'Updated customer follow-up details',
+    },
+    400: {
+      content: errorResponseContent,
+      description: 'Invalid payload',
+    },
+    404: {
+      content: errorResponseContent,
+      description: 'Lead not found',
+    },
+  },
+})
+
 export function createCatalogRoutes() {
   const routes = new OpenAPIHono<CatalogRouteEnv>({
     defaultHook: validationErrorHook,
@@ -160,6 +205,21 @@ export function createCatalogRoutes() {
     const { id } = c.req.valid('param')
     return c.json(
       { lead: await catalog.updateLeadContactChannel(id, c.req.valid('json')) },
+      200,
+    )
+  })
+
+  routes.openapi(getLeadFollowUpFlowRoute, async (c) => {
+    const catalog = c.get('catalogService')
+    const { id } = c.req.valid('param')
+    return c.json(await catalog.getLeadFollowUpFlow(id), 200)
+  })
+
+  routes.openapi(updateLeadFollowUpRoute, async (c) => {
+    const catalog = c.get('catalogService')
+    const { id } = c.req.valid('param')
+    return c.json(
+      { lead: await catalog.updateLeadFollowUp(id, c.req.valid('json')) },
       200,
     )
   })

@@ -846,6 +846,19 @@ function discoveryLocationLabel(_categorySlug: string) {
                 </div>
                 <div class="lead-contact-step__result" id="lead-contact-step-result" aria-live="polite"></div>
               </div>
+              <div class="lead-followup-step" id="lead-followup-step" hidden>
+                <div class="lead-followup-step__messages" id="lead-followup-messages" aria-live="polite"></div>
+                <form class="lead-followup-step__form" id="lead-followup-form">
+                  <label id="lead-followup-answer-label" for="lead-followup-answer"></label>
+                  <textarea
+                    id="lead-followup-answer"
+                    rows="3"
+                    placeholder="Напишите ответ менеджеру"
+                  ></textarea>
+                  <button type="submit" id="lead-followup-submit">Отправить менеджеру</button>
+                  <div class="lead-followup-step__result" id="lead-followup-result" aria-live="polite"></div>
+                </form>
+              </div>
             </section>
 
             <section class="content-section" id="photos" aria-labelledby="photos-title">
@@ -2063,10 +2076,20 @@ function discoveryLocationLabel(_categorySlug: string) {
         var leadFormResultElement = leadFormResult
         var leadContactStep = document.getElementById('lead-contact-step')
         var leadContactStepResult = document.getElementById('lead-contact-step-result')
+        var leadFollowUpStep = document.getElementById('lead-followup-step')
+        var leadFollowUpMessages = document.getElementById('lead-followup-messages')
+        var leadFollowUpForm = document.getElementById('lead-followup-form')
+        var leadFollowUpAnswerLabel = document.getElementById('lead-followup-answer-label')
+        var leadFollowUpAnswer = document.getElementById('lead-followup-answer')
+        var leadFollowUpSubmit = document.getElementById('lead-followup-submit')
+        var leadFollowUpResult = document.getElementById('lead-followup-result')
         var leadContactButtons = Array.prototype.slice.call(
           document.querySelectorAll('[data-lead-contact-channel]'),
         )
         var latestLeadId = ''
+        var currentFollowUpFlow = null
+        var currentFollowUpQuestionIndex = 0
+        var currentFollowUpAnswers = []
 
         function setLeadFormResult(text, state) {
           leadFormResultElement.textContent = text
@@ -2087,6 +2110,162 @@ function discoveryLocationLabel(_categorySlug: string) {
             return
           }
           leadContactStep.setAttribute('hidden', '')
+        }
+
+        function setLeadFollowUpStepVisible(isVisible) {
+          if (!(leadFollowUpStep instanceof HTMLDivElement)) return
+          if (isVisible) {
+            leadFollowUpStep.removeAttribute('hidden')
+            return
+          }
+          leadFollowUpStep.setAttribute('hidden', '')
+        }
+
+        function setLeadFollowUpResult(text, state) {
+          if (!(leadFollowUpResult instanceof HTMLDivElement)) return
+          leadFollowUpResult.textContent = text
+          leadFollowUpResult.classList.remove(
+            'lead-followup-step__result--success',
+            'lead-followup-step__result--error',
+          )
+          if (state === 'success') {
+            leadFollowUpResult.classList.add('lead-followup-step__result--success')
+            return
+          }
+          if (state === 'error') {
+            leadFollowUpResult.classList.add('lead-followup-step__result--error')
+          }
+        }
+
+        function appendLeadFollowUpMessage(text, role) {
+          if (!(leadFollowUpMessages instanceof HTMLDivElement)) return
+          var message = document.createElement('p')
+          message.className = 'lead-followup-step__message lead-followup-step__message--' + role
+          message.textContent = text
+          leadFollowUpMessages.appendChild(message)
+        }
+
+        function resetLeadFollowUpStep() {
+          currentFollowUpFlow = null
+          currentFollowUpQuestionIndex = 0
+          currentFollowUpAnswers = []
+          setLeadFollowUpStepVisible(false)
+          setLeadFollowUpResult('', 'idle')
+          if (leadFollowUpMessages instanceof HTMLDivElement) {
+            leadFollowUpMessages.textContent = ''
+          }
+          if (leadFollowUpAnswer instanceof HTMLTextAreaElement) {
+            leadFollowUpAnswer.value = ''
+            leadFollowUpAnswer.removeAttribute('hidden')
+            leadFollowUpAnswer.disabled = false
+          }
+          if (leadFollowUpAnswerLabel instanceof HTMLLabelElement) {
+            leadFollowUpAnswerLabel.textContent = ''
+          }
+          if (leadFollowUpSubmit instanceof HTMLButtonElement) {
+            leadFollowUpSubmit.textContent = 'Отправить менеджеру'
+            leadFollowUpSubmit.disabled = false
+          }
+          if (leadFollowUpForm instanceof HTMLFormElement) {
+            leadFollowUpForm.removeAttribute('hidden')
+          }
+        }
+
+        function followUpEndpoint(leadId, suffix) {
+          return new URL(
+            './' + encodeURIComponent(leadId) + suffix,
+            leadApiEndpoint.endsWith('/') ? leadApiEndpoint : leadApiEndpoint + '/',
+          ).toString()
+        }
+
+        function buildFollowUpComment() {
+          return currentFollowUpAnswers
+            .map(function (answer) {
+              return answer.prompt + ': ' + answer.value
+            })
+            .join('\n')
+        }
+
+        function renderFollowUpQuestion() {
+          if (!currentFollowUpFlow) return
+
+          var questions = Array.isArray(currentFollowUpFlow.questions)
+            ? currentFollowUpFlow.questions
+            : []
+          var question = questions[currentFollowUpQuestionIndex]
+
+          if (!question) {
+            if (leadFollowUpForm instanceof HTMLFormElement) {
+              leadFollowUpForm.setAttribute('hidden', '')
+            }
+            appendLeadFollowUpMessage(
+              safeText(currentFollowUpFlow.finalMessage) ||
+                'Все отлично, в ближайшее время менеджер с вами свяжется.',
+              'manager',
+            )
+            setLeadFollowUpResult('', 'success')
+            return
+          }
+
+          if (leadFollowUpForm instanceof HTMLFormElement) {
+            leadFollowUpForm.removeAttribute('hidden')
+          }
+          if (leadFollowUpAnswerLabel instanceof HTMLLabelElement) {
+            leadFollowUpAnswerLabel.textContent = safeText(question.prompt)
+          }
+          if (leadFollowUpAnswer instanceof HTMLTextAreaElement) {
+            leadFollowUpAnswer.value = ''
+            leadFollowUpAnswer.placeholder =
+              safeText(question.placeholder) || 'Напишите ответ менеджеру'
+            if (question.kind === 'instruction') {
+              leadFollowUpAnswer.setAttribute('hidden', '')
+            } else {
+              leadFollowUpAnswer.removeAttribute('hidden')
+              window.setTimeout(function () {
+                leadFollowUpAnswer.focus()
+              }, 0)
+            }
+          }
+          if (leadFollowUpSubmit instanceof HTMLButtonElement) {
+            leadFollowUpSubmit.textContent =
+              question.kind === 'instruction' ? 'Понятно' : 'Отправить менеджеру'
+          }
+
+          appendLeadFollowUpMessage(safeText(question.prompt), 'manager')
+          setLeadFollowUpResult('', 'idle')
+        }
+
+        async function loadLeadFollowUpFlow(leadId, customerName) {
+          resetLeadFollowUpStep()
+          setLeadFollowUpStepVisible(true)
+          appendLeadFollowUpMessage('Спасибо, ' + customerName + '! Заявку передали менеджеру.', 'manager')
+          setLeadFollowUpResult('Готовим пару уточняющих вопросов...', 'idle')
+
+          try {
+            var response = await fetch(followUpEndpoint(leadId, '/follow-up-flow'), {
+              headers: {
+                Accept: 'application/json',
+              },
+            })
+
+            if (!response.ok) {
+              var text = await response.text()
+              throw new Error(text || ('Ошибка ' + response.status))
+            }
+
+            currentFollowUpFlow = await response.json()
+            var serviceTitle = safeText(currentFollowUpFlow && currentFollowUpFlow.serviceTitle)
+            if (serviceTitle) {
+              appendLeadFollowUpMessage(
+                'Пока менеджер проверяет "' + serviceTitle + '", ответьте, пожалуйста, на несколько вопросов по одному.',
+                'manager',
+              )
+            }
+            renderFollowUpQuestion()
+          } catch (error) {
+            var errorMessage = error && error.message ? error.message : 'проверьте подключение к серверу'
+            setLeadFollowUpResult('Не удалось загрузить уточняющие вопросы: ' + errorMessage, 'error')
+          }
         }
 
         function setLeadContactButtonsDisabled(isDisabled) {
@@ -2115,6 +2294,7 @@ function discoveryLocationLabel(_categorySlug: string) {
 
         function resetLeadContactStep() {
           latestLeadId = ''
+          resetLeadFollowUpStep()
           setLeadContactStepVisible(false)
           setLeadContactButtonsDisabled(false)
           setLeadContactStepResult('', 'idle')
@@ -2181,10 +2361,11 @@ function discoveryLocationLabel(_categorySlug: string) {
 
             latestLeadId = createdLeadId
             setLeadFormResult(
-              'Спасибо за обращение! Менеджер свяжется с вами в ближайшее время.',
+              'Спасибо! Заявка отправлена менеджеру.',
               'success',
             )
             setLeadContactStepVisible(true)
+            await loadLeadFollowUpFlow(createdLeadId, payload.customerName || 'спасибо')
             leadForm.reset()
             syncBookingSelectorState()
           } catch (error) {
@@ -2251,6 +2432,90 @@ function discoveryLocationLabel(_categorySlug: string) {
             }
           })
         })
+
+        if (leadFollowUpForm instanceof HTMLFormElement) {
+          leadFollowUpForm.addEventListener('submit', async function (event) {
+            event.preventDefault()
+            if (!latestLeadId || !currentFollowUpFlow) return
+
+            var questions = Array.isArray(currentFollowUpFlow.questions)
+              ? currentFollowUpFlow.questions
+              : []
+            var question = questions[currentFollowUpQuestionIndex]
+            if (!question) return
+
+            if (question.kind === 'instruction') {
+              currentFollowUpQuestionIndex += 1
+              renderFollowUpQuestion()
+              return
+            }
+
+            var answer =
+              leadFollowUpAnswer instanceof HTMLTextAreaElement
+                ? leadFollowUpAnswer.value.trim()
+                : ''
+
+            if (!answer && question.isRequired) {
+              setLeadFollowUpResult('Напишите ответ, чтобы менеджер получил детали.', 'error')
+              return
+            }
+
+            if (!answer) {
+              currentFollowUpQuestionIndex += 1
+              renderFollowUpQuestion()
+              return
+            }
+
+            currentFollowUpAnswers.push({
+              key: safeText(question.key),
+              prompt: safeText(question.prompt),
+              value: answer,
+            })
+            appendLeadFollowUpMessage(answer, 'customer')
+            setLeadFollowUpResult('Передаем менеджеру...', 'idle')
+            if (leadFollowUpSubmit instanceof HTMLButtonElement) {
+              leadFollowUpSubmit.disabled = true
+            }
+
+            try {
+              var response = await fetch(followUpEndpoint(latestLeadId, '/follow-up'), {
+                method: 'PATCH',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Accept: 'application/json',
+                },
+                body: JSON.stringify({
+                  comment: buildFollowUpComment(),
+                  answers: currentFollowUpAnswers.map(function (answer, index) {
+                    return {
+                      questionKey: answer.key,
+                      questionPrompt: answer.prompt,
+                      answer: answer.value,
+                      sortOrder: (index + 1) * 10,
+                    }
+                  }),
+                }),
+              })
+
+              if (!response.ok) {
+                var text = await response.text()
+                throw new Error(text || ('Ошибка ' + response.status))
+              }
+
+              currentFollowUpQuestionIndex += 1
+              setLeadFollowUpResult('Передали менеджеру.', 'success')
+              renderFollowUpQuestion()
+            } catch (error) {
+              currentFollowUpAnswers.pop()
+              var errorMessage = error && error.message ? error.message : 'проверьте подключение к серверу'
+              setLeadFollowUpResult('Не удалось передать ответ: ' + errorMessage, 'error')
+            } finally {
+              if (leadFollowUpSubmit instanceof HTMLButtonElement) {
+                leadFollowUpSubmit.disabled = false
+              }
+            }
+          })
+        }
       }
     </script>
   </body>
@@ -3462,6 +3727,95 @@ function discoveryLocationLabel(_categorySlug: string) {
   }
 
   .lead-contact-step__result--error {
+    color: #a72a2a;
+  }
+
+  .lead-followup-step {
+    margin-top: 14px;
+    border: 1px solid #dce7e3;
+    border-radius: 14px;
+    background: #f8fbfa;
+    padding: 16px;
+  }
+
+  .lead-followup-step__messages {
+    display: grid;
+    gap: 10px;
+  }
+
+  .lead-followup-step__message {
+    margin: 0;
+    max-width: 92%;
+    border-radius: 14px;
+    padding: 11px 13px;
+    font-size: 0.96rem;
+    line-height: 1.45;
+  }
+
+  .lead-followup-step__message--manager {
+    justify-self: start;
+    background: #fff;
+    color: #22322e;
+    border: 1px solid #dce7e3;
+  }
+
+  .lead-followup-step__message--customer {
+    justify-self: end;
+    background: #e8f3ef;
+    color: #154c3d;
+    border: 1px solid #c7ddd5;
+  }
+
+  .lead-followup-step__form {
+    display: grid;
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  .lead-followup-step__form label {
+    color: #17211f;
+    font-weight: 760;
+  }
+
+  .lead-followup-step__form textarea {
+    width: 100%;
+    min-height: 92px;
+    resize: vertical;
+    border: 1px solid #d8e0dd;
+    border-radius: 12px;
+    padding: 12px 13px;
+    font: inherit;
+    color: #17211f;
+    background: #fff;
+  }
+
+  .lead-followup-step__form button {
+    width: fit-content;
+    min-height: 42px;
+    border: 0;
+    border-radius: 999px;
+    background: #1f5c4b;
+    padding: 0 18px;
+    color: #fff;
+    font-weight: 820;
+    cursor: pointer;
+  }
+
+  .lead-followup-step__form button:disabled {
+    opacity: 0.72;
+    cursor: wait;
+  }
+
+  .lead-followup-step__result {
+    min-height: 20px;
+    color: #4f5f5a;
+  }
+
+  .lead-followup-step__result--success {
+    color: #14693e;
+  }
+
+  .lead-followup-step__result--error {
     color: #a72a2a;
   }
 

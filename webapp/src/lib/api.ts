@@ -1,4 +1,6 @@
 import {
+  adminCreateLeadRequestSchema,
+  adminCreateLeadResponseSchema,
   adminLeadAdminNoteRequestSchema,
   adminLeadBulkStatusActionRequestSchema,
   adminLeadBulkStatusActionResponseSchema,
@@ -8,15 +10,26 @@ import {
   adminLeadListResponseSchema,
   adminLeadSheetsSyncResponseSchema,
   adminLeadStatusActionRequestSchema,
+  adminBindPartnerTelegramContactRequestSchema,
+  adminBindPartnerTelegramContactResponseSchema,
   adminPartnerListResponseSchema,
+  adminServiceTypeListResponseSchema,
+  adminTelegramContactListResponseSchema,
   apiErrorSchema,
   authResponseSchema,
+  excursionListQuerySchema,
+  excursionListResponseSchema,
   loginRequestSchema,
   logoutRequestSchema,
+  leadFollowUpFlowResponseSchema,
+  leadResponseSchema,
   meResponseSchema,
   refreshRequestSchema,
   refreshResponseSchema,
   registerRequestSchema,
+  updateLeadFollowUpRequestSchema,
+  type AdminCreateLeadRequest,
+  type AdminCreateLeadResponse,
   type AdminLeadAdminNoteRequest,
   type AdminLeadBulkStatusActionRequest,
   type AdminLeadBulkStatusActionResponse,
@@ -26,14 +39,23 @@ import {
   type AdminLeadListResponse,
   type AdminLeadSheetsSyncResponse,
   type AdminLeadStatusActionRequest,
+  type AdminBindPartnerTelegramContactRequest,
+  type AdminBindPartnerTelegramContactResponse,
   type AdminPartnerListResponse,
+  type AdminServiceTypeListResponse,
+  type AdminTelegramContactListResponse,
   type AuthResponse,
+  type ExcursionListQuery,
+  type ExcursionListResponse,
   type LoginRequest,
   type LogoutRequest,
+  type LeadFollowUpFlowResponse,
+  type LeadResponse,
   type MeResponse,
   type RefreshRequest,
   type RefreshResponse,
   type RegisterRequest,
+  type UpdateLeadFollowUpRequest,
 } from '@phuket-go/contracts'
 import type { z } from 'zod'
 
@@ -106,6 +128,32 @@ export class ApiClient {
     })
   }
 
+  listExcursions(query: Partial<ExcursionListQuery> = {}): Promise<ExcursionListResponse> {
+    const payload = excursionListQuerySchema.parse(query)
+    return this.request(`/api/catalog/excursions${queryString(payload)}`, excursionListResponseSchema, {
+      auth: false,
+    })
+  }
+
+  updateLeadFollowUp(id: string, input: UpdateLeadFollowUpRequest): Promise<LeadResponse> {
+    const payload = updateLeadFollowUpRequestSchema.parse(input)
+    return this.request(`/api/catalog/leads/${encodeURIComponent(id)}/follow-up`, leadResponseSchema, {
+      method: 'PATCH',
+      body: payload,
+      auth: false,
+    })
+  }
+
+  getLeadFollowUpFlow(id: string): Promise<LeadFollowUpFlowResponse> {
+    return this.request(
+      `/api/catalog/leads/${encodeURIComponent(id)}/follow-up-flow`,
+      leadFollowUpFlowResponseSchema,
+      {
+        auth: false,
+      },
+    )
+  }
+
   listAdminLeads(query: Partial<AdminLeadListQuery> = {}): Promise<AdminLeadListResponse> {
     const payload = adminLeadListQuerySchema.parse(query)
     return this.request(`/api/admin/leads${queryString(payload)}`, adminLeadListResponseSchema, {
@@ -115,6 +163,43 @@ export class ApiClient {
 
   listAdminPartners(): Promise<AdminPartnerListResponse> {
     return this.request('/api/admin/partners', adminPartnerListResponseSchema, {
+      auth: true,
+    })
+  }
+
+  listAdminServiceTypes(): Promise<AdminServiceTypeListResponse> {
+    return this.request('/api/admin/service-types', adminServiceTypeListResponseSchema, {
+      auth: true,
+    })
+  }
+
+  listAdminTelegramContacts(): Promise<AdminTelegramContactListResponse> {
+    return this.request('/api/admin/telegram/contacts', adminTelegramContactListResponseSchema, {
+      auth: true,
+    })
+  }
+
+  bindAdminPartnerTelegramContact(
+    partnerId: string,
+    input: AdminBindPartnerTelegramContactRequest,
+  ): Promise<AdminBindPartnerTelegramContactResponse> {
+    const payload = adminBindPartnerTelegramContactRequestSchema.parse(input)
+    return this.request(
+      `/api/admin/partners/${encodeURIComponent(partnerId)}/telegram-contact`,
+      adminBindPartnerTelegramContactResponseSchema,
+      {
+        method: 'PATCH',
+        body: payload,
+        auth: true,
+      },
+    )
+  }
+
+  createAdminLead(input: AdminCreateLeadRequest): Promise<AdminCreateLeadResponse> {
+    const payload = adminCreateLeadRequestSchema.parse(input)
+    return this.request('/api/admin/leads', adminCreateLeadResponseSchema, {
+      method: 'POST',
+      body: payload,
       auth: true,
     })
   }

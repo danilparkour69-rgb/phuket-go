@@ -80,18 +80,47 @@ stored `telegram_chat_id`; `telegram_username` is informational and is not enoug
 for a direct bot message. Do not commit bot tokens or chat identifiers from real
 accounts.
 
+Recommended manager binding flow: ask the manager to send `/start` to the bot,
+then open the admin lead queue and bind the recorded Telegram contact to the
+partner. The backend only treats a contact as a manager after this admin action.
+On the first binding for a partner, the backend creates an `is_test=true` lead,
+sends it to that manager, and asks them to click `Взять в работу` and then
+`Оплата получена`. Test leads are marked in the admin UI and are skipped by Google
+Sheets sync, so the onboarding check does not pollute operational exports.
+
+Use `bun run telegram:smoke` from `backend/` after configuring the bot token and
+admin chat id. It sends a neutral test message to the admin chat without creating
+a lead or printing secrets. To also test partner delivery, set
+`TELEGRAM_SMOKE_PARTNER_CHAT_ID` locally before running the command; this value is
+only read by the smoke script, not by the running backend.
+
+To discover chat ids, ask the admin and partner to send `/start` to the bot, then
+run `bun run telegram:updates` from `backend/`. The command prints recent update
+metadata and chat ids without printing the bot token. If a webhook is already set
+for the bot, Telegram may block `getUpdates`; use it before enabling the webhook
+or temporarily clear the webhook through Telegram Bot API.
+
+To save the partner chat id locally, set `TELEGRAM_PARTNER_CHAT_ID` and run
+`bun run telegram:save-partner-chat` from `backend/`. If the database has more
+than one partner, also set one selector: `TELEGRAM_PARTNER_ID`,
+`TELEGRAM_PARTNER_USERNAME`, or `TELEGRAM_PARTNER_NAME`.
+
 Telegram partner callbacks are accepted at `POST /api/telegram/webhook`. Configure
 Telegram's webhook secret token and set the same value in `TELEGRAM_WEBHOOK_SECRET`;
 the backend checks it through the `X-Telegram-Bot-Api-Secret-Token` header before
 processing callback buttons. The MVP callback handler supports partner
-`lead:<id>:accept`, `lead:<id>:decline`, `lead:<id>:complete`, and
-`lead:<id>:problem` actions. Status callbacks update lead status and write lead
-status history. `complete` is accepted only after the lead is already `accepted`.
-The `problem` action shows partner reason buttons; choosing a reason stores
-`partner_note`, writes a partner history entry without changing status, updates
-the Google Sheets partner note column, and notifies the admin. After a successful
-callback, the bot answers the partner, sends a short confirmation message, and
-updates the original inline keyboard.
+`lead:<id>:accept`, `lead:<id>:paid`, legacy `lead:<id>:complete`,
+`lead:<id>:decline`, and `lead:<id>:problem` actions. Status callbacks update
+lead status and write lead status history. `paid` and legacy `complete` are
+accepted only after the lead is already `accepted`. `decline` and `problem`
+first show reason buttons. Choosing a reason stores `partner_note`; decline also
+changes the lead to `declined`, while problem writes a partner history entry
+without changing status. Choosing `Другая причина` stores a pending Telegram
+contact state, and the next partner message becomes the custom reason. After a
+successful callback, the bot answers the partner, sends a short confirmation
+message, and updates the original inline keyboard. When a customer selects a
+preferred contact channel after submitting the public form, the backend saves it
+and sends a follow-up Telegram notification to the admin and linked partner.
 
 ## Runtime Entrypoints
 

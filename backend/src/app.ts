@@ -19,6 +19,7 @@ import {
 import { createMediaRoutes } from './media/routes'
 import { createStorageServiceFromEnv, type StorageService } from './storage/service'
 import { createTelegramRoutes } from './telegram/routes'
+import { TelegramContactService } from './telegram/contacts'
 import { TripAdvisorClient } from './tripadvisor/client'
 
 type AppBindings = {
@@ -30,6 +31,7 @@ type AppBindings = {
     leadSheetsSink: LeadSheetsSink
     leadTelegramNotifier: LeadTelegramNotifier
     storageService: StorageService | null
+    telegramContactService: TelegramContactService
   }
 }
 
@@ -49,8 +51,9 @@ export function createApp({ env, prisma }: CreateAppOptions) {
     : null
 
   const leadSheetsSink = createLeadSheetsSinkFromEnv(env)
-  const adminService = new AdminService(prisma, leadSheetsSink)
   const leadTelegramNotifier = createLeadTelegramNotifierFromEnv(env)
+  const adminService = new AdminService(prisma, leadSheetsSink, leadTelegramNotifier)
+  const telegramContactService = new TelegramContactService(prisma)
   const catalogService = new CatalogService(
     prisma,
     tripAdvisorClient,
@@ -84,6 +87,7 @@ export function createApp({ env, prisma }: CreateAppOptions) {
     c.set('leadSheetsSink', leadSheetsSink)
     c.set('leadTelegramNotifier', leadTelegramNotifier)
     c.set('storageService', storageService)
+    c.set('telegramContactService', telegramContactService)
     await next()
   })
 

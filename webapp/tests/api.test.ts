@@ -360,6 +360,7 @@ test('ApiClient calls admin partner options endpoint with auth', async () => {
               id: 'partner-1',
               name: 'Marusya Travel',
               telegram: '@marusya',
+              telegramChatId: '123456',
             },
           ],
         },
@@ -382,6 +383,7 @@ test('ApiClient calls admin partner options endpoint with auth', async () => {
       id: 'partner-1',
       name: 'Marusya Travel',
       telegram: '@marusya',
+      telegramChatId: '123456',
     },
   ])
   expect(calls).toEqual([
@@ -390,6 +392,397 @@ test('ApiClient calls admin partner options endpoint with auth', async () => {
       authorization: 'Bearer admin-access-token',
     },
   ])
+})
+
+test('ApiClient calls admin Telegram contact binding endpoints with auth', async () => {
+  const calls: Array<{
+    path: string
+    method: string | undefined
+    authorization: string | null
+    body: unknown
+  }> = []
+
+  globalThis.fetch = async (input, init) => {
+    const url = new URL(String(input))
+    const headers = new Headers(init?.headers)
+    calls.push({
+      path: url.pathname,
+      method: init?.method,
+      authorization: headers.get('Authorization'),
+      body: init?.body ? JSON.parse(String(init.body)) : undefined,
+    })
+
+    if (url.pathname === '/api/admin/telegram/contacts') {
+      return json(
+        {
+          contacts: [
+            {
+              id: 'contact-1',
+              chatId: '123456',
+              telegramUserId: '123456',
+              username: '@manager',
+              displayName: '@manager',
+              firstName: 'Manager',
+              lastName: null,
+              chatType: 'private',
+              lastMessageText: '/start',
+              lastSeenAt: '2026-07-02T08:00:00.000Z',
+              linkedPartnerId: null,
+              linkedPartnerName: null,
+              createdAt: '2026-07-02T08:00:00.000Z',
+              updatedAt: '2026-07-02T08:00:00.000Z',
+            },
+          ],
+        },
+        200,
+      )
+    }
+
+    if (url.pathname === '/api/admin/partners/partner-1/telegram-contact') {
+      return json(
+        {
+          partner: {
+            id: 'partner-1',
+            name: 'Marusya Travel',
+            telegram: '@manager',
+            telegramChatId: '123456',
+          },
+          contact: {
+            id: 'contact-1',
+            chatId: '123456',
+            telegramUserId: '123456',
+            username: '@manager',
+            displayName: '@manager',
+            firstName: 'Manager',
+            lastName: null,
+            chatType: 'private',
+            lastMessageText: '/start',
+            lastSeenAt: '2026-07-02T08:00:00.000Z',
+            linkedPartnerId: 'partner-1',
+            linkedPartnerName: 'Marusya Travel',
+            createdAt: '2026-07-02T08:00:00.000Z',
+            updatedAt: '2026-07-02T08:00:00.000Z',
+          },
+          testLead: adminLeadFixture({
+            id: 'lead-test-1',
+            publicNumber: 'TEST-20260702-ABC12345',
+            source: 'admin',
+            isTest: true,
+            excursionId: null,
+            excursionTitle: 'Тестовая заявка Telegram',
+            customerName: 'Тестовый клиент Phuket Go',
+            customerPhone: '+66000000000',
+            customerTelegram: '@test_customer',
+            comment: 'Тестовая заявка',
+          }),
+          testNotificationSent: true,
+        },
+        200,
+      )
+    }
+
+    return json({ error: { code: 'NOT_FOUND', message: 'Unexpected request' } }, 404)
+  }
+
+  const client = new ApiClient({
+    getAccessToken: () => 'admin-access-token',
+    setAccessToken: () => undefined,
+  })
+
+  const contacts = await client.listAdminTelegramContacts()
+  const binding = await client.bindAdminPartnerTelegramContact('partner-1', {
+    contactId: ' contact-1 ',
+  })
+
+  expect(contacts.contacts[0]).toMatchObject({
+    id: 'contact-1',
+    username: '@manager',
+  })
+  expect(binding.partner.telegramChatId).toBe('123456')
+  expect(binding.testLead?.isTest).toBe(true)
+  expect(binding.testNotificationSent).toBe(true)
+  expect(calls).toEqual([
+    {
+      path: '/api/admin/telegram/contacts',
+      method: 'GET',
+      authorization: 'Bearer admin-access-token',
+      body: undefined,
+    },
+    {
+      path: '/api/admin/partners/partner-1/telegram-contact',
+      method: 'PATCH',
+      authorization: 'Bearer admin-access-token',
+      body: { contactId: 'contact-1' },
+    },
+  ])
+})
+
+test('ApiClient calls admin service type options endpoint with auth', async () => {
+  const calls: Array<{ path: string; authorization: string | null }> = []
+
+  globalThis.fetch = async (input, init) => {
+    const url = new URL(String(input))
+    const headers = new Headers(init?.headers)
+    calls.push({
+      path: url.pathname,
+      authorization: headers.get('Authorization'),
+    })
+
+    if (url.pathname === '/api/admin/service-types') {
+      return json(
+        {
+          serviceTypes: [
+            { value: 'excursion', label: 'Экскурсии', isActive: true, sortOrder: 10 },
+            { value: 'bike_rental', label: 'Аренда байков', isActive: true, sortOrder: 20 },
+          ],
+        },
+        200,
+      )
+    }
+
+    return json({ error: { code: 'NOT_FOUND', message: 'Unexpected request' } }, 404)
+  }
+
+  const client = new ApiClient({
+    getAccessToken: () => 'admin-access-token',
+    setAccessToken: () => undefined,
+  })
+
+  const response = await client.listAdminServiceTypes()
+
+  expect(response.serviceTypes[1]).toEqual({
+    value: 'bike_rental',
+    label: 'Аренда байков',
+    isActive: true,
+    sortOrder: 20,
+  })
+  expect(calls).toEqual([
+    {
+      path: '/api/admin/service-types',
+      authorization: 'Bearer admin-access-token',
+    },
+  ])
+})
+
+test('ApiClient creates an admin lead with normalized payload', async () => {
+  let body: unknown
+  let method: string | undefined
+
+  globalThis.fetch = async (input, init) => {
+    const url = new URL(String(input))
+    body = init?.body ? JSON.parse(String(init.body)) : undefined
+    method = init?.method
+
+    if (url.pathname === '/api/admin/leads') {
+      return json(
+        adminLeadDetailFixture({
+          status: 'new',
+          source: 'admin',
+          serviceType: 'bike_rental',
+          excursionId: null,
+          excursionTitle: 'Аренда байков',
+        }),
+        201,
+      )
+    }
+
+    return json({ error: { code: 'NOT_FOUND', message: 'Unexpected request' } }, 404)
+  }
+
+  const client = new ApiClient({
+    getAccessToken: () => 'admin-access-token',
+    setAccessToken: () => undefined,
+  })
+
+  const response = await client.createAdminLead({
+    serviceType: 'bike_rental',
+    partnerId: ' partner-1 ',
+    customerName: ' Даниил ',
+    customerPhone: ' +66990000000 ',
+    customerTelegram: '',
+    contactChannel: 'telegram',
+    requestedDate: '',
+    peopleCount: 1,
+    comment: ' Нужен байк ',
+  })
+
+  expect(method).toBe('POST')
+  expect(response.lead.excursionId).toBeNull()
+  expect(response.lead.serviceType).toBe('bike_rental')
+  expect(body).toEqual({
+    serviceType: 'bike_rental',
+    partnerId: 'partner-1',
+    customerName: 'Даниил',
+    customerPhone: '+66990000000',
+    contactChannel: 'telegram',
+    peopleCount: 1,
+    comment: 'Нужен байк',
+  })
+})
+
+test('ApiClient lists public excursions for admin lead creation', async () => {
+  const calls: Array<{ path: string; search: string }> = []
+
+  globalThis.fetch = async (input) => {
+    const url = new URL(String(input))
+    calls.push({ path: url.pathname, search: url.search })
+
+    if (url.pathname === '/api/catalog/excursions') {
+      return json(
+        {
+          excursions: [
+            {
+              id: 'excursion-1',
+              slug: 'phi-phi',
+              title: 'Острова Пхи-Пхи',
+              categorySlug: 'islands',
+              shortEmotion: 'Море',
+              priceFromRub: 3900,
+              priceFromThb: 1500,
+              currencyNote: 'Цена рассчитана по текущему курсу.',
+              duration: null,
+              coverPhotoUrl: null,
+              carouselPhotoUrls: [],
+              externalRating: null,
+              status: 'published',
+            },
+          ],
+        },
+        200,
+      )
+    }
+
+    return json({ error: { code: 'NOT_FOUND', message: 'Unexpected request' } }, 404)
+  }
+
+  const client = new ApiClient({
+    getAccessToken: () => null,
+    setAccessToken: () => undefined,
+  })
+
+  const response = await client.listExcursions()
+
+  expect(response.excursions[0]?.title).toBe('Острова Пхи-Пхи')
+  expect(calls).toEqual([{ path: '/api/catalog/excursions', search: '' }])
+})
+
+test('ApiClient sends customer lead follow-up details without auth', async () => {
+  let body: unknown
+  let method: string | undefined
+  let authorization: string | null = null
+
+  globalThis.fetch = async (input, init) => {
+    const url = new URL(String(input))
+    const headers = new Headers(init?.headers)
+    method = init?.method
+    authorization = headers.get('Authorization')
+    body = init?.body ? JSON.parse(String(init.body)) : undefined
+
+    if (url.pathname === '/api/catalog/leads/lead-1/follow-up') {
+      return json(
+        {
+          lead: adminLeadFixture({
+            requestedDate: null,
+            comment: 'Подойдут 12 или 13 июля, утром',
+          }),
+        },
+        200,
+      )
+    }
+
+    return json({ error: { code: 'NOT_FOUND', message: 'Unexpected request' } }, 404)
+  }
+
+  const client = new ApiClient({
+    getAccessToken: () => 'ignored-access-token',
+    setAccessToken: () => undefined,
+  })
+
+  const response = await client.updateLeadFollowUp('lead-1', {
+    requestedDate: '',
+    comment: ' Подойдут 12 или 13 июля, утром ',
+    answers: [
+      {
+        questionKey: 'desired_dates',
+        questionPrompt: ' Какие даты вам удобны? ',
+        answer: ' 12 или 13 июля ',
+        sortOrder: 10,
+      },
+    ],
+  })
+
+  expect(method).toBe('PATCH')
+  expect(authorization).toBeNull()
+  expect(response.lead.comment).toBe('Подойдут 12 или 13 июля, утром')
+  expect(body).toEqual({
+    comment: 'Подойдут 12 или 13 июля, утром',
+    answers: [
+      {
+        questionKey: 'desired_dates',
+        questionPrompt: 'Какие даты вам удобны?',
+        answer: '12 или 13 июля',
+        sortOrder: 10,
+      },
+    ],
+  })
+})
+
+test('ApiClient gets customer lead follow-up flow without auth', async () => {
+  let authorization: string | null = null
+
+  globalThis.fetch = async (input, init) => {
+    const url = new URL(String(input))
+    const headers = new Headers(init?.headers)
+    authorization = headers.get('Authorization')
+
+    if (url.pathname === '/api/catalog/leads/lead-1/follow-up-flow') {
+      return json(
+        {
+          leadId: 'lead-1',
+          publicNumber: 'PG-20260630-ABC12345',
+          serviceType: 'excursion',
+          serviceTitle: 'Квадроциклы',
+          questions: [
+            {
+              key: 'desired_dates',
+              kind: 'text',
+              prompt: 'Какие даты вам удобны?',
+              placeholder: 'Например: 12 или 13 июля, лучше утром',
+              isRequired: false,
+              sortOrder: 10,
+            },
+            {
+              key: 'prepare_passport',
+              kind: 'instruction',
+              prompt: 'Пожалуйста, подготовьте паспорт. Он может понадобиться менеджеру для оформления.',
+              placeholder: null,
+              isRequired: false,
+              sortOrder: 90,
+            },
+          ],
+          finalMessage: 'Все отлично, в ближайшее время менеджер с вами свяжется.',
+        },
+        200,
+      )
+    }
+
+    return json({ error: { code: 'NOT_FOUND', message: 'Unexpected request' } }, 404)
+  }
+
+  const client = new ApiClient({
+    getAccessToken: () => 'ignored-access-token',
+    setAccessToken: () => undefined,
+  })
+
+  const response = await client.getLeadFollowUpFlow('lead-1')
+
+  expect(authorization).toBeNull()
+  expect(response.serviceTitle).toBe('Квадроциклы')
+  expect(response.questions.at(-1)).toMatchObject({
+    key: 'prepare_passport',
+    kind: 'instruction',
+  })
+  expect(response.finalMessage).toContain('менеджер')
 })
 
 test('ApiClient downloads admin lead CSV export with filters', async () => {
@@ -619,6 +1012,7 @@ function adminLeadFixture(overrides: Partial<AdminLeadDto> = {}): AdminLeadDto {
     publicNumber: 'PG-20260630-ABC12345',
     status: 'accepted',
     source: 'website',
+    isTest: false,
     serviceType: 'excursion',
     sourcePage: '/excursions/phi-phi',
     excursionId: 'excursion-1',
