@@ -1,5 +1,6 @@
 ---
 import { loadArticleBySlug, loadArticles, type ArticleEntry } from '../../lib/articles'
+import { sitePath } from '../../lib/paths'
 
 export const prerender = true
 
@@ -44,8 +45,8 @@ function relatedHref(label: string, articles: ArticleEntry[]) {
 <html lang="ru">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href={sitePath('/favicon.svg')} />
+    <link rel="icon" href={sitePath('/favicon.ico')} />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <title>{article.seoTitle}</title>
@@ -53,24 +54,24 @@ function relatedHref(label: string, articles: ArticleEntry[]) {
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href="/" aria-label="Phuket Go">
+      <a class="brand" href={sitePath('/')} aria-label="Phuket Go">
         <span class="brand__mark">PG</span>
         <span>Phuket Go</span>
       </a>
       <nav class="site-nav" aria-label="Основная навигация">
-        <a href="/">Каталог</a>
-        <a href="/articles">Статьи</a>
-        <a href="/faq">FAQ</a>
-        <a href="/contacts">Контакты</a>
+        <a href={sitePath('/')}>Каталог</a>
+        <a href={sitePath('/articles')}>Статьи</a>
+        <a href={sitePath('/faq')}>FAQ</a>
+        <a href={sitePath('/contacts')}>Контакты</a>
       </nav>
     </header>
 
     <main class="article-page">
       <article class="article-shell">
         <nav class="breadcrumbs" aria-label="Хлебные крошки">
-          <a href="/">Главная</a>
+          <a href={sitePath('/')}>Главная</a>
           <span>/</span>
-          <a href="/articles">Статьи</a>
+          <a href={sitePath('/articles')}>Статьи</a>
           <span>/</span>
           <span>{article.h1}</span>
         </nav>
@@ -118,7 +119,7 @@ function relatedHref(label: string, articles: ArticleEntry[]) {
               {article.relatedLinks.map((label) => {
                 const href = relatedHref(label, allArticles)
                 return href ? (
-                  <a class="chip-link" href={href}>{label}</a>
+                  <a class="chip-link" href={sitePath(href)}>{label}</a>
                 ) : (
                   <span class="chip-link chip-link--muted">{label}</span>
                 )
@@ -152,8 +153,8 @@ function relatedHref(label: string, articles: ArticleEntry[]) {
             </p>
           </div>
           <div class="cta-panel__actions">
-            <a class="cta-primary" href="/">Открыть каталог</a>
-            <a class="cta-secondary" href="/articles">Все статьи</a>
+            <a class="cta-primary" href={sitePath('/')}>Открыть каталог</a>
+            <a class="cta-secondary" href={sitePath('/articles')}>Все статьи</a>
           </div>
         </section>
       </article>
@@ -162,14 +163,14 @@ function relatedHref(label: string, articles: ArticleEntry[]) {
         <section class="related-articles" aria-labelledby="related-articles-title">
           <div class="section-heading">
             <h2 id="related-articles-title">Похожие материалы</h2>
-            <a href="/articles">Смотреть все</a>
+            <a href={sitePath('/articles')}>Смотреть все</a>
           </div>
           <div class="related-grid">
             {relatedCards.map((item) => (
               <article class="related-card">
                 <span>{item.readTimeMinutes} мин чтения</span>
                 <h3>
-                  <a href={`/articles/${item.slug}`}>{item.h1}</a>
+                  <a href={sitePath(`/articles/${item.slug}`)}>{item.h1}</a>
                 </h3>
                 <p>{item.summary}</p>
               </article>

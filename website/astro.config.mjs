@@ -30,4 +30,17 @@ import { defineConfig } from 'astro/config';
 //      path". Note: built-in per-page ISR is not part of the default
 //      DigitalOcean/Yandex static path; use rebuilds or CDN/runtime cache
 //      freshness instead.
-export default defineConfig({});
+export default defineConfig({
+  base: normalizeBasePath(process.env.PUBLIC_BASE_PATH ?? process.env.ASTRO_BASE_PATH ?? '/'),
+});
+
+/**
+ * @param {unknown} value
+ */
+function normalizeBasePath(value) {
+  const trimmed = String(value ?? '').trim();
+  if (!trimmed || trimmed === '/') return '/';
+
+  const withLeadingSlash = trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
+  return withLeadingSlash.endsWith('/') ? withLeadingSlash.slice(0, -1) : withLeadingSlash;
+}

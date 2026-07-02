@@ -34,6 +34,16 @@ const backendEnv = normalizeEnv({
     process.env.JWT_SECRET ?? 'web-e2e-secret-at-least-thirty-two-characters',
   CORS_ORIGINS: [frontendUrl, websiteUrl, 'http://localhost:5173'].join(','),
   COOKIE_SECURE: 'false',
+  GOOGLE_SHEETS_ENABLED: 'false',
+  GOOGLE_SHEETS_SPREADSHEET_ID: '',
+  GOOGLE_SERVICE_ACCOUNT_EMAIL: '',
+  GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: '',
+  TELEGRAM_NOTIFICATIONS_ENABLED: 'false',
+  TELEGRAM_BOT_TOKEN: '',
+  TELEGRAM_ADMIN_CHAT_ID: '',
+  TELEGRAM_WEBHOOK_SECRET: '',
+  TRIPADVISOR_ALLOW_REFRESH: 'false',
+  TRIPADVISOR_API_KEY: '',
 })
 
 export default defineConfig({

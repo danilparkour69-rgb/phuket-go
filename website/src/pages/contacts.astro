@@ -1,4 +1,6 @@
 ---
+import { sitePath } from '../lib/paths'
+
 const pageTitle = 'Контакты - Phuket Go'
 const pageDescription =
   'Как связаться с Phuket Go по экскурсиям, заявкам, бронированию и партнёрству.'
@@ -54,8 +56,8 @@ const urgentChecklist = [
 <html lang="ru">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href={sitePath('/favicon.svg')} />
+    <link rel="icon" href={sitePath('/favicon.ico')} />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <title>{pageTitle}</title>
@@ -63,21 +65,21 @@ const urgentChecklist = [
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href="/" aria-label="Phuket Go">
+      <a class="brand" href={sitePath('/')} aria-label="Phuket Go">
         <span class="brand__mark">PG</span>
         <span>Phuket Go</span>
       </a>
       <nav class="site-nav" aria-label="Основная навигация">
-        <a href="/">Каталог</a>
-        <a href="/faq">FAQ</a>
-        <a href="/contacts" aria-current="page">Контакты</a>
+        <a href={sitePath('/')}>Каталог</a>
+        <a href={sitePath('/faq')}>FAQ</a>
+        <a href={sitePath('/contacts')} aria-current="page">Контакты</a>
       </nav>
     </header>
 
     <main class="contacts-page">
       <section class="contacts-hero">
         <nav class="breadcrumbs" aria-label="Хлебные крошки">
-          <a href="/">Главная</a>
+          <a href={sitePath('/')}>Главная</a>
           <span>/</span>
           <span>Контакты</span>
         </nav>
@@ -92,7 +94,7 @@ const urgentChecklist = [
       <section class="contact-grid" aria-labelledby="contact-grid-title">
         <div class="section-heading">
           <h2 id="contact-grid-title">Как связаться сейчас</h2>
-          <a href="/">Открыть каталог</a>
+          <a href={sitePath('/')}>Открыть каталог</a>
         </div>
 
         <div class="contact-card-grid">
@@ -153,7 +155,7 @@ const urgentChecklist = [
           </p>
         </div>
         <div class="cta-panel__actions">
-          <a class="cta-primary" href="/">Перейти в каталог</a>
+          <a class="cta-primary" href={sitePath('/')}>Перейти в каталог</a>
           <a class="cta-secondary" href="mailto:phuketgoall@gmail.com">Написать на email</a>
         </div>
       </section>

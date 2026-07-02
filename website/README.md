@@ -48,6 +48,14 @@ bun run preview
 
 Astro publishes pages from `src/pages`. Static assets live in `public`.
 
+`PUBLIC_API_URL` is build-time config for API calls made by the public site. `PUBLIC_BASE_PATH` is optional and defaults to `/`; use it only when the static site is served from a path prefix. For the first Yandex Object Storage temporary URL release, build with:
+
+```bash
+PUBLIC_API_URL=<Yandex Serverless Container URL> PUBLIC_BASE_PATH=/phuket-go-prod-website bun run build
+```
+
+When the website moves to a custom domain or CDN origin rooted at `/`, remove `PUBLIC_BASE_PATH` or set it back to `/` and rebuild.
+
 ## Deployment
 
 When the website has only fully prerendered output and no server islands or runtime-rendered routes, the build output in `website/dist` is fully static. Production deployment uses DigitalOcean App Platform Static Sites from the full Git monorepo branch with `bun install --frozen-lockfile && bun run build:website` and `website/dist` by default. Generate the concrete spec with `bun run deploy:do:specs website`; App Platform builds from Git, not from local `dist`. If website links to the browser app, `PUBLIC_WEBAPP_URL` must be a concrete build-time URL and the website must be redeployed after it changes. Follow the shared runbook in [../docs/DEPLOYMENT.md](../docs/DEPLOYMENT.md). If the user explicitly chooses Yandex Cloud, deploy the built `website/dist` output through Yandex Object Storage static website hosting plus Cloud CDN by following [../docs/YANDEX_CLOUD.md](../docs/YANDEX_CLOUD.md).

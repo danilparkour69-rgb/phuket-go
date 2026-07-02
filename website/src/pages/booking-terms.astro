@@ -1,4 +1,6 @@
 ---
+import { sitePath } from '../lib/paths'
+
 const pageTitle = 'Условия бронирования - Phuket Go'
 const pageDescription =
   'Как работает бронирование в Phuket Go: заявка, подтверждение условий, цена, переносы и отмена.'
@@ -58,8 +60,8 @@ const reminderItems = [
 <html lang="ru">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href={sitePath('/favicon.svg')} />
+    <link rel="icon" href={sitePath('/favicon.ico')} />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <title>{pageTitle}</title>
@@ -67,22 +69,22 @@ const reminderItems = [
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href="/" aria-label="Phuket Go">
+      <a class="brand" href={sitePath('/')} aria-label="Phuket Go">
         <span class="brand__mark">PG</span>
         <span>Phuket Go</span>
       </a>
       <nav class="site-nav" aria-label="Основная навигация">
-        <a href="/">Каталог</a>
-        <a href="/faq">FAQ</a>
-        <a href="/contacts">Контакты</a>
-        <a href="/booking-terms" aria-current="page">Условия</a>
+        <a href={sitePath('/')}>Каталог</a>
+        <a href={sitePath('/faq')}>FAQ</a>
+        <a href={sitePath('/contacts')}>Контакты</a>
+        <a href={sitePath('/booking-terms')} aria-current="page">Условия</a>
       </nav>
     </header>
 
     <main class="terms-page">
       <section class="terms-hero">
         <nav class="breadcrumbs" aria-label="Хлебные крошки">
-          <a href="/">Главная</a>
+          <a href={sitePath('/')}>Главная</a>
           <span>/</span>
           <span>Условия бронирования</span>
         </nav>
@@ -106,7 +108,7 @@ const reminderItems = [
       <section class="terms-sections" aria-labelledby="terms-title">
         <div class="section-heading">
           <h2 id="terms-title">Как это работает на практике</h2>
-          <a href="/">Выбрать экскурсию</a>
+          <a href={sitePath('/')}>Выбрать экскурсию</a>
         </div>
 
         <div class="terms-stack">
@@ -131,8 +133,8 @@ const reminderItems = [
           </p>
         </div>
         <div class="cta-panel__actions">
-          <a class="cta-primary" href="/">Перейти в каталог</a>
-          <a class="cta-secondary" href="/faq">Посмотреть FAQ</a>
+          <a class="cta-primary" href={sitePath('/')}>Перейти в каталог</a>
+          <a class="cta-secondary" href={sitePath('/faq')}>Посмотреть FAQ</a>
         </div>
       </section>
     </main>

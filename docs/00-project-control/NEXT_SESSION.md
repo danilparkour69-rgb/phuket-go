@@ -79,7 +79,9 @@
 - внешний Telegram smoke для admin chat пройден через `bun run --cwd backend telegram:smoke`;
 - внешний Telegram smoke для partner chat пройден через сохраненный в локальной dev DB partner `telegramChatId`;
 - внешний Google Sheets контур подключен к таблице `Phuket Go — Заявки MVP`: service account создан, таблица расшарена, локальный `backend/.env` настроен без коммита секретов, smoke-запись в `Заявки!A:AY` прошла;
-- Перед публикацией оставить небольшой Telegram polish-блок: стикеры, более приятное оформление кнопок и emoji, более плавная последовательность уведомлений. Идея для проверки: первое действие партнера по новой заявке - одно основное `Принять заявку`; сценарий отклонения показывать уже после принятия/контакта с клиентом, если это не ломает операционную работу.
+- Telegram polish перед публикацией сделан: на новой партнерской заявке одна главная кнопка `✅ Принять заявку`, связь с клиентом отдельной строкой, после принятия показывается рабочая клавиатура `✅ В работе`, связь с клиентом, `💰 Оплата получена`, `🆘 Нужна помощь`, `❌ Отклонить`; callback-data `accept`, `paid`, `problem`, `decline` сохранены;
+- для временных Yandex Object Storage URL добавлена build-time base path поддержка в `webapp` и `website`; для будущего домена base path нужно вернуть к `/` и пересобрать фронты;
+- Playwright E2E теперь принудительно выключает внешние Google Sheets/Telegram/TripAdvisor env в тестовом backend процессе, чтобы локальные реальные секреты не влияли на тесты и не отправляли внешние запросы.
 
 Проверки, пройденные 2026-07-02:
 
@@ -87,15 +89,21 @@
 - `bun run test:webapp` - 51 pass;
 - `bun run test:backend:unit` - 92 pass;
 - `TEST_DATABASE_URL="postgresql://superuser:superpassword@localhost:55431/phuket_go_test?schema=public" bun run test:backend:integration` - 45 pass;
-- `bun run e2e:webapp` - 4 pass;
+- `POSTGRES_TEST_PORT=55431 TEST_DATABASE_URL="postgresql://superuser:superpassword@localhost:55431/phuket_go_test?schema=public" bun run test` - 231 pass across deploy/contracts/backend/webapp suites;
+- `bun run typecheck` - pass;
+- `bun run build` - pass;
+- `POSTGRES_TEST_PORT=55431 TEST_DATABASE_URL="postgresql://superuser:superpassword@localhost:55431/phuket_go_test?schema=public" E2E_BACKEND_PORT=45110 E2E_WEB_PORT=45111 E2E_WEBSITE_PORT=45112 bun run e2e:webapp` - 4 pass;
+- base-path production smoke builds пройдены:
+  - `VITE_API_URL=https://api.example.test VITE_BASE_PATH=/phuket-go-prod-webapp/ bun run build:webapp`;
+  - `PUBLIC_API_URL=https://api.example.test PUBLIC_BASE_PATH=/phuket-go-prod-website bun run build:website`;
 - `bun run --cwd backend telegram:smoke` - admin message sent;
 - `TELEGRAM_SMOKE_PARTNER_CHAT_ID=<from-dev-db> bun run --cwd backend telegram:smoke` - admin and partner messages sent.
 - `bun test backend/src/env.test.ts` - 8 pass;
 - внешний Google Sheets smoke через `GoogleSheetsLeadSink` - OAuth service account token получен, тестовая строка записана и прочитана из `Заявки!A1:AY2`.
 
-Важно: дефолтный backend integration порт `54330` был занят локально, поэтому backend integration прогонялся на явном тестовом порту `55431`. Playwright E2E сам выбрал свободные тестовые порты.
+Важно: дефолтный backend integration порт `54330` был занят локально, поэтому backend integration и E2E прогонялись на явном тестовом порту `55431`.
 
-Следующий практичный блок: домен, хостинг и публикация после уже пройденных Telegram и Google Sheets внешних smoke-проверок.
+Следующий практичный блок: Yandex Cloud временный релиз. Preflight 2026-07-02: Docker доступен вне sandbox (`29.5.2`), `yc` CLI не найден на PATH. Перед созданием платных ресурсов нужно установить/инициализировать `yc`, выбрать cloud/folder, убедиться в billing, затем создавать Container Registry, Managed PostgreSQL, Serverless Container и два Object Storage bucket по `docs/YANDEX_CLOUD.md`.
 
 ---
 

@@ -27,7 +27,9 @@ const adminLeadsRoute = createRoute({
 
 const routeTree = rootRoute.addChildren([indexRoute, appRoute, adminLeadsRoute])
 
-export const router = createRouter({ routeTree })
+const routerBasepath = import.meta.env.BASE_URL.replace(/\/$/, '') || '/'
+
+export const router = createRouter({ routeTree, basepath: routerBasepath })
 
 declare module '@tanstack/react-router' {
   interface Register {

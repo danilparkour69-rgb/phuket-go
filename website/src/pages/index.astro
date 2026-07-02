@@ -6,6 +6,7 @@ import {
   formatThb,
   loadCatalog,
 } from '../lib/catalog'
+import { sitePath } from '../lib/paths'
 
 const catalog = await loadCatalog()
 const excursions = catalog.excursions
@@ -96,8 +97,8 @@ const usefulCollections = [
 <html lang="ru">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href={sitePath('/favicon.svg')} />
+    <link rel="icon" href={sitePath('/favicon.ico')} />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <title>Экскурсии на Пхукете - Phuket Go</title>
@@ -108,7 +109,7 @@ const usefulCollections = [
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href="/" aria-label="Phuket Go">
+      <a class="brand" href={sitePath('/')} aria-label="Phuket Go">
         <span class="brand__mark">PG</span>
         <span>Phuket Go</span>
       </a>
@@ -194,7 +195,7 @@ const usefulCollections = [
 
       <section class="page-hero" aria-labelledby="page-title">
         <nav class="breadcrumbs" aria-label="Хлебные крошки">
-          <a href="/">Главная</a>
+          <a href={sitePath('/')}>Главная</a>
           <span aria-hidden="true">/</span>
           <span>Пхукет</span>
           <span aria-hidden="true">/</span>
@@ -314,7 +315,7 @@ const usefulCollections = [
                         data-search={`${excursion.slug} ${excursion.title} ${excursion.shortEmotion} ${categoryTitle(excursion.categorySlug)}`.toLowerCase()}
                       >
                         <div class="result-card__media" data-card-carousel>
-                          <a class="result-card__image-link" href={`/excursions/${excursion.slug}`} aria-label={`Открыть ${excursion.title}`}>
+                          <a class="result-card__image-link" href={sitePath(`/excursions/${excursion.slug}`)} aria-label={`Открыть ${excursion.title}`}>
                             {imageUrls.length ? (
                               imageUrls.map((imageUrl, imageIndex) => (
                                 <img
@@ -368,7 +369,7 @@ const usefulCollections = [
 
                         <div class="result-card__content">
                           <div class="result-card__head">
-                            <a href={`/excursions/${excursion.slug}`}>{excursion.title}</a>
+                            <a href={sitePath(`/excursions/${excursion.slug}`)}>{excursion.title}</a>
                           </div>
                           <div class="rating-row" aria-label={excursion.externalRating?.score ? `Рейтинг ${excursion.externalRating.score}` : 'Рейтинг TripAdvisor уточняется'}>
                             <span class="rating-bubbles" aria-hidden="true">●●●●●</span>
@@ -397,7 +398,7 @@ const usefulCollections = [
                           <span class="price-kicker">от</span>
                           <strong>{formatThb(excursion.priceFromThb)}</strong>
                           <span>≈ {formatRub(excursion.priceFromRub)}</span>
-                          <a href={`/excursions/${excursion.slug}`}>Проверить доступность</a>
+                          <a href={sitePath(`/excursions/${excursion.slug}`)}>Проверить доступность</a>
                         </div>
                       </article>
                     )
@@ -435,7 +436,7 @@ const usefulCollections = [
           </div>
           <div class="popular-tour-grid">
             {popularExcursions.map((excursion) => (
-              <a class="compact-tour-card" href={`/excursions/${excursion.slug}`}>
+              <a class="compact-tour-card" href={sitePath(`/excursions/${excursion.slug}`)}>
                 <span>{excursion.title}</span>
                 <small>
                   {excursion.duration ?? 'Длительность уточняется'} · от {formatThb(excursion.priceFromThb)}
@@ -579,10 +580,10 @@ const usefulCollections = [
         </div>
         <nav class="menu-link-list" aria-label="Разделы">
           <a href="#catalog" data-close-panel-link>Каталог экскурсий</a>
-          <a href="/articles" data-close-panel-link>Статьи</a>
-          <a href="/faq" data-close-panel-link>FAQ</a>
-          <a href="/contacts" data-close-panel-link>Контакты</a>
-          <a href="/booking-terms" data-close-panel-link>Условия бронирования</a>
+          <a href={sitePath('/articles')} data-close-panel-link>Статьи</a>
+          <a href={sitePath('/faq')} data-close-panel-link>FAQ</a>
+          <a href={sitePath('/contacts')} data-close-panel-link>Контакты</a>
+          <a href={sitePath('/booking-terms')} data-close-panel-link>Условия бронирования</a>
           <a href="#followups" data-close-panel-link>Популярные подборки</a>
           <a href="#catalog" data-panel-search="phi-phi">Острова Пхи-Пхи</a>
           <a href="#catalog" data-panel-search="similany">Симиланы</a>

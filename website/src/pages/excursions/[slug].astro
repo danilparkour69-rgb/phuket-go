@@ -10,6 +10,7 @@ import {
   loadExcursionReviews,
 } from '../../lib/catalog'
 import type { ExcursionCardDto } from '@phuket-go/contracts'
+import { sitePath } from '../../lib/paths'
 
 export const prerender = true
 
@@ -426,8 +427,8 @@ function discoveryLocationLabel(_categorySlug: string) {
 <html lang="ru">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href={sitePath('/favicon.svg')} />
+    <link rel="icon" href={sitePath('/favicon.ico')} />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <title>{pageTitle}</title>
@@ -435,29 +436,29 @@ function discoveryLocationLabel(_categorySlug: string) {
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href="/">Phuket Go</a>
+      <a class="brand" href={sitePath('/')}>Phuket Go</a>
       <div class="search-pill" aria-label="Поиск">
         <span></span>
         <strong>Пхукет</strong>
       </div>
       <nav aria-label="Основная навигация">
-        <a href="/">Экскурсии</a>
-        <a href="/articles">Статьи</a>
-        <a href="/faq">FAQ</a>
-        <a href="/contacts">Контакты</a>
-        <a href="/booking-terms">Условия</a>
-        <a href="/#sea-tours">Морские туры</a>
-        <a href="/#land-tours">Наземные туры</a>
+        <a href={sitePath('/')}>Экскурсии</a>
+        <a href={sitePath('/articles')}>Статьи</a>
+        <a href={sitePath('/faq')}>FAQ</a>
+        <a href={sitePath('/contacts')}>Контакты</a>
+        <a href={sitePath('/booking-terms')}>Условия</a>
+        <a href={sitePath('/#sea-tours')}>Морские туры</a>
+        <a href={sitePath('/#land-tours')}>Наземные туры</a>
       </nav>
     </header>
 
     <main class="tour-page">
       <nav class="breadcrumbs" aria-label="Хлебные крошки">
-        <a href="/">Все экскурсии на Пхукете</a>
+        <a href={sitePath('/')}>Все экскурсии на Пхукете</a>
         <span>/</span>
-        <a href="/">Главная</a>
+        <a href={sitePath('/')}>Главная</a>
         <span>/</span>
-        <a href="/">{categoryTitle(excursion.categorySlug)}</a>
+        <a href={sitePath('/')}>{categoryTitle(excursion.categorySlug)}</a>
         <span>/</span>
         <span>{excursion.title}</span>
       </nav>
@@ -661,7 +662,7 @@ function discoveryLocationLabel(_categorySlug: string) {
               <h2 id="promoted-title">Рекомендуемые впечатления</h2>
               <div class="promoted-grid">
                 {promotedExcursions.map((item) => (
-                  <a class="promoted-card" href={`/excursions/${item.slug}`}>
+                  <a class="promoted-card" href={sitePath(`/excursions/${item.slug}`)}>
                     {item.imageUrl && <img src={item.imageUrl} alt={item.title} loading="lazy" />}
                     <span>{discoveryLocationLabel(item.categorySlug)}</span>
                     <strong>{item.title}</strong>
@@ -1056,7 +1057,7 @@ function discoveryLocationLabel(_categorySlug: string) {
         <section class="discovery-block" aria-labelledby="compare-similar-title">
           <div class="discovery-block__heading">
             <h2 id="compare-similar-title">Сравните похожие экскурсии</h2>
-            <a href="/">Смотреть весь каталог</a>
+            <a href={sitePath('/')}>Смотреть весь каталог</a>
           </div>
           <div class="experience-carousel" data-carousel>
             <div class="experience-carousel__meta" data-carousel-meta>
@@ -1077,7 +1078,7 @@ function discoveryLocationLabel(_categorySlug: string) {
             <div class="experience-carousel__viewport" data-carousel-viewport>
               <div class="experience-grid experience-carousel__track" data-carousel-track>
             {similarExperienceCards.map((item, index) => (
-              <a class:list={['experience-card', index === 0 && 'experience-card--current']} href={`/excursions/${item.slug}`}>
+              <a class:list={['experience-card', index === 0 && 'experience-card--current']} href={sitePath(`/excursions/${item.slug}`)}>
                 <div class="experience-card__media">
                   {item.badge ? <span class="experience-card__badge">{item.badge}</span> : null}
                   <span class="experience-card__favorite" aria-hidden="true">♡</span>
@@ -1120,7 +1121,7 @@ function discoveryLocationLabel(_categorySlug: string) {
         <section class="discovery-block" aria-labelledby="also-booked-title">
           <div class="discovery-block__heading">
             <h2 id="also-booked-title">С этой экскурсией часто выбирают</h2>
-            <a href="/">Еще варианты</a>
+            <a href={sitePath('/')}>Еще варианты</a>
           </div>
           <div class="experience-carousel" data-carousel>
             <div class="experience-carousel__meta" data-carousel-meta>
@@ -1141,7 +1142,7 @@ function discoveryLocationLabel(_categorySlug: string) {
             <div class="experience-carousel__viewport" data-carousel-viewport>
               <div class="experience-grid experience-grid--compact experience-carousel__track" data-carousel-track>
             {alsoBoughtCards.map((item) => (
-              <a class="experience-card experience-card--compact" href={`/excursions/${item.slug}`}>
+              <a class="experience-card experience-card--compact" href={sitePath(`/excursions/${item.slug}`)}>
                 <div class="experience-card__media">
                   <span class="experience-card__favorite" aria-hidden="true">♡</span>
                   {item.imageUrl ? (
@@ -1186,7 +1187,7 @@ function discoveryLocationLabel(_categorySlug: string) {
               <h2>{group.title}</h2>
               <div class="discovery-links__row">
                 {group.links.map((link) => (
-                  <a href={link.href}>{link.label}</a>
+                  <a href={sitePath(link.href)}>{link.label}</a>
                 ))}
               </div>
             </div>
@@ -1216,7 +1217,7 @@ function discoveryLocationLabel(_categorySlug: string) {
             <div class="experience-carousel__viewport" data-carousel-viewport>
               <div class="recently-viewed-grid experience-carousel__track" data-carousel-track>
             {recentlyViewedCards.map((item) => (
-              <a class="experience-card experience-card--compact" href={`/excursions/${item.slug}`}>
+              <a class="experience-card experience-card--compact" href={sitePath(`/excursions/${item.slug}`)}>
                 <div class="experience-card__media">
                   <span class="experience-card__favorite" aria-hidden="true">♡</span>
                   {item.imageUrl ? (
@@ -1334,12 +1335,12 @@ function discoveryLocationLabel(_categorySlug: string) {
 
     <footer class="site-footer">
       <div class="site-footer__socials" aria-label="Социальные сети">
-        <a href="/" aria-label="Facebook">f</a>
-        <a href="/" aria-label="X">x</a>
-        <a href="/" aria-label="Pinterest">p</a>
-        <a href="/" aria-label="Instagram">ig</a>
-        <a href="/" aria-label="YouTube">yt</a>
-        <a href="/" aria-label="TikTok">tt</a>
+        <a href={sitePath('/')} aria-label="Facebook">f</a>
+        <a href={sitePath('/')} aria-label="X">x</a>
+        <a href={sitePath('/')} aria-label="Pinterest">p</a>
+        <a href={sitePath('/')} aria-label="Instagram">ig</a>
+        <a href={sitePath('/')} aria-label="YouTube">yt</a>
+        <a href={sitePath('/')} aria-label="TikTok">tt</a>
       </div>
       <div class="site-footer__grid">
         {footerColumns.map((column) => (
@@ -1347,7 +1348,7 @@ function discoveryLocationLabel(_categorySlug: string) {
             <strong>{column.title}</strong>
             <div class="site-footer__links">
               {column.links.map((link) => (
-                <a href={link.href}>{link.label}</a>
+                <a href={sitePath(link.href)}>{link.label}</a>
               ))}
             </div>
           </div>
@@ -1355,8 +1356,8 @@ function discoveryLocationLabel(_categorySlug: string) {
       </div>
       <div class="site-footer__bottom">
         <div class="site-footer__apps">
-          <a href="/">Google Play</a>
-          <a href="/">App Store</a>
+          <a href={sitePath('/')}>Google Play</a>
+          <a href={sitePath('/')}>App Store</a>
         </div>
         <small>© 2026 Phuket Go. Каталог экскурсий и бронирование через менеджера.</small>
       </div>

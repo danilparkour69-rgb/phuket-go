@@ -445,7 +445,7 @@ export function buildLeadTelegramMessages(input: LeadTelegramInput) {
       lead.isTest ? 'Тестовая заявка Phuket Go' : 'Новая заявка Phuket Go',
       '',
       ...(lead.isTest
-        ? ['Проверьте кнопки: сначала «Взять в работу», затем «Оплата получена».', '']
+        ? ['Проверьте кнопки: сначала «Принять заявку», затем рабочие действия.', '']
         : []),
       `Заявка: #${fields.publicNumber}`,
       `Услуга: ${fields.excursionTitle}`,
@@ -600,10 +600,7 @@ export function buildPartnerCustomReasonConfirmation(input: LeadTelegramCustomRe
 
 function partnerNewLeadKeyboard(input: LeadTelegramInput): TelegramInlineKeyboard {
   const keyboard: TelegramInlineKeyboard = [
-    [
-      { text: '🟢 Взять в работу', callback_data: `lead:${input.lead.id}:accept` },
-      { text: '❌ Отклонить', callback_data: `lead:${input.lead.id}:decline` },
-    ],
+    [{ text: '✅ Принять заявку', callback_data: `lead:${input.lead.id}:accept` }],
   ]
   const contactUrl = customerContactUrl(input.lead)
   keyboard.push([
@@ -636,20 +633,21 @@ function partnerStatusKeyboard(input: LeadTelegramCallbackConfirmationInput): Te
     const keyboard: TelegramInlineKeyboard = [
       [
         {
-          text: input.problemNote ? '⚠️ Помощь запрошена' : '🟢 Взята в работу',
+          text: input.problemNote ? '🆘 Помощь запрошена' : '✅ В работе',
           callback_data: input.problemNote
             ? `lead:${input.leadId}:problem`
             : `lead:${input.leadId}:accept`,
         },
       ],
-      [
-        { text: '💰 Оплата получена', callback_data: `lead:${input.leadId}:paid` },
-        { text: '⚠️ Нужна помощь', callback_data: `lead:${input.leadId}:problem` },
-      ],
     ]
     if (input.customerContactUrl) {
       keyboard.push([{ text: '📞 Связаться с клиентом', url: input.customerContactUrl }])
     }
+    keyboard.push([
+      { text: '💰 Оплата получена', callback_data: `lead:${input.leadId}:paid` },
+      { text: '🆘 Нужна помощь', callback_data: `lead:${input.leadId}:problem` },
+    ])
+    keyboard.push([{ text: '❌ Отклонить', callback_data: `lead:${input.leadId}:decline` }])
     return keyboard
   }
   if (status === 'paid') {
@@ -693,7 +691,7 @@ function partnerReasonKeyboard(
   return [
     [
       {
-        text: action === 'decline' ? '❌ Почему отклоняем?' : '⚠️ Что мешает выполнить?',
+        text: action === 'decline' ? '❌ Почему отклоняем?' : '🆘 Что мешает выполнить?',
         callback_data: `lead:${input.leadId}:${action}`,
       },
     ],

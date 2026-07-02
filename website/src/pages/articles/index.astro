@@ -1,5 +1,6 @@
 ---
 import { loadArticles } from '../../lib/articles'
+import { sitePath } from '../../lib/paths'
 
 const articles = await loadArticles()
 const pageTitle = 'Статьи - Phuket Go'
@@ -10,8 +11,8 @@ const pageDescription =
 <html lang="ru">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href={sitePath('/favicon.svg')} />
+    <link rel="icon" href={sitePath('/favicon.ico')} />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <title>{pageTitle}</title>
@@ -19,22 +20,22 @@ const pageDescription =
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href="/" aria-label="Phuket Go">
+      <a class="brand" href={sitePath('/')} aria-label="Phuket Go">
         <span class="brand__mark">PG</span>
         <span>Phuket Go</span>
       </a>
       <nav class="site-nav" aria-label="Основная навигация">
-        <a href="/">Каталог</a>
-        <a href="/articles" aria-current="page">Статьи</a>
-        <a href="/faq">FAQ</a>
-        <a href="/contacts">Контакты</a>
+        <a href={sitePath('/')}>Каталог</a>
+        <a href={sitePath('/articles')} aria-current="page">Статьи</a>
+        <a href={sitePath('/faq')}>FAQ</a>
+        <a href={sitePath('/contacts')}>Контакты</a>
       </nav>
     </header>
 
     <main class="articles-page">
       <section class="articles-hero">
         <nav class="breadcrumbs" aria-label="Хлебные крошки">
-          <a href="/">Главная</a>
+          <a href={sitePath('/')}>Главная</a>
           <span>/</span>
           <span>Статьи</span>
         </nav>
@@ -49,7 +50,7 @@ const pageDescription =
       <section class="article-grid" aria-labelledby="articles-title">
         <div class="section-heading">
           <h2 id="articles-title">Что почитать перед поездкой</h2>
-          <a href="/">Вернуться в каталог</a>
+          <a href={sitePath('/')}>Вернуться в каталог</a>
         </div>
 
         <div class="cards">
@@ -59,10 +60,10 @@ const pageDescription =
                 <span>{article.readTimeMinutes} мин чтения</span>
               </div>
               <h3>
-                <a href={`/articles/${article.slug}`}>{article.h1}</a>
+                <a href={sitePath(`/articles/${article.slug}`)}>{article.h1}</a>
               </h3>
               <p>{article.summary}</p>
-              <a class="article-card__action" href={`/articles/${article.slug}`}>Открыть статью</a>
+              <a class="article-card__action" href={sitePath(`/articles/${article.slug}`)}>Открыть статью</a>
             </article>
           ))}
         </div>

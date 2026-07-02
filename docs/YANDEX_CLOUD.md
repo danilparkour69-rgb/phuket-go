@@ -140,6 +140,20 @@ bun run build:webapp
 bun run build:website
 ```
 
+For temporary Object Storage website URLs, Yandex serves content as `https://website.yandexcloud.net/<bucket>/...`, so the frontend builds must include the bucket path at build time:
+
+```bash
+VITE_API_URL=<Yandex Serverless Container URL> \
+VITE_BASE_PATH=/phuket-go-prod-webapp/ \
+bun run build:webapp
+
+PUBLIC_API_URL=<Yandex Serverless Container URL> \
+PUBLIC_BASE_PATH=/phuket-go-prod-website \
+bun run build:website
+```
+
+When custom domains or CDN origins serve these sites from `/`, unset `VITE_BASE_PATH`/`PUBLIC_BASE_PATH` or set them to `/`, then rebuild and upload again. `VITE_API_URL` and `PUBLIC_API_URL` should still point at the active backend/API origin.
+
 Before uploading, create a Yandex Object Storage static access key for a service account and configure the AWS CLI with it. Yandex's Object Storage docs recommend `aws configure` with the static key and `ru-central1` as the region.
 
 ```bash

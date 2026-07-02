@@ -1,4 +1,6 @@
 ---
+import { sitePath } from '../lib/paths'
+
 const pageTitle = 'Частые вопросы - Phuket Go'
 const pageDescription =
   'Ответы на частые вопросы Phuket Go: как проходит бронирование, как считается цена, что с трансфером, погодой, детьми и статусом заявки.'
@@ -86,8 +88,8 @@ const quickPoints = [
 <html lang="ru">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href={sitePath('/favicon.svg')} />
+    <link rel="icon" href={sitePath('/favicon.ico')} />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <title>{pageTitle}</title>
@@ -95,20 +97,20 @@ const quickPoints = [
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href="/" aria-label="Phuket Go">
+      <a class="brand" href={sitePath('/')} aria-label="Phuket Go">
         <span class="brand__mark">PG</span>
         <span>Phuket Go</span>
       </a>
       <nav class="site-nav" aria-label="Основная навигация">
-        <a href="/">Каталог</a>
-        <a href="/faq" aria-current="page">FAQ</a>
+        <a href={sitePath('/')}>Каталог</a>
+        <a href={sitePath('/faq')} aria-current="page">FAQ</a>
       </nav>
     </header>
 
     <main class="faq-page">
       <section class="faq-hero">
         <nav class="breadcrumbs" aria-label="Хлебные крошки">
-          <a href="/">Главная</a>
+          <a href={sitePath('/')}>Главная</a>
           <span>/</span>
           <span>FAQ</span>
         </nav>
@@ -132,7 +134,7 @@ const quickPoints = [
       <section class="faq-list" aria-labelledby="faq-list-title">
         <div class="section-heading">
           <h2 id="faq-list-title">Ответы до отправки заявки</h2>
-          <a href="/">Перейти в каталог</a>
+          <a href={sitePath('/')}>Перейти в каталог</a>
         </div>
 
         <div class="faq-accordion">
@@ -159,7 +161,7 @@ const quickPoints = [
           </p>
         </div>
         <div class="cta-panel__actions">
-          <a class="cta-primary" href="/">Открыть каталог</a>
+          <a class="cta-primary" href={sitePath('/')}>Открыть каталог</a>
           <a class="cta-secondary" href="mailto:phuketgoall@gmail.com">Написать на email</a>
         </div>
       </section>

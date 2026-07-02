@@ -256,13 +256,10 @@ describe('TelegramLeadNotifier', () => {
     const partnerBody = JSON.parse(String(calls[1].init?.body))
     expect(partnerBody.chat_id).toBe('partner-chat')
     expect(partnerBody.reply_markup.inline_keyboard[0][0]).toEqual({
-      text: '🟢 Взять в работу',
+      text: '✅ Принять заявку',
       callback_data: 'lead:lead-1:accept',
     })
-    expect(partnerBody.reply_markup.inline_keyboard[0][1]).toEqual({
-      text: '❌ Отклонить',
-      callback_data: 'lead:lead-1:decline',
-    })
+    expect(partnerBody.reply_markup.inline_keyboard[0]).toHaveLength(1)
     expect(partnerBody.reply_markup.inline_keyboard[1][0]).toEqual({
       text: '📞 Связаться с клиентом',
       url: 'https://t.me/danil',
@@ -435,12 +432,13 @@ describe('TelegramLeadNotifier', () => {
       message_id: 10,
       reply_markup: {
         inline_keyboard: [
-          [{ text: '🟢 Взята в работу', callback_data: 'lead:lead-1:accept' }],
+          [{ text: '✅ В работе', callback_data: 'lead:lead-1:accept' }],
+          [{ text: '📞 Связаться с клиентом', url: 'https://t.me/danil' }],
           [
             { text: '💰 Оплата получена', callback_data: 'lead:lead-1:paid' },
-            { text: '⚠️ Нужна помощь', callback_data: 'lead:lead-1:problem' },
+            { text: '🆘 Нужна помощь', callback_data: 'lead:lead-1:problem' },
           ],
-          [{ text: '📞 Связаться с клиентом', url: 'https://t.me/danil' }],
+          [{ text: '❌ Отклонить', callback_data: 'lead:lead-1:decline' }],
         ],
       },
     })
@@ -479,12 +477,13 @@ describe('TelegramLeadNotifier', () => {
     expect(JSON.parse(String(calls[1].init?.body))).toMatchObject({
       reply_markup: {
         inline_keyboard: [
-          [{ text: '🟢 Взята в работу', callback_data: 'lead:lead-1:accept' }],
+          [{ text: '✅ В работе', callback_data: 'lead:lead-1:accept' }],
+          [{ text: '📞 Связаться с клиентом', url: 'https://t.me/danil' }],
           [
             { text: '💰 Оплата получена', callback_data: 'lead:lead-1:paid' },
-            { text: '⚠️ Нужна помощь', callback_data: 'lead:lead-1:problem' },
+            { text: '🆘 Нужна помощь', callback_data: 'lead:lead-1:problem' },
           ],
-          [{ text: '📞 Связаться с клиентом', url: 'https://t.me/danil' }],
+          [{ text: '❌ Отклонить', callback_data: 'lead:lead-1:decline' }],
         ],
       },
     })
@@ -635,7 +634,7 @@ describe('TelegramLeadNotifier', () => {
     expect(JSON.parse(String(calls[1].init?.body))).toMatchObject({
       reply_markup: {
         inline_keyboard: [
-          [{ text: '⚠️ Что мешает выполнить?', callback_data: 'lead:lead-1:problem' }],
+          [{ text: '🆘 Что мешает выполнить?', callback_data: 'lead:lead-1:problem' }],
           [{ text: '📵 Клиент не отвечает', callback_data: 'lead:lead-1:problem:no_response' }],
           [{ text: '📅 Нет вариантов на дату', callback_data: 'lead:lead-1:problem:no_slots' }],
           [{ text: '🙅 Некорректное общение', callback_data: 'lead:lead-1:problem:rude' }],

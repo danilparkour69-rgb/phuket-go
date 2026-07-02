@@ -47,6 +47,14 @@ VITE_API_URL=http://localhost:3000
 
 `VITE_API_URL` is build-time config. In production it must be a concrete backend origin such as `https://api.example.com`; if it changes, redeploy the App Platform Static Site so the built bundle stops using the old URL.
 
+`VITE_BASE_PATH` is optional and defaults to `/`. Use it only for providers that serve static website content under a path prefix. For the first Yandex Object Storage temporary URL release, build with:
+
+```bash
+VITE_API_URL=<Yandex Serverless Container URL> VITE_BASE_PATH=/phuket-go-prod-webapp/ bun run build
+```
+
+When the webapp moves to a custom domain or CDN origin rooted at `/`, remove `VITE_BASE_PATH` or set it back to `/` and rebuild.
+
 ## Deployment
 
 Production deployment for the browser app uses DigitalOcean App Platform Static Sites from the full Git monorepo branch with `bun install --frozen-lockfile && bun run build:webapp`, `webapp/dist`, and `index.html` as the SPA catch-all by default. Generate the concrete spec with `bun run deploy:do:specs webapp`; App Platform builds from Git, not from local `dist`. Follow the shared runbook in [../docs/DEPLOYMENT.md](../docs/DEPLOYMENT.md). If the user explicitly chooses Yandex Cloud, deploy the built `webapp/dist` output through Yandex Object Storage static website hosting plus Cloud CDN by following [../docs/YANDEX_CLOUD.md](../docs/YANDEX_CLOUD.md).
