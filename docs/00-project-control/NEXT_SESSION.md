@@ -77,7 +77,7 @@
 - публичный путь `website` покрыт E2E: карточка экскурсии -> заявка -> выбор WhatsApp -> первый follow-up ответ -> проверка записи в Postgres;
 - код-ревью области заявок/Telegram/админки: 9/10 после проверки покрытия и E2E;
 - внешний Telegram smoke для admin chat пройден через `bun run --cwd backend telegram:smoke`;
-- partner Telegram smoke не запускался, потому что `TELEGRAM_SMOKE_PARTNER_CHAT_ID` не задан;
+- внешний Telegram smoke для partner chat пройден через сохраненный в локальной dev DB partner `telegramChatId`;
 - внешний Google Sheets smoke остается ручным шагом перед публикацией, потому что в локальном env нет Google Sheets конфигурации.
 - Перед публикацией оставить небольшой Telegram polish-блок: стикеры, более приятное оформление кнопок и emoji, более плавная последовательность уведомлений. Идея для проверки: первое действие партнера по новой заявке - одно основное `Принять заявку`; сценарий отклонения показывать уже после принятия/контакта с клиентом, если это не ломает операционную работу.
 
@@ -88,11 +88,12 @@
 - `bun run test:backend:unit` - 92 pass;
 - `TEST_DATABASE_URL="postgresql://superuser:superpassword@localhost:55431/phuket_go_test?schema=public" bun run test:backend:integration` - 45 pass;
 - `bun run e2e:webapp` - 4 pass;
-- `bun run --cwd backend telegram:smoke` - admin message sent.
+- `bun run --cwd backend telegram:smoke` - admin message sent;
+- `TELEGRAM_SMOKE_PARTNER_CHAT_ID=<from-dev-db> bun run --cwd backend telegram:smoke` - admin and partner messages sent.
 
 Важно: дефолтный backend integration порт `54330` был занят локально, поэтому backend integration прогонялся на явном тестовом порту `55431`. Playwright E2E сам выбрал свободные тестовые порты.
 
-Следующий практичный блок: релизная готовность внешнего операционного контура. Сделать partner Telegram smoke с `TELEGRAM_SMOKE_PARTNER_CHAT_ID`, проверить реальный Google Sheets sync с боевыми env, затем переходить к домену, хостингу и публикации.
+Следующий практичный блок: релизная готовность внешнего Google Sheets контура. Добавить реальные Google Sheets env, проверить sync с боевой таблицей, затем переходить к домену, хостингу и публикации.
 
 ---
 
@@ -366,7 +367,7 @@ https://t.me/marusyatravel/2206
 
 Следующий логичный шаг:
 
-1. Сделать внешний partner Telegram smoke с `TELEGRAM_SMOKE_PARTNER_CHAT_ID` без вывода секретов в логи.
+1. Добавить реальные Google Sheets env без коммита секретов.
 2. Сделать внешний Google Sheets smoke с реальными env без вывода секретов в логи.
 3. Перед публикацией вернуться к Telegram polish: стикеры, кнопки/emoji и последовательность действий партнера.
 4. Открыть главный план: `docs/00-project-control/master-plan.md`.
