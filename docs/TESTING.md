@@ -72,7 +72,8 @@ The webapp E2E flow:
 - generates the Prisma client and applies migrations;
 - uses `TEST_DATABASE_URL` as the primary database URL, then passes that value to the backend as `DATABASE_URL` inside the test run;
 - starts the backend on `E2E_BACKEND_PORT`, which defaults to a repository-derived port;
-- starts Vite on `E2E_WEB_PORT`, which defaults to a repository-derived port;
+- starts Vite webapp on `E2E_WEB_PORT`, which defaults to a repository-derived port;
+- starts Astro website on `E2E_WEBSITE_PORT`, which defaults to a repository-derived port;
 - stops its `postgres_test` compose project and removes the test volume after the run unless `E2E_KEEP_DOCKER=1` is set;
 - runs the auth smoke path: client validation visibility -> register/login mode switching -> register -> cookie refresh after reload -> protected route -> logout -> invalid login error -> successful login.
 
@@ -83,13 +84,14 @@ TEST_DATABASE_URL="postgresql://superuser:superpassword@localhost:<test-port>/ph
 POSTGRES_TEST_PORT=<test-port>
 E2E_BACKEND_PORT=<backend-port>
 E2E_WEB_PORT=<web-port>
+E2E_WEBSITE_PORT=<website-port>
 E2E_SKIP_DOCKER=1
 E2E_KEEP_DOCKER=1
 ```
 
 By default, Playwright computes `POSTGRES_TEST_PORT` from the absolute repository path and refuses to run against a database that does not use the `_test` suffix. This prevents E2E from accidentally writing to development or production data. Use `DATABASE_URL` only as a low-level override; `TEST_DATABASE_URL` is the documented test entry point.
 
-Playwright artifacts live in `webapp/e2e/.artifacts/` and are not committed. For interactive debugging:
+The E2E suite covers webapp auth/admin flows and the public website path from an excursion page through lead creation, contact-channel selection, and the first follow-up answer. Playwright artifacts live in `webapp/e2e/.artifacts/` and are not committed. For interactive debugging:
 
 ```bash
 bun run --cwd webapp e2e:ui

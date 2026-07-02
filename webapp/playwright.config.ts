@@ -6,14 +6,17 @@ import { applyE2ePortEnv, resolveE2ePorts } from './e2e/ports'
 const frontendRoot = fileURLToPath(new URL('.', import.meta.url))
 const repositoryRoot = resolve(frontendRoot, '..')
 const backendRoot = resolve(repositoryRoot, 'backend')
+const websiteRoot = resolve(repositoryRoot, 'website')
 
 const portPlan = await resolveE2ePorts()
 applyE2ePortEnv(portPlan)
 
 const backendPort = portPlan.backendPort
 const frontendPort = portPlan.webPort
+const websitePort = portPlan.websitePort
 const backendUrl = portPlan.backendUrl
 const frontendUrl = portPlan.webUrl
+const websiteUrl = portPlan.websiteUrl
 const databaseUrl = portPlan.databaseUrl
 
 function normalizeEnv(env: NodeJS.ProcessEnv): Record<string, string> {
@@ -29,7 +32,7 @@ const backendEnv = normalizeEnv({
   DATABASE_URL: databaseUrl,
   JWT_SECRET:
     process.env.JWT_SECRET ?? 'web-e2e-secret-at-least-thirty-two-characters',
-  CORS_ORIGINS: [frontendUrl, 'http://localhost:5173'].join(','),
+  CORS_ORIGINS: [frontendUrl, websiteUrl, 'http://localhost:5173'].join(','),
   COOKIE_SECURE: 'false',
 })
 
@@ -78,6 +81,18 @@ export default defineConfig({
         VITE_API_URL: backendUrl,
       }),
       url: frontendUrl,
+      reuseExistingServer: false,
+      timeout: 120_000,
+    },
+    {
+      name: 'website',
+      command: `bun run dev --host 127.0.0.1 --port ${websitePort}`,
+      cwd: websiteRoot,
+      env: normalizeEnv({
+        ...process.env,
+        PUBLIC_API_URL: backendUrl,
+      }),
+      url: `${websiteUrl}/favicon.svg`,
       reuseExistingServer: false,
       timeout: 120_000,
     },

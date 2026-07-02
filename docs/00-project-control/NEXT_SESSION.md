@@ -74,6 +74,7 @@
 - партнерские Telegram callback-действия покрывают `accept`, `paid`, `decline`, custom decline reason и problem report;
 - тестовые Telegram-заявки не синхронизируются в Google Sheets;
 - админка покрывает список заявок, фильтры, CSV export, bulk status, заметки, ручной Sheets sync и смену статуса из UI;
+- публичный путь `website` покрыт E2E: карточка экскурсии -> заявка -> выбор WhatsApp -> первый follow-up ответ -> проверка записи в Postgres;
 - код-ревью области заявок/Telegram/админки: 9/10 после проверки покрытия и E2E;
 - внешний Telegram smoke для admin chat пройден через `bun run --cwd backend telegram:smoke`;
 - partner Telegram smoke не запускался, потому что `TELEGRAM_SMOKE_PARTNER_CHAT_ID` не задан;
@@ -85,12 +86,12 @@
 - `bun run test:webapp` - 51 pass;
 - `bun run test:backend:unit` - 92 pass;
 - `TEST_DATABASE_URL="postgresql://superuser:superpassword@localhost:55431/phuket_go_test?schema=public" bun run test:backend:integration` - 45 pass;
-- `bun run e2e:webapp` - 3 pass;
+- `bun run e2e:webapp` - 4 pass;
 - `bun run --cwd backend telegram:smoke` - admin message sent.
 
-Важно: дефолтный backend integration порт `54330` был занят локально, поэтому backend integration прогонялся на явном тестовом порту `55431`. Playwright E2E сам выбрал свободный тестовый порт.
+Важно: дефолтный backend integration порт `54330` был занят локально, поэтому backend integration прогонялся на явном тестовом порту `55431`. Playwright E2E сам выбрал свободные тестовые порты.
 
-Следующий практичный блок: релизная готовность публичного сайта и операционного контура. Проверить публичный путь пользователя на `website`: главная -> каталог -> карточка экскурсии -> заявка -> выбор канала связи -> follow-up, затем сделать внешний smoke Telegram/Sheets с боевыми env.
+Следующий практичный блок: релизная готовность внешнего операционного контура. Сделать partner Telegram smoke с `TELEGRAM_SMOKE_PARTNER_CHAT_ID`, проверить реальный Google Sheets sync с боевыми env, затем переходить к домену, хостингу и публикации.
 
 ---
 
